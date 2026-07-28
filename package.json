@@ -1,0 +1,45 @@
+{
+  "name": "verifair-public-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production public website for VerifAir environmental intelligence.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare preview",
+    "cf:deploy": "opennextjs-cloudflare deploy"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@mdx-js/loader": "^3.1.0",
+    "@next/mdx": "^15.4.0",
+    "@opennextjs/cloudflare": "^1.6.0",
+    "framer-motion": "^12.23.0",
+    "next": "^15.4.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "^15.4.0",
+    "postcss": "^8.5.0",
+    "prettier": "^3.6.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}
