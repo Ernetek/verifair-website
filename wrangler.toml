@@ -10,6 +10,3 @@ binding = "ASSETS"
 [observability]
 enabled = true
 
-[[routes]]
-pattern = "verifair.com.au"
-custom_domain = true
