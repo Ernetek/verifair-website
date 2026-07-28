@@ -188,7 +188,7 @@ export default function HomePage() {
             ["Environmental Manager", "The value is not only the reading. It is the alert history, context and trend data."]
           ].map(([role, quote]) => (
             <blockquote key={role} className="border-l-4 border-[var(--brand)] pl-6">
-              <p className="text-2xl font-black leading-tight">"{quote}"</p>
+             <p className="text-2xl font-black leading-tight">{quote}</p>
               <footer className="mt-5 text-sm font-bold uppercase text-slate-500">{role} | illustrative testimonial for approval</footer>
             </blockquote>
           ))}
