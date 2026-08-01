@@ -14,8 +14,7 @@
     "format": "prettier --write .",
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare deploy"
-	 "cf:build": "opennextjs-cloudflare build",
+    "cf:deploy": "opennextjs-cloudflare deploy",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
