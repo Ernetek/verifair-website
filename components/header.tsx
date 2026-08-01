@@ -1,56 +1,106 @@
+// components/header.tsx
 "use client";
 
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowUpRightIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+
 import { primaryNav } from "@/lib/site";
 
 export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
-      <div className="container flex h-20 items-center justify-between gap-5">
-        <Link href="/" className="flex items-center gap-3" aria-label="VerifAir home">
-          <Image src="/assets/verifair-logo.png" alt="" width={46} height={31} className="h-9 w-auto object-contain" priority />
-          <span className="text-xl font-black tracking-normal">VerifAir</span>
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
+      <div className="container flex h-24 items-center justify-between gap-8">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center"
+          aria-label="VerifAir home"
+        >
+          <Image
+            src="/assets/verifair-logo.webp"
+            alt=""
+            width={46}
+            height={31}
+            className="h-9 w-auto object-contain"
+            priority
+          />
         </Link>
-        <nav className="hidden items-center gap-7 text-sm font-bold text-slate-700 lg:flex" aria-label="Primary navigation">
+
+        <nav
+          className="hidden flex-1 items-center justify-center gap-10 text-base font-semibold text-slate-900 lg:flex"
+          aria-label="Primary navigation"
+        >
           {primaryNav.map((item) => (
-            <Link key={item.href} href={item.href} className="transition hover:text-slate-950">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-md px-1 py-2 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
+            >
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link className="btn btn-secondary" href="/contact#overview">
-            Watch overview
-          </Link>
-          <Link className="btn btn-primary" href="/contact">
-            Book demonstration
+
+        <div className="hidden shrink-0 lg:flex">
+          <Link
+            href="/contact#project-enquiry"
+            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
+          >
+            Book a free site assessment
+            <ArrowUpRightIcon className="h-5 w-5" aria-hidden="true" />
           </Link>
         </div>
+
         <button
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 lg:hidden"
+          className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 text-slate-900 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 lg:hidden"
           type="button"
           aria-label="Toggle navigation"
           aria-expanded={open}
+          aria-controls="mobile-navigation"
           onClick={() => setOpen((value) => !value)}
         >
-          {open ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
+          {open ? (
+            <XMarkIcon className="h-6 w-6" />
+          ) : (
+            <Bars3Icon className="h-6 w-6" />
+          )}
         </button>
       </div>
+
       {open ? (
-        <div className="border-t border-slate-200 bg-white lg:hidden">
-          <nav className="container grid gap-2 py-5" aria-label="Mobile navigation">
+        <div
+          id="mobile-navigation"
+          className="border-t border-slate-200 bg-white lg:hidden"
+        >
+          <nav
+            className="container grid gap-1 py-5"
+            aria-label="Mobile navigation"
+          >
             {primaryNav.map((item) => (
-              <Link key={item.href} href={item.href} className="rounded-md px-2 py-3 font-bold" onClick={() => setOpen(false)}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-lg px-3 py-3 text-base font-semibold text-slate-900 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                onClick={() => setOpen(false)}
+              >
                 {item.label}
               </Link>
             ))}
-            <Link className="btn btn-primary mt-2" href="/contact" onClick={() => setOpen(false)}>
-              Book demonstration
+
+            <Link
+              href="/contact#project-enquiry"
+              className="mt-3 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 font-bold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+              onClick={() => setOpen(false)}
+            >
+              Book a free site assessment
+              <ArrowUpRightIcon className="h-5 w-5" aria-hidden="true" />
             </Link>
           </nav>
         </div>

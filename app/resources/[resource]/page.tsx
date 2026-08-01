@@ -2,76 +2,99 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const resources = {
-  "hospital-construction-dust-monitoring": {
-    title: "Hospital Construction Dust Monitoring Guide",
-    description: "A practical guide for monitoring airborne particulates near occupied healthcare environments.",
-    body: [
-      "Hospital construction can involve refurbishment, demolition, drilling, traffic changes and temporary barriers close to occupied clinical spaces.",
-      "A monitoring plan should define sensitive receptors, construction boundaries, device locations, thresholds, escalation owners and reporting expectations before work starts.",
-      "VerifAir supports visibility by coordinating Dustlight devices across zones and turning particulate readings into alerts, dashboards and records.",
-      "Monitoring should be designed alongside infection-control, facility, contractor and environmental management procedures."
-    ]
-  },
-  "pm-particle-size-guide": {
-    title: "PM1, PM2.5 and PM10 Explainer",
-    description: "Plain-language guide to particulate monitoring terms used in construction dust programs.",
-    body: [
-      "PM1, PM2.5 and PM10 refer to particles by aerodynamic diameter. Smaller particles can remain suspended and may move beyond the visible dust source.",
-      "PM10 is often associated with coarser dust. PM2.5 and PM1 are smaller fractions that can be harder to observe visually.",
-      "VerifAir focuses on converting these readings into operational context, alerts, trends and reporting rather than treating each number as a complete decision by itself."
-    ]
-  },
-  "multi-zone-monitoring-checklist": {
-    title: "Multi-zone Monitoring Checklist",
-    description: "Checklist for planning Dustlight and VerifAir deployments across sensitive project zones.",
-    body: [
-      "Define the monitoring objective and the decisions the data should support.",
-      "Identify sensitive receptors, occupied interfaces, work fronts, access routes and likely dust sources.",
-      "Plan device placement, gateway coverage, threshold settings, response owners, reporting cadence and review procedures.",
-      "Confirm that monitoring complements site-specific risk assessments, engineering controls, administrative controls and professional advice."
-    ]
-  }
-};
+import { getResource, verifAirResources } from "@/lib/resources";
 
 type Params = Promise<{ resource: string }>;
 
 export function generateStaticParams() {
-  return Object.keys(resources).map((resource) => ({ resource }));
+  return verifAirResources.map(({ slug }) => ({ resource: slug }));
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
   const { resource } = await params;
-  const page = resources[resource as keyof typeof resources];
-  if (!page) return {};
+  const page = getResource(resource);
+
+  if (!page) {
+    return {};
+  }
+
   return {
     title: page.title,
-    description: page.description,
-    alternates: { canonical: `/resources/${resource}` }
+    description: page.summary,
+    alternates: { canonical: `/resources/${page.slug}` },
   };
 }
 
-export default async function ResourcePage({ params }: { params: Params }) {
+export default async function ResourcePage({
+  params,
+}: {
+  params: Params;
+}) {
   const { resource } = await params;
-  const page = resources[resource as keyof typeof resources];
-  if (!page) notFound();
+  const page = getResource(resource);
+
+  if (!page) {
+    notFound();
+  }
 
   return (
-    <section className="section">
-      <div className="container max-w-4xl">
-        <Link className="text-sm font-black text-[var(--brand)]" href="/resources">
-          Back to resources
-        </Link>
-        <h1 className="h1 mt-5 font-black">{page.title}</h1>
-        <p className="lead mt-6">{page.description}</p>
-        <div className="mt-10 grid gap-5">
-          {page.body.map((paragraph) => (
-            <p key={paragraph} className="border-t border-slate-200 pt-5 leading-8 text-slate-700">
-              {paragraph}
-            </p>
-          ))}
+    <>
+      <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+        <div className="container max-w-4xl">
+          <Link
+            className="inline-flex min-h-11 items-center font-bold text-blue-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
+            href="/resources"
+          >
+            Back to resources
+          </Link>
+          <p className="mt-8 text-sm font-bold uppercase tracking-wide text-blue-600">
+            {page.category}
+          </p>
+          <h1 className="mt-4 text-4xl font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+            {page.title}
+          </h1>
+          <div className="mt-5 h-0.5 w-12 bg-blue-600" />
+          <p className="mt-6 text-lg leading-8 text-slate-600">{page.intro}</p>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="bg-slate-50 py-16 sm:py-20">
+        <div className="container max-w-4xl">
+          <div className="grid gap-5">
+            {page.sections.map((section) => (
+              <article
+                key={section.title}
+                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
+              >
+                <h2 className="text-2xl font-bold tracking-tight text-slate-950">
+                  {section.title}
+                </h2>
+                <div className="mt-4 grid gap-4">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph} className="leading-8 text-slate-700">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+                {section.points ? (
+                  <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                    {section.points.map((point) => (
+                      <li key={point} className="flex gap-3 leading-7 text-slate-700">
+                        <span className="mt-2.5 size-2 shrink-0 rounded-full bg-blue-600" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

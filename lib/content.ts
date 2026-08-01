@@ -388,24 +388,44 @@ export const pageContent: Record<string, MarketingPage> = {
 };
 
 export const faqs = [
-  ["What does VerifAir do?", "VerifAir turns Dustlight particulate monitoring data into site-wide visibility, alerting, reporting and operational intelligence for dust-sensitive projects."],
-  ["Is VerifAir a dust sensor manufacturer?", "No. Dustlight provides the particulate monitoring technology. VerifAir is the platform and deployment approach that coordinates devices, gateways, alerts and reporting."],
-  ["What particulate sizes are monitored?", "Current marketing focuses on PM1, PM2.5, PM10, total suspended particulates and respirable construction dust, depending on the project configuration."],
-  ["Can VerifAir guarantee compliance?", "No. VerifAir supports monitoring and reporting programs, but compliance depends on risk assessments, deployment strategy, controls, procedures, professional judgement and applicable obligations."],
-  ["Can it be used around hospitals?", "Yes, it is positioned for healthcare construction and refurbishment projects where additional visibility near occupied clinical environments is valuable."],
-  ["Does it replace infection-control procedures?", "No. It can support visibility and escalation processes but does not replace clinical infection-control procedures or advice."],
-  ["Does it replace occupational hygiene monitoring?", "No. It complements appropriate professional monitoring and management controls."],
-  ["Can multiple zones be monitored?", "Yes. VerifAir is designed to coordinate multiple Dustlight devices across zones, work fronts and occupied interfaces."],
-  ["Does it work when internet connectivity is interrupted?", "The edge-first design supports local processing and buffering, with cloud synchronisation where configured."],
-  ["What alerts are available?", "Alerts can be configured around project thresholds and escalation workflows so responsible personnel can respond to elevated readings."],
-  ["Can reports be exported?", "Reporting is designed to support project records, audits, stakeholder updates and incident review."],
-  ["Is the dashboard shown on this website operational?", "No. Website dashboards are purpose-built demonstrations that show the public marketing experience, not the customer monitoring platform."],
-  ["Where is the customer portal?", "The operational monitoring platform should be hosted separately, such as app.verifair.com.au."],
-  ["Does VerifAir support schools?", "Yes, particularly schools adjacent to construction activity where monitoring records and escalation processes are useful."],
-  ["Does VerifAir support infrastructure?", "Yes. Multi-zone monitoring and historical reporting are relevant to civil, transport and public infrastructure projects."],
-  ["What information is needed for a site assessment?", "Project location, industry, project stage, number of monitoring zones, primary concern and expected installation timing are useful starting points."],
-  ["Can thresholds be changed?", "Threshold settings should be configured according to project requirements, professional advice and applicable management procedures."],
-  ["Can VerifAir integrate with other systems?", "The site is prepared for future CRM, analytics, support and portal integrations, subject to security and privacy review."],
-  ["Is data secure?", "The public website is configured for modern security headers and Cloudflare deployment. Operational platform security should be assessed separately before launch."],
-  ["How do we start?", "Book a demonstration or site assessment so the team can understand the project environment and monitoring objectives."]
-].map(([question, answer]) => ({ question, answer }));
+  {
+    question: "What does VerifAir monitor?",
+    answer:
+      "VerifAir coordinates particulate monitoring data from configured Dustlight devices and presents readings, alerts, trends and records through a shared operational interface.",
+  },
+  {
+    question: "What particulate sizes are monitored?",
+    answer:
+      "Configured Dustlight monitors collect PM1, PM2.5 and PM10 readings at selected monitoring points. These readings do not identify the chemical or mineral composition of airborne material.",
+  },
+  {
+    question: "Can multiple zones be monitored?",
+    answer:
+      "Yes. VerifAir is designed to coordinate multiple monitoring points across selected zones, work fronts, boundaries and occupied interfaces.",
+  },
+  {
+    question: "What happens if internet connectivity is interrupted?",
+    answer:
+      "The edge-first design supports local buffering and processing during connectivity interruptions, with synchronisation resuming where configured when connectivity returns.",
+  },
+  {
+    question: "How are alerts configured?",
+    answer:
+      "Alerts are configured around project requirements, agreed thresholds and escalation workflows so information can be routed to the people responsible for taking action.",
+  },
+  {
+    question: "Can reports be exported?",
+    answer:
+      "Yes. Downloadable records and reports are intended to support project reviews, investigations, stakeholder updates and environmental-management processes.",
+  },
+  {
+    question: "Can VerifAir guarantee compliance?",
+    answer:
+      "No. VerifAir provides monitoring data, alerts and records that can support environmental-management, due-diligence and reporting processes. It does not replace competent risk assessment, occupational-hygiene advice, specialist sampling, statutory controls or other project-specific compliance requirements.",
+  },
+  {
+    question: "How do we get started?",
+    answer:
+      "Book a free site assessment so the team can understand the project environment, monitoring objectives, zones, connectivity and reporting requirements.",
+  },
+];

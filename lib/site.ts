@@ -1,17 +1,20 @@
+export const SALES_EMAIL = "verifair@ernelifting.com";
+// Replace with the verified @verifair.com.au mailbox once configured and tested.
+
 export const siteConfig = {
   name: "VerifAir",
-  title: "VerifAir | Real-time Dust Monitoring and Environmental Intelligence",
+  title: "VerifAir | Real-Time Dust Monitoring for Construction and Healthcare Projects",
   description:
-    "VerifAir transforms Dustlight particulate monitoring into real-time environmental intelligence for hospitals, construction projects, infrastructure and sensitive occupied environments.",
+    "VerifAir connects Dustlight particulate monitoring with cloud-based alerts, reporting and environmental intelligence for construction, healthcare, infrastructure and sensitive sites.",
   url: "https://verifair.com.au",
-  phone: "+61 1300 000 000",
-  email: "hello@verifair.com.au"
+  phone: "+61 452 447 696",
+  email: SALES_EMAIL
 };
 
 export const primaryNav = [
-  { label: "Platform", href: "/platform" },
+  { label: "Platform", href: "/#platform" },
   { label: "Technology", href: "/technology" },
-  { label: "Industries", href: "/industries" },
+  { label: "Industries", href: "/#industries" },
   { label: "Reporting", href: "/reporting" },
   { label: "Resources", href: "/resources" },
   { label: "Contact", href: "/contact" }
