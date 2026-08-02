@@ -9,6 +9,7 @@ const isDev = process.env.NODE_ENV === "development";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  allowedDevOrigins: ["127.0.0.1"],
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000
