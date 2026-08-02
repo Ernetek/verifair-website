@@ -16,15 +16,36 @@
 }
 
 html {
+  max-width: 100%;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: clip;
   background: #ffffff;
   color: var(--ink);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
+}
+
+main,
+header,
+footer,
+section,
+article,
+nav,
+div {
+  min-width: 0;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
 }
 
 a {
@@ -36,6 +57,7 @@ button,
 input,
 select,
 textarea {
+  max-width: 100%;
   font: inherit;
 }
 
@@ -60,6 +82,7 @@ textarea {
 
 .container {
   width: min(1180px, calc(100% - 2rem));
+  max-width: 100%;
   margin: 0 auto;
 }
 

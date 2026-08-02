@@ -34,7 +34,7 @@ const workflow = [
     number: "04",
     title: "Dashboards, alerts and reporting",
     text: "VerifAir presents live conditions, configured alerts, trends and downloadable records through a shared operational interface.",
-    image: "/assets/alerts.webp",
+    image: "/assets/Alerts.webp",
     imageAlt: "Demonstration VerifAir dashboard displayed on desktop and mobile",
   },
 ];
