@@ -14,7 +14,7 @@ test("homepage has primary conversion path and no horizontal overflow", async ({
 
   await expect(
     page
-      .locator("a, button")
+      .locator("a:visible, button:visible")
       .filter({ hasText: /book a free site assessment/i })
       .first(),
   ).toBeVisible();
