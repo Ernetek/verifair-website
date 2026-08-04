@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Script from "next/script";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { SALES_EMAIL } from "@/lib/site";
 
@@ -10,8 +10,58 @@ const HUBSPOT_PORTAL_ID = "442470070";
 const HUBSPOT_FORM_ID = "9bebb709-1b3f-4392-9f07-a2ea7478b2b4";
 const HUBSPOT_REGION = "ap1";
 
+type FormStatus = "loading" | "ready" | "error";
+
 export default function ContactForm() {
-  const [scriptFailed, setScriptFailed] = useState(false);
+  const formHostRef = useRef<HTMLDivElement>(null);
+  const [scriptReady, setScriptReady] = useState(false);
+  const [formStatus, setFormStatus] = useState<FormStatus>("loading");
+
+  useEffect(() => {
+    if (!scriptReady || !formHostRef.current) {
+      return;
+    }
+
+    const formHost = formHostRef.current;
+
+    const hasEmbeddedForm = () =>
+      formHost.childElementCount > 0 ||
+      Boolean(
+        formHost.querySelector(
+          "iframe, form, [data-hs-form-root], .hs-form",
+        ),
+      );
+
+    if (hasEmbeddedForm()) {
+      setFormStatus("ready");
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (hasEmbeddedForm()) {
+        setFormStatus("ready");
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(formHost, {
+      childList: true,
+      subtree: true,
+    });
+
+    const timeout = window.setTimeout(() => {
+      if (!hasEmbeddedForm()) {
+        setFormStatus("error");
+      }
+
+      observer.disconnect();
+    }, 12000);
+
+    return () => {
+      window.clearTimeout(timeout);
+      observer.disconnect();
+    };
+  }, [scriptReady]);
 
   return (
     <section
@@ -23,7 +73,8 @@ export default function ContactForm() {
         id="verifair-hubspot-current-form"
         src={`https://js-${HUBSPOT_REGION}.hsforms.net/forms/embed/${HUBSPOT_PORTAL_ID}.js`}
         strategy="afterInteractive"
-        onError={() => setScriptFailed(true)}
+        onReady={() => setScriptReady(true)}
+        onError={() => setFormStatus("error")}
       />
 
       <div className="contact-container">
@@ -97,7 +148,11 @@ export default function ContactForm() {
             </div>
           </aside>
 
-          <div className="form-panel">
+          <div
+            className={`form-panel ${
+              formStatus === "error" ? "form-panel--error" : ""
+            }`}
+          >
             <div className="form-panel-header">
               <div>
                 <p className="panel-eyebrow">VerifAir</p>
@@ -124,30 +179,38 @@ export default function ContactForm() {
               </div>
             </noscript>
 
-            {scriptFailed ? (
+            {formStatus === "error" ? (
               <div className="form-error" role="alert">
                 <strong>The enquiry form could not be loaded.</strong>
 
                 <p>
-                  Please refresh the page or email{" "}
-                  <a href={`mailto:${SALES_EMAIL}`}>
-                    {SALES_EMAIL}
-                  </a>
-                  .
+                  Please refresh the page, check that optional website scripts
+                  are allowed, or email{" "}
+                  <a href={`mailto:${SALES_EMAIL}`}>{SALES_EMAIL}</a>.
                 </p>
               </div>
             ) : (
-              <div
-                className="hubspot-current-form"
-                aria-label="VerifAir project enquiry form"
-              >
+              <>
+                {formStatus === "loading" ? (
+                  <p className="form-loading" role="status" aria-live="polite">
+                    Loading the secure enquiry form…
+                  </p>
+                ) : null}
+
                 <div
-                  className="hs-form-frame"
-                  data-region={HUBSPOT_REGION}
-                  data-form-id={HUBSPOT_FORM_ID}
-                  data-portal-id={HUBSPOT_PORTAL_ID}
-                />
-              </div>
+                  ref={formHostRef}
+                  className="hubspot-current-form"
+                  aria-label="VerifAir project enquiry form"
+                  aria-busy={formStatus === "loading"}
+                >
+                  <div
+                    className="hs-form-frame"
+                    data-region={HUBSPOT_REGION}
+                    data-form-id={HUBSPOT_FORM_ID}
+                    data-portal-id={HUBSPOT_PORTAL_ID}
+                  />
+                </div>
+              </>
             )}
 
             <p className="privacy-message">
@@ -342,6 +405,11 @@ export default function ContactForm() {
           background: rgba(3, 39, 30, 0.82);
         }
 
+        .form-panel--error {
+          min-height: 0;
+          align-self: start;
+        }
+
         .form-panel-header {
           display: flex;
           gap: 24px;
@@ -377,6 +445,13 @@ export default function ContactForm() {
         .secure-label :global(svg) {
           width: 14px;
           height: 14px;
+        }
+
+        .form-loading {
+          margin: 0 0 18px;
+          color: rgba(255, 255, 255, 0.68);
+          font-size: 14px;
+          line-height: 1.6;
         }
 
         .hubspot-current-form {
@@ -438,6 +513,10 @@ export default function ContactForm() {
           .form-panel {
             min-height: 650px;
           }
+
+          .form-panel--error {
+            min-height: 0;
+          }
         }
 
         @media (max-width: 600px) {
@@ -457,6 +536,10 @@ export default function ContactForm() {
 
           .form-panel {
             min-height: 620px;
+          }
+
+          .form-panel--error {
+            min-height: 0;
           }
 
           .form-panel-header {

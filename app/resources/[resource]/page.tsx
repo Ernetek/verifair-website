@@ -58,7 +58,7 @@ export default async function ResourcePage({
             {page.title}
           </h1>
           <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-          <p className="mt-6 text-lg leading-8 text-slate-600">{page.intro}</p>
+          <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">{page.intro}</p>
         </div>
       </section>
 
@@ -70,12 +70,12 @@ export default async function ResourcePage({
                 key={section.title}
                 className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
               >
-                <h2 className="text-2xl font-bold tracking-tight text-slate-950">
+                <h2 className="text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-4xl">
                   {section.title}
                 </h2>
                 <div className="mt-4 grid gap-4">
                   {section.paragraphs.map((paragraph) => (
-                    <p key={paragraph} className="leading-8 text-slate-700">
+                    <p key={paragraph} className="text-base leading-7 text-slate-700 sm:text-lg">
                       {paragraph}
                     </p>
                   ))}

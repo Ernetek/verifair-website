@@ -11,7 +11,7 @@ export function ProofSection() {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-400">
               Product proof
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.45rem]">
               Built around live monitoring, local resilience and shared
               operational visibility.
             </h2>

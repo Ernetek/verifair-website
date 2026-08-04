@@ -23,7 +23,7 @@ export function ProblemSection() {
   return (
     <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
       <div className="container">
-        <div className="grid items-stretch gap-10 lg:grid-cols-[0.96fr_1fr] lg:gap-12">
+        <div className="grid items-start gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:gap-12">
           <div className="flex flex-col">
             <Reveal>
               <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
@@ -59,30 +59,17 @@ export function ProblemSection() {
               ))}
             </div>
 
-            <Reveal>
-              <div className="mt-7 flex gap-4 rounded-xl border-l-2 border-blue-600 bg-blue-50/70 p-5">
-                <ShieldCheckIcon
-                  className="mt-0.5 size-7 shrink-0 text-blue-600"
-                  aria-hidden="true"
-                />
-                <p className="text-sm leading-6 text-slate-800">
-                  Particulate readings do not identify the chemical or mineral
-                  composition of airborne material. VerifAir supplements, but
-                  does not replace, competent risk assessment, specialist
-                  sampling, controls or project-specific obligations.
-                </p>
-              </div>
-            </Reveal>
           </div>
 
-          <Reveal>
-            <div className="relative h-full min-h-[30rem] overflow-hidden rounded-2xl bg-slate-100 lg:min-h-0">
+          <Reveal className="w-full lg:justify-self-end">
+            <div className="mx-auto w-full max-w-[34rem] overflow-hidden rounded-2xl bg-slate-100 lg:mx-0 lg:max-w-[30rem] xl:max-w-[34rem]">
               <Image
                 src="/assets/problem-active-dust.webp"
-                alt="Construction worker controlling dust during active concrete cutting"
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 50vw, 100vw"
+                alt="Construction worker controlling dust during active concrete cutting beside an occupied hospital corridor"
+                width={1200}
+                height={1200}
+                sizes="(min-width: 1280px) 34rem, (min-width: 1024px) 30rem, 100vw"
+                className="h-auto w-full object-contain"
               />
             </div>
           </Reveal>

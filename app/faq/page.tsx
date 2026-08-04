@@ -15,7 +15,7 @@ export default function FAQPage() {
         <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
           FAQ
         </p>
-        <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
+        <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
           Frequently asked questions
         </h1>
         <div className="mt-5 h-0.5 w-12 bg-blue-600" />

@@ -67,7 +67,7 @@ export function ResourcesPage() {
               Practical resources for dust monitoring and project planning.
             </h1>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
               Access monitoring guides, deployment checklists, reporting
               information and links to official Australian work health and
               safety sources.
@@ -98,7 +98,7 @@ export function ResourcesPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               VerifAir resources
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
               Guides and checklists for project teams.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
@@ -114,7 +114,7 @@ export function ResourcesPage() {
                 <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
                   {resource.category}
                 </p>
-                <h3 className="mt-3 text-xl font-bold text-slate-950">
+                <h3 className="mt-3 text-lg font-bold text-slate-950">
                   {resource.title}
                 </h3>
                 <p className="mt-3 flex-1 leading-7 text-slate-600">
@@ -135,7 +135,7 @@ export function ResourcesPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               Australian legislation and policy
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
               Start with current official regulator guidance.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
@@ -159,8 +159,8 @@ export function ResourcesPage() {
                   </div>
                   <ArrowTopRightOnSquareIcon className="size-5 shrink-0 text-slate-500" aria-hidden="true" />
                 </div>
-                <h3 className="mt-4 text-xl font-bold text-slate-950">{resource.title}</h3>
-                <p className="mt-3 leading-7 text-slate-600">{resource.summary}</p>
+                <h3 className="mt-4 text-lg font-bold text-slate-950">{resource.title}</h3>
+                <p className="mt-3 text-base leading-7 text-slate-600">{resource.summary}</p>
                 <p className="mt-5 text-xs font-semibold text-slate-500">
                   Last verified: 1 August 2026
                 </p>

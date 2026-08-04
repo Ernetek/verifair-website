@@ -12,7 +12,7 @@ export function FinalCTA() {
               <p className="text-sm font-bold uppercase tracking-wide text-blue-400">
                 Ready for project visibility
               </p>
-              <h2 className="mt-4 max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
+              <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.45rem]">
                 See how VerifAir can support monitoring and response workflows
                 across your next dust-sensitive project.
               </h2>
@@ -35,6 +35,13 @@ export function FinalCTA() {
             </div>
           </div>
         </Reveal>
+
+        <p className="mt-10 max-w-5xl border-t border-white/10 pt-5 text-xs leading-5 text-slate-400">
+          Particulate readings do not identify the chemical or mineral
+          composition of airborne material. VerifAir supplements, but does not
+          replace, competent risk assessment, occupational-hygiene advice,
+          specialist sampling, controls or project-specific legal obligations.
+        </p>
       </div>
     </section>
   );

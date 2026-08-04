@@ -1,8 +1,8 @@
 import {
   BellAlertIcon,
-  ChartBarSquareIcon,
+  BoltIcon,
   ClipboardDocumentCheckIcon,
-  SignalIcon,
+  CpuChipIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 
@@ -34,7 +34,7 @@ const workflow = [
     number: "04",
     title: "Dashboards, alerts and reporting",
     text: "VerifAir presents live conditions, configured alerts, trends and downloadable records through a shared operational interface.",
-    image: "/assets/Alerts.webp",
+    image: "/assets/alerts.webp",
     imageAlt: "Demonstration VerifAir dashboard displayed on desktop and mobile",
   },
 ];
@@ -43,7 +43,7 @@ const operationalOutcomes = [
   {
     title: "Earlier intervention",
     body: "Identify changing particulate conditions before they become prolonged or widespread exposure events.",
-    icon: ChartBarSquareIcon,
+    icon: BoltIcon,
   },
   {
     title: "Coordinated response",
@@ -58,7 +58,7 @@ const operationalOutcomes = [
   {
     title: "Reduced manual oversight",
     body: "Supplement periodic inspections and spot checks with continuous monitoring across selected zones.",
-    icon: SignalIcon,
+    icon: CpuChipIcon,
   },
 ];
 
@@ -77,7 +77,7 @@ export function PlatformSection() {
             </p>
             <h2
               id="platform-heading"
-              className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
+              className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
             >
               A technically clear path from monitoring point to shared action.
             </h2>
@@ -93,7 +93,7 @@ export function PlatformSection() {
                   <span className="inline-flex size-12 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
                     {step.number}
                   </span>
-                  <h3 className="mt-5 text-xl font-bold tracking-tight text-slate-950">
+                  <h3 className="mt-5 text-lg font-bold tracking-tight text-slate-950">
                     {step.title}
                   </h3>
                 </div>
@@ -132,7 +132,7 @@ export function PlatformSection() {
                 </p>
                 <h3
                   id="operational-outcomes-heading"
-                  className="mt-4 max-w-xl text-3xl font-bold leading-[1.1] tracking-tight text-slate-950 sm:text-4xl lg:text-[2.75rem]"
+                  className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
                 >
                   Practical outcomes for project teams.
                 </h3>

@@ -1,11 +1,15 @@
 import {
   BellAlertIcon,
+  BoltIcon,
   BuildingOffice2Icon,
   ChartBarIcon,
   CloudArrowUpIcon,
+  ComputerDesktopIcon,
   CpuChipIcon,
   MapPinIcon,
+  ServerStackIcon,
   SignalIcon,
+  WifiIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
@@ -45,14 +49,39 @@ const capabilities = [
   "Local resilience during temporary connectivity issues",
 ];
 
-const projectTypes = [
-  "Healthcare refurbishment",
-  "Construction projects",
-  "Infrastructure and civil works",
-  "Government assets",
-  "Education facilities",
-  "Commercial refurbishment",
+const includedHardware = [
+  {
+    icon: SignalIcon,
+    title: "Dustlight particulate monitors",
+    body: "Compact monitoring units installed at selected zones to capture PM1, PM2.5 and PM10 readings and provide a visible local air-quality status indication.",
+  },
+  {
+    icon: WifiIcon,
+    title: "Wireless coverage and site connectivity",
+    body: "Configured range-extension, gateway and site-connectivity components selected to support reliable communication between monitoring locations and the VerifAir platform.",
+  },
+  {
+    icon: ServerStackIcon,
+    title: "Local processing and data buffering",
+    body: "A local monitoring hub receives site data, supports edge processing and temporarily buffers records when external connectivity is interrupted.",
+  },
+  {
+    icon: BoltIcon,
+    title: "Power and network infrastructure",
+    body: "Power supplies, network switching, cabling and connection hardware are specified to suit the approved monitoring layout and available site services.",
+  },
+  {
+    icon: ComputerDesktopIcon,
+    title: "Optional local dashboard display",
+    body: "A dedicated on-site display can present current monitoring conditions, configured alerts and trend information for authorised project teams.",
+  },
+  {
+    icon: WrenchScrewdriverIcon,
+    title: "Protective casing and mounting hardware",
+    body: "Protective enclosures, equipment cases, brackets, poles and mounting accessories are selected where required to shield components and support secure installation in active project environments.",
+  },
 ];
+
 
 const supportItems = [
   {
@@ -90,7 +119,7 @@ export function TechnologyPage() {
               Connected monitoring for dust-sensitive environments.
             </h1>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
               VerifAir brings environmental monitoring, site connectivity,
               alerts, dashboards and reporting together in one coordinated
               platform.
@@ -119,45 +148,17 @@ export function TechnologyPage() {
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20 lg:py-24">
-        <div className="container">
-          <Reveal>
-            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              How the platform works
-            </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
-              A coordinated path from monitoring point to project action.
-            </h2>
-            <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {stages.map(({ icon: Icon, title, body }, index) => (
-              <Reveal key={title} delay={index * 0.04}>
-                <article className="h-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <span className="flex size-11 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-                    <Icon className="size-6" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-bold text-slate-950">{title}</h3>
-                  <p className="mt-3 leading-7 text-slate-600">{body}</p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
         <div className="container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
           <Reveal>
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               Monitoring capabilities
             </p>
-            <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
               Practical visibility for active projects.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-            <p className="mt-5 text-lg leading-8 text-slate-600">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
               Capabilities are configured to suit the project scope, monitoring
               objectives and selected deployment locations.
             </p>
@@ -179,31 +180,44 @@ export function TechnologyPage() {
         </div>
       </section>
 
+
       <section className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20 lg:py-24">
-        <div className="container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+        <div className="container">
           <Reveal>
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              Designed for active projects
+              Included hardware
             </p>
-            <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
-              Monitoring support across complex occupied and operational sites.
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
+              A practical site package configured around the monitoring scope.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-            <p className="mt-5 text-lg leading-8 text-slate-600">
-              VerifAir can support projects where construction activity occurs
-              near people, ongoing operations or sensitive boundaries.
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
+              The final equipment list depends on the project, monitoring
+              locations and site conditions. A typical VerifAir deployment may
+              include the following approved components.
             </p>
           </Reveal>
 
-          <Reveal delay={0.1}>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {projectTypes.map((item) => (
-                <div key={item} className="rounded-xl border border-slate-200 bg-white p-5 font-semibold text-slate-800 shadow-sm">
-                  {item}
-                </div>
-              ))}
-            </div>
-          </Reveal>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {includedHardware.map(({ icon: Icon, title, body }) => (
+              <Reveal key={title}>
+                <article className="h-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <span className="flex size-11 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                    <Icon className="size-6" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-5 text-lg font-bold text-slate-950">
+                    {title}
+                  </h3>
+                  <p className="mt-3 text-base leading-7 text-slate-600">{body}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          <p className="mt-6 text-sm leading-6 text-slate-500">
+            Equipment selection, quantities and optional components are
+            confirmed during site assessment and project scoping.
+          </p>
         </div>
       </section>
 
@@ -213,7 +227,7 @@ export function TechnologyPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               Reliability and support
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
               Planned, monitored and supported throughout the project.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
@@ -224,33 +238,13 @@ export function TechnologyPage() {
               <div key={title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <Icon className="size-7 text-blue-600" aria-hidden="true" />
                 <h3 className="mt-4 text-lg font-bold text-slate-950">{title}</h3>
-                <p className="mt-3 leading-7 text-slate-600">{body}</p>
+                <p className="mt-3 text-base leading-7 text-slate-600">{body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-blue-50/70 py-16 sm:py-20">
-        <div className="container">
-          <Reveal>
-            <div className="rounded-2xl border border-blue-200 bg-white p-7 shadow-sm sm:p-9">
-              <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-                Important limitations
-              </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
-                Monitoring information must be used in the right project context.
-              </h2>
-              <ul className="mt-6 grid gap-4 text-slate-700 sm:grid-cols-2">
-                <li>VerifAir supports project monitoring and response workflows.</li>
-                <li>It does not identify asbestos or silica composition.</li>
-                <li>It does not replace occupational hygiene assessment.</li>
-                <li>It does not independently guarantee legal compliance.</li>
-              </ul>
-            </div>
-          </Reveal>
-        </div>
-      </section>
     </>
   );
 }

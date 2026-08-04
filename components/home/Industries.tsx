@@ -75,14 +75,16 @@ export function IndustriesSection() {
             </p>
             <h2
               id="industries-heading"
-              className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
+              className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
             >
               Monitoring for complex and dust-sensitive environments.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
             <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-              These are representative operating environments, not claims of
-              existing customer deployments.
+              VerifAir supports monitoring across occupied, public-facing and
+              operationally complex project environments, helping teams maintain
+              visibility, coordinate responses and keep clear records across
+              selected zones.
             </p>
           </div>
         </Reveal>

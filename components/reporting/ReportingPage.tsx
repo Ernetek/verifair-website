@@ -55,7 +55,7 @@ export function ReportingPage() {
               Clear monitoring records for project teams and stakeholders.
             </h1>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
               VerifAir organises monitoring trends, alerts, system status and
               project information into practical, reviewable reports.
             </p>
@@ -83,7 +83,7 @@ export function ReportingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               Report types
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
               Practical outputs for day-to-day review and project communication.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
@@ -97,7 +97,7 @@ export function ReportingPage() {
                     <Icon className="size-6" aria-hidden="true" />
                   </span>
                   <h3 className="mt-5 text-lg font-bold text-slate-950">{title}</h3>
-                  <p className="mt-3 leading-7 text-slate-600">{body}</p>
+                  <p className="mt-3 text-base leading-7 text-slate-600">{body}</p>
                 </article>
               </Reveal>
             ))}
@@ -111,7 +111,7 @@ export function ReportingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               Report contents
             </p>
-            <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
               Structured information that is easier to review.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
@@ -137,7 +137,7 @@ export function ReportingPage() {
                 <p className="text-sm font-bold uppercase tracking-wide text-blue-300">
                   Demonstration report preview
                 </p>
-                <h2 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight">
+                <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.45rem]">
                   A clear project summary without unnecessary complexity.
                 </h2>
               </div>
@@ -213,7 +213,7 @@ export function ReportingPage() {
               <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
                 Reporting limitations
               </p>
-              <p className="mt-4 max-w-4xl text-lg leading-8 text-slate-700">
+              <p className="mt-5 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
                 VerifAir reports can support project reviews,
                 environmental-management processes, due-diligence records and
                 stakeholder communication. They do not independently establish
