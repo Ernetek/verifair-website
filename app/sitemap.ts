@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
 
-import { pageContent } from "@/lib/content";
-import { verifAirResources } from "@/lib/resources";
-import { siteConfig } from "@/lib/site";
+import { pageContent } from "../lib/content";
+import { verifAirResources } from "../lib/resources";
+import { siteConfig } from "../lib/site";
+
+const PAGE_UPDATED = "2026-08-05";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const genericRoutes = Object.keys(pageContent).filter(
-    (route) => !["resources", "technology", "reporting", "reports"].includes(route),
+    (route) => !["resources", "technology", "reporting", "reports", "search"].includes(route),
   );
 
   const routes = [
@@ -15,22 +17,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "technology",
     "resources",
     "reporting",
+    "faq",
     "privacy",
     "terms",
     "cookies",
-    "search",
     ...verifAirResources.map((resource) => `resources/${resource.slug}`),
   ];
 
   return routes.map((route) => ({
     url: `${siteConfig.url}/${route}`,
-    lastModified: new Date("2026-08-01"),
+    lastModified: new Date(
+      route.startsWith("resources/")
+        ? verifAirResources.find((item) => `resources/${item.slug}` === route)?.updated ?? PAGE_UPDATED
+        : PAGE_UPDATED,
+    ),
     changeFrequency: route === "" ? "weekly" : "monthly",
-    priority:
-      route === ""
-        ? 1
-        : ["technology", "resources", "reporting"].includes(route)
-          ? 0.8
-          : 0.7,
+    priority: route === "" ? 1 : ["technology", "resources", "reporting"].includes(route) ? 0.8 : 0.7,
   }));
 }

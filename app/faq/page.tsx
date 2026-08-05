@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 
 import { faqs } from "@/lib/content";
+import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description:
     "Answers about VerifAir particulate monitoring, connectivity, alerts, reporting and compliance boundaries.",
+  alternates: { canonical: "/faq" },
 };
 
 export default function FAQPage() {
   return (
+    <>
     <section className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="container max-w-4xl">
         <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
@@ -20,7 +23,7 @@ export default function FAQPage() {
         </h1>
         <div className="mt-5 h-0.5 w-12 bg-blue-600" />
 
-        <div className="mt-10 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="mt-10 border-y border-slate-200">
           {faqs.map((faq, index) => (
             <details
               key={faq.question}
@@ -45,5 +48,7 @@ export default function FAQPage() {
         </div>
       </div>
     </section>
+    <PageDisclaimer />
+    </>
   );
 }

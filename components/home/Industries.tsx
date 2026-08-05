@@ -1,129 +1,120 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
-import { Reveal } from "./Reveal";
+import { useState } from "react";
 
 const industries = [
   {
     title: "Healthcare",
-    description:
-      "Controlled refurbishment and construction beside occupied clinical corridors and sensitive healthcare areas.",
-    image: "/assets/industry-healthcare-environment.webp",
-    imageAlt:
-      "Hospital refurbishment work beside an occupied clinical corridor",
     href: "/healthcare",
+    image: "/assets/industry-healthcare-environment.webp",
+    copy: "Monitor selected work zones, occupied clinical interfaces and access routes during refurbishment or construction.",
+    uses: ["Occupied clinical areas", "Refurbishment boundaries", "Plant and access routes"],
   },
   {
     title: "Construction",
-    description:
-      "Active cutting, drilling, demolition and concrete work where dust controls, PPE and timely visibility matter.",
-    image: "/assets/industry-construction-environment.webp",
-    imageAlt:
-      "Construction workers carrying out dust-producing concrete work with controls and PPE",
     href: "/construction",
+    image: "/assets/industry-construction-environment.webp",
+    copy: "Provide project teams with current particulate conditions across work fronts, boundaries and neighbouring interfaces.",
+    uses: ["Active work fronts", "Site boundaries", "Shared access points"],
   },
   {
     title: "Infrastructure",
-    description:
-      "Tunnel, road, rail and major civil works with changing work fronts, public interfaces and sensitive receptors.",
-    image: "/assets/industry-infrastructure-environment.webp",
-    imageAlt:
-      "Major civil infrastructure works in an active construction environment",
     href: "/infrastructure",
+    image: "/assets/industry-infrastructure-environment.webp",
+    copy: "Coordinate monitoring across changing compounds, public interfaces and distributed works.",
+    uses: ["Linear projects", "Compounds", "Sensitive receptors"],
   },
   {
     title: "Government",
-    description:
-      "Refurbishment and construction within occupied public assets and government-managed facilities.",
-    image: "/assets/industry-government-environment.webp",
-    imageAlt:
-      "Refurbishment work within an occupied public building",
     href: "/government",
+    image: "/assets/industry-government-environment.webp",
+    copy: "Support transparent project oversight with time-stamped monitoring and response records.",
+    uses: ["Public assets", "Programme oversight", "Contractor coordination"],
   },
   {
-    title: "Education",
-    description:
-      "Occupied schools and education facilities located beside active construction or refurbishment work.",
-    image: "/assets/industry-education-environment.webp",
-    imageAlt:
-      "Occupied education facility beside active construction work",
+    title: "Schools",
     href: "/schools",
+    image: "/assets/industry-education-environment.webp",
+    copy: "Maintain visibility around occupied learning spaces, work boundaries and arrival routes.",
+    uses: ["Classroom interfaces", "Access routes", "Holiday works"],
   },
   {
     title: "Commercial buildings",
-    description:
-      "Office and facility refurbishment continuing beside occupied operations and shared access areas.",
-    image: "/assets/industry-commercial-environment.webp",
-    imageAlt:
-      "Commercial building refurbishment beside occupied operations",
     href: "/commercial-buildings",
+    image: "/assets/industry-commercial-environment.webp",
+    copy: "Monitor occupied floors, refurbishment zones and shared building services while operations continue.",
+    uses: ["Occupied tenancies", "Refurbishment floors", "Shared services"],
   },
 ];
 
 export function IndustriesSection() {
+  const [active, setActive] = useState(0);
+  const current = industries[active];
+
   return (
-    <section
-      id="industries"
-      className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20 lg:py-24"
-      aria-labelledby="industries-heading"
-    >
+    <section id="industries" className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
       <div className="container">
-        <Reveal>
-          <div className="max-w-4xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              Industries
-            </p>
-            <h2
-              id="industries-heading"
-              className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
-            >
-              Monitoring for complex and dust-sensitive environments.
-            </h2>
-            <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-              VerifAir supports monitoring across occupied, public-facing and
-              operationally complex project environments, helping teams maintain
-              visibility, coordinate responses and keep clear records across
-              selected zones.
-            </p>
+        <p className="text-sm font-bold uppercase tracking-wide text-blue-600">Industries</p>
+        <h2 className="mt-4 max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+          Monitoring configured around the environment, work and people nearby.
+        </h2>
+
+        <div className="mt-10 hidden lg:grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-10">
+          <div role="tablist" aria-label="Industries" className="border-y border-slate-200">
+            {industries.map((industry, index) => (
+              <button
+                key={industry.title}
+                id={`industry-tab-${index}`}
+                role="tab"
+                aria-selected={active === index}
+                aria-controls="industry-panel"
+                tabIndex={active === index ? 0 : -1}
+                onClick={() => setActive(index)}
+                onKeyDown={(event) => {
+                  if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                    event.preventDefault();
+                    setActive((index + 1) % industries.length);
+                  }
+                  if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                    event.preventDefault();
+                    setActive((index - 1 + industries.length) % industries.length);
+                  }
+                }}
+                className="block w-full border-b border-slate-200 px-1 py-5 text-left text-lg font-bold text-slate-600 last:border-b-0 aria-selected:text-blue-600"
+              >
+                {industry.title}
+              </button>
+            ))}
           </div>
-        </Reveal>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div id="industry-panel" role="tabpanel" aria-labelledby={`industry-tab-${active}`} className="grid grid-cols-[1.05fr_0.95fr]">
+            <Image src={current.image} alt="" width={900} height={700} className="h-full min-h-[30rem] w-full object-cover" />
+            <div className="bg-slate-950 p-10 text-white">
+              <h3 className="text-3xl font-bold">{current.title}</h3>
+              <p className="mt-5 text-lg leading-8 text-slate-300">{current.copy}</p>
+              <ul className="mt-8 border-y border-white/15">
+                {current.uses.map((use) => <li key={use} className="border-b border-white/15 py-4 last:border-b-0">{use}</li>)}
+              </ul>
+              <Link href={current.href} className="mt-8 inline-flex font-bold text-blue-300 hover:underline">Explore {current.title.toLowerCase()} →</Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 border-y border-slate-200 lg:hidden">
           {industries.map((industry, index) => (
-            <Reveal key={industry.title} delay={index * 0.05}>
-              <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
-                <div className="relative aspect-[16/10] overflow-hidden bg-slate-200">
-                  <Image
-                    src={industry.image}
-                    alt={industry.imageAlt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"
-                    aria-hidden="true"
-                  />
-                  <span className="absolute bottom-4 left-4 rounded-full border border-white/25 bg-slate-950/65 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.1em] text-white backdrop-blur-sm">
-                    {industry.title}
-                  </span>
-                </div>
-
-                <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  <p className="flex-1 text-base leading-7 text-slate-600">
-                    {industry.description}
-                  </p>
-                  <Link
-                    href={industry.href}
-                    className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-bold text-blue-600 transition hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
-                  >
-                    Explore industry
-                    <span aria-hidden="true">→</span>
-                  </Link>
-                </div>
-              </article>
-            </Reveal>
+            <details key={industry.title} className="border-b border-slate-200 last:border-b-0" open={index === 0}>
+              <summary className="cursor-pointer list-none py-5 text-lg font-bold marker:hidden">{industry.title}</summary>
+              <div className="pb-7">
+                <Image src={industry.image} alt="" width={800} height={560} className="h-auto w-full object-cover" />
+                <p className="mt-5 leading-7 text-slate-600">{industry.copy}</p>
+                <ul className="mt-5 border-y border-slate-200">
+                  {industry.uses.map((use) => <li key={use} className="border-b border-slate-200 py-3 last:border-b-0">{use}</li>)}
+                </ul>
+                <Link href={industry.href} className="mt-5 inline-flex font-bold text-blue-600">Explore industry →</Link>
+              </div>
+            </details>
           ))}
         </div>
       </div>

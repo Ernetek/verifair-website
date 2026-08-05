@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ResourcesPage } from "@/components/resources/ResourcesPage";
+import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -17,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function ResourcesRoute() {
-  return <ResourcesPage />;
+  return <><ResourcesPage /><PageDisclaimer /></>;
 }

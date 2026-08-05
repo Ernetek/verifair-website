@@ -4,11 +4,10 @@ import Link from "next/link";
 
 import ContactForm from "@/components/contact/VerifAirContactForm";
 import {
-  BenefitsGrid,
   ContentSections,
   FinalCTA,
-  IndustryGrid,
   PageHero,
+  PageDisclaimerSection,
 } from "@/components/page-sections";
 import { pageContent } from "@/lib/content";
 import { SALES_EMAIL, siteConfig } from "@/lib/site";
@@ -95,14 +94,14 @@ export async function generateMetadata({
       title: `${page.title} | ${siteConfig.name}`,
       description: page.description,
       url: `/${slug}`,
-      images: ["/assets/verifair-infographic.png"],
+      images: ["/assets/verifair-og.png"],
     },
 
     twitter: {
       card: "summary_large_image",
       title: `${page.title} | ${siteConfig.name}`,
       description: page.description,
-      images: ["/assets/verifair-infographic.png"],
+      images: ["/assets/verifair-og.png"],
     },
   };
 }
@@ -233,21 +232,13 @@ export default async function SlugPage({
 
         <ContentSections page={page} />
 
-        {slug === "platform" ||
-        slug === "technology" ? (
-          <BenefitsGrid />
-        ) : null}
-
-        {slug === "industries" ? (
-          <IndustryGrid />
-        ) : null}
-
         {slug === "resources" ? (
           <ResourceList />
         ) : null}
 
 
         <FinalCTA />
+        <PageDisclaimerSection />
       </div>
     </>
   );

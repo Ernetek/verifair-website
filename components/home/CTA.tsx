@@ -30,7 +30,7 @@ export function FinalCTA() {
                 className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/25 !bg-transparent px-7 font-bold !text-white transition hover:!bg-white/10 hover:!text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
                 href="/contact"
               >
-                Contact sales
+                Email sales
               </Link>
             </div>
           </div>

@@ -92,7 +92,7 @@ export const pageContent: Record<string, MarketingPage> = {
     heading: "Dustlight measures the environment. VerifAir manages it.",
     intro:
       "VerifAir coordinates multiple Dustlight devices, gateways, alerts and reporting workflows so teams can see conditions across projects, facilities and organisations in real time.",
-    image: "/assets/verifair-infographic.png",
+    image: "/assets/verifair-og.png",
     sections: [
       {
         title: "Unified site-wide visibility",
@@ -119,7 +119,7 @@ export const pageContent: Record<string, MarketingPage> = {
     heading: "Real-time particulate data, engineered for operating conditions.",
     intro:
       "VerifAir is built around Dustlight particulate monitoring technology and an edge-first telemetry bridge that helps teams keep local awareness even when connectivity is imperfect.",
-    image: "/assets/verifair-how-it-works.png",
+    image: "/assets/tech_hero.webp",
     sections: [
       {
         title: "Dustlight particulate monitoring",
@@ -133,7 +133,7 @@ export const pageContent: Record<string, MarketingPage> = {
       },
       {
         title: "Secure cloud and reporting",
-        body: "Secure cloud services make each customer-branded, project-specific dashboard available to authorised users anywhere in the world while maintaining real-time alerts, synchronisation and reporting.",
+        body: "Secure cloud services make each customer-branded, project-specific dashboard available to authorised users remotely where an authorised internet connection is available while maintaining real-time alerts, synchronisation and reporting.",
         points: ["Encrypted transport", "Cloudflare-hosted public site", "Future customer portal on app.verifair.com.au", complianceNote]
       }
     ]
@@ -210,13 +210,13 @@ export const pageContent: Record<string, MarketingPage> = {
     eyebrow: "Infrastructure",
     heading: "Continuous visibility across changing infrastructure work fronts.",
     intro:
-      "VerifAir provides always-on monitoring across changing work fronts, compounds and sensitive receptors so authorised teams can review real-time conditions from anywhere in the world.",
+      "VerifAir provides always-on monitoring across changing work fronts, compounds and sensitive receptors so authorised teams can review real-time conditions from remotely where an authorised internet connection is available.",
     image: "/assets/industry-infrastructure-environment.webp",
     sections: [
       {
         title: "Multi-site and multi-zone coverage",
         body: "Coordinate Dustlight devices across work fronts, compounds, occupied interfaces and sensitive receptors.",
-        points: ["Transport and civil works", "Public interfaces", "Customer-branded, project-specific dashboards", "Authorised dashboard access from anywhere in the world"]
+        points: ["Transport and civil works", "Public interfaces", "Customer-branded, project-specific dashboards", "Authorised dashboard access from remotely where an authorised internet connection is available"]
       },
       {
         title: "Evidence for review",

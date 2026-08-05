@@ -6,7 +6,7 @@ import { Reveal } from "./Reveal";
 
 export function FAQSection() {
   return (
-    <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+    <section id="faq" className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
       <div className="container">
         <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-12">
           <Reveal>
@@ -28,7 +28,7 @@ export function FAQSection() {
           </Reveal>
 
           <Reveal delay={0.12}>
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-y border-slate-200">
               {faqs.slice(0, 4).map((faq, index) => (
                 <details
                   key={faq.question}
@@ -38,7 +38,7 @@ export function FAQSection() {
                     <span className="inline-flex w-full items-center justify-between gap-5">
                       {faq.question}
                       <span
-                        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl font-semibold text-blue-600 transition-transform group-open:rotate-45"
+                        className="flex size-9 shrink-0 items-center justify-center bg-transparent text-xl font-semibold text-blue-600 transition-transform group-open:rotate-45"
                         aria-hidden="true"
                       >
                         +

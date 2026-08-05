@@ -1,61 +1,66 @@
 import Image from "next/image";
 import Link from "next/link";
-import { benefits, faqs, industries, type MarketingPage } from "@/lib/content";
-import { DashboardPreview } from "@/components/dashboard-preview";
-import { Reveal } from "@/components/motion";
+
+import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
+import type { MarketingPage } from "@/lib/content";
+
+const zoneLabels: Record<string, [string, string, string]> = {
+  healthcare: ["Refurbishment zone", "Clinical interface", "Occupied corridor"],
+  construction: ["Active work front", "Site boundary", "Neighbouring receptor"],
+  infrastructure: ["Linear work zone", "Public interface", "Compound boundary"],
+  government: ["Contractor work area", "Public asset", "Oversight point"],
+  schools: ["Construction zone", "Learning space", "Arrival route"],
+  "commercial-buildings": ["Refurbishment floor", "Occupied tenancy", "Shared services"],
+};
 
 export function PageHero({ page }: { page: MarketingPage }) {
   return (
-    <section className="noise section overflow-hidden">
-      <div className="container grid items-center gap-10 lg:grid-cols-[1fr_0.9fr]">
-        <Reveal>
-          <p className="eyebrow">{page.eyebrow}</p>
-          <h1 className="h1 mt-5 max-w-4xl font-black">{page.heading}</h1>
-          <p className="lead mt-6 max-w-2xl">{page.intro}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link className="btn btn-primary" href="/contact">
-              Book demonstration
-            </Link>
-            <Link className="btn btn-secondary" href="/platform">
-              Explore platform
-            </Link>
-          </div>
-        </Reveal>
-        {page.image ? (
-          <Reveal delay={0.12}>
-            <Image src={page.image} alt={`${page.title} visual for VerifAir monitoring`} width={900} height={900} className="max-h-[36rem] w-full rounded-lg object-contain" priority />
-          </Reveal>
-        ) : (
-          <Reveal delay={0.12}>
-            <DashboardPreview />
-          </Reveal>
-        )}
+    <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+      <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-600">{page.eyebrow}</p>
+          <h1 className="mt-4 text-4xl font-bold leading-[1.04] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">{page.heading}</h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">{page.intro}</p>
+        </div>
+        {page.image ? <Image src={page.image} alt="" width={1000} height={720} className="h-auto w-full object-cover" priority /> : null}
       </div>
     </section>
   );
 }
 
 export function ContentSections({ page }: { page: MarketingPage }) {
+  const zones = zoneLabels[page.slug] ?? ["Work activity", "Sensitive interface", "Monitoring point"];
+
   return (
     <>
+      <section className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20">
+        <div className="container grid gap-12 lg:grid-cols-[0.42fr_0.58fr]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">Monitoring-zone diagram</p>
+            <h2 className="mt-4 text-3xl font-bold text-slate-950">{page.title} project context</h2>
+          </div>
+          <div className="border border-slate-300 bg-white p-6">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+              <div className="border border-slate-300 p-5 text-center font-bold">{zones[0]}</div>
+              <div className="h-px w-12 bg-blue-600" />
+              <div className="border border-slate-300 p-5 text-center font-bold">{zones[1]}</div>
+            </div>
+            <div className="mx-auto h-10 w-px bg-blue-600" />
+            <div className="mx-auto max-w-xs bg-blue-600 p-4 text-center font-bold text-white">{zones[2]}</div>
+          </div>
+        </div>
+      </section>
+
       {page.sections.map((section, index) => (
-        <section key={section.title} className={index % 2 ? "section band" : "section"}>
-          <div className="container grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-            <Reveal>
-              <p className="eyebrow">0{index + 1}</p>
-              <h2 className="h2 mt-3 font-black">{section.title}</h2>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="lead">{section.body}</p>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {section.points.map((point) => (
-                  <div key={point} className="flex gap-3 border-t border-slate-200 pt-4">
-                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-emerald-600" />
-                    <p className="font-semibold leading-7 text-slate-800">{point}</p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
+        <section key={section.title} className="border-b border-slate-200 bg-white py-16 sm:py-20">
+          <div className="container grid gap-10 lg:grid-cols-[0.35fr_0.65fr]">
+            <div><span className="font-mono text-sm text-blue-600">0{index + 1}</span><h2 className="mt-3 text-3xl font-bold text-slate-950">{section.title}</h2></div>
+            <div>
+              <p className="text-lg leading-8 text-slate-600">{section.body}</p>
+              <ul className="mt-8 border-y border-slate-200">
+                {section.points.map((point) => <li key={point} className="border-b border-slate-200 py-4 last:border-b-0">{point}</li>)}
+              </ul>
+            </div>
           </div>
         </section>
       ))}
@@ -63,96 +68,17 @@ export function ContentSections({ page }: { page: MarketingPage }) {
   );
 }
 
-export function BenefitsGrid() {
-  return (
-    <section className="section">
-      <div className="container">
-        <Reveal>
-          <p className="eyebrow">Key benefits</p>
-          <h2 className="h2 mt-3 max-w-3xl font-black">Turn individual monitoring points into a shared operational picture.</h2>
-        </Reveal>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {benefits.map((benefit, index) => (
-            <Reveal key={benefit.title} delay={index * 0.03}>
-              <div className="card h-full p-5 transition hover:-translate-y-1 hover:shadow-xl">
-                <benefit.icon className="h-7 w-7 text-[var(--brand)]" />
-                <h3 className="mt-5 text-lg font-black">{benefit.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{benefit.body}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function IndustryGrid() {
-  return (
-    <section className="section band">
-      <div className="container">
-        <Reveal>
-          <p className="eyebrow">Industries</p>
-          <h2 className="h2 mt-3 max-w-3xl font-black">Built for construction activity near people, operations and sensitive places.</h2>
-        </Reveal>
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {industries.map((industry) => (
-            <Link key={industry.href} href={industry.href} className="card group p-6 transition hover:-translate-y-1 hover:shadow-xl">
-              <industry.icon className="h-8 w-8 text-[var(--brand)]" />
-              <h3 className="mt-6 text-xl font-black">{industry.title}</h3>
-              <p className="mt-3 leading-7 text-slate-600">{industry.body}</p>
-              <span className="mt-6 inline-block text-sm font-black text-[var(--brand)] group-hover:underline">View industry</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function FAQSection() {
-  return (
-    <section className="section">
-      <div className="container max-w-4xl">
-        <Reveal>
-          <p className="eyebrow">FAQ</p>
-          <h2 className="h2 mt-3 font-black">Questions procurement, health and project teams ask.</h2>
-        </Reveal>
-        <div className="mt-10 divide-y divide-slate-200 border-y border-slate-200">
-          {faqs.map((faq) => (
-            <details key={faq.question} className="group py-5">
-              <summary className="cursor-pointer list-none text-lg font-black marker:hidden">
-                <span className="inline-flex w-full items-center justify-between gap-5">
-                  {faq.question}
-                  <span className="text-2xl text-[var(--brand)] group-open:rotate-45">+</span>
-                </span>
-              </summary>
-              <p className="mt-4 leading-7 text-slate-600">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function FinalCTA() {
   return (
-    <section className="section bg-slate-950 text-white">
-      <div className="container grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-        <div>
-          <p className="eyebrow text-emerald-300">Ready for project visibility</p>
-          <h2 className="h2 mt-3 max-w-3xl font-black">Book a VerifAir demonstration for your next dust-sensitive project.</h2>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link className="btn bg-white text-slate-950" href="/contact">
-            Book demonstration
-          </Link>
-          <Link className="btn border border-white/20 text-white" href="/contact">
-            Contact sales
-          </Link>
-        </div>
+    <section className="bg-slate-950 py-16 text-white">
+      <div className="container flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div><p className="text-sm font-bold uppercase tracking-wide text-blue-300">Project discussion</p><h2 className="mt-3 max-w-3xl text-3xl font-bold sm:text-4xl">Discuss a monitoring approach for your project.</h2></div>
+        <div className="flex flex-wrap gap-3"><Link href="/contact" className="rounded-lg bg-white px-6 py-4 font-bold text-slate-950">Contact VerifAir</Link><a href="mailto:verifair@ernelifting.com" className="px-6 py-4 font-bold text-blue-300">Email sales</a></div>
       </div>
     </section>
   );
+}
+
+export function PageDisclaimerSection() {
+  return <PageDisclaimer />;
 }

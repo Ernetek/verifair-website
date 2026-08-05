@@ -5,7 +5,7 @@ import { pageContent } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Search",
   description: "Search VerifAir public website pages and resources.",
-  alternates: { canonical: "/search" }
+  robots: { index: false, follow: false }
 };
 
 export default function SearchPage() {

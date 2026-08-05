@@ -5,8 +5,8 @@
   --muted: #526070;
   --line: #dfe7ee;
   --surface: #f6f9fb;
-  --brand: #0b4f6c;
-  --accent: #17a673;
+  --brand: #2563eb;
+  --accent: #2563eb;
   --amber: #d58a00;
   --alert: #c2413b;
 }
@@ -62,17 +62,17 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(23, 166, 115, 0.55);
+  outline: 3px solid rgba(37, 99, 235, 0.55);
   outline-offset: 4px;
 }
 
 ::selection {
-  background: rgba(23, 166, 115, 0.22);
+  background: rgba(37, 99, 235, 0.20);
 }
 
 .noise {
   background-image:
-    radial-gradient(circle at 20% 15%, rgba(23, 166, 115, 0.18), transparent 28rem),
+    radial-gradient(circle at 20% 15%, rgba(37, 99, 235, 0.16), transparent 28rem),
     linear-gradient(135deg, rgba(11, 79, 108, 0.12), rgba(255, 255, 255, 0));
 }
 
@@ -182,3 +182,5 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 }
+
+[id] { scroll-margin-top: 5.5rem; }

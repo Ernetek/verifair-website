@@ -24,9 +24,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`
   },
   description: siteConfig.description,
-  alternates: {
-    canonical: "/"
-  },
   openGraph: {
     type: "website",
     locale: "en_AU",
@@ -34,13 +31,13 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: siteConfig.title,
     description: siteConfig.description,
-    images: ["/assets/verifair-infographic.png"]
+    images: ["/assets/verifair-og.png"]
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
-    images: ["/assets/verifair-infographic.png"]
+    images: ["/assets/verifair-og.png"]
   }
 };
 

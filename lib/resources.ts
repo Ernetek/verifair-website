@@ -5,6 +5,8 @@ export type VerifAirResource = {
   summary: string;
   intro: string;
   image: string;
+  updated?: string;
+  readingMinutes?: number;
   sections: Array<{
     title: string;
     paragraphs: string[];
@@ -16,6 +18,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "pm-particle-size-guide",
     image: "/assets/dustlight.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Technical explainer",
     title: "PM1 and PM2.5 explained",
     summary:
@@ -42,6 +46,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "selecting-monitoring-locations",
     image: "/assets/problem-active-dust.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Monitoring guide",
     title: "Selecting monitoring locations",
     summary:
@@ -73,6 +79,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "multi-zone-monitoring-checklist",
     image: "/assets/platform-dashboard.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Project checklist",
     title: "Multi-zone monitoring checklist",
     summary:
@@ -103,6 +111,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "dust-migration-occupied-environments",
     image: "/assets/industry-commercial-environment.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Monitoring guide",
     title: "Dust migration near occupied environments",
     summary:
@@ -128,6 +138,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "alert-response-planning",
     image: "/assets/Alerts.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Project checklist",
     title: "Alert and response planning",
     summary:
@@ -157,6 +169,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "monitoring-versus-occupational-hygiene",
     image: "/assets/dustlight.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Technical explainer",
     title: "Monitoring versus occupational hygiene",
     summary:
@@ -182,6 +196,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "evidence-ready-reporting-checklist",
     image: "/assets/reports.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Reporting guidance",
     title: "Evidence-ready reporting checklist",
     summary:
@@ -214,6 +230,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "hospital-construction-dust-monitoring",
     image: "/assets/industry-healthcare-environment.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Monitoring guide",
     title: "Hospital refurbishment monitoring guide",
     summary:
@@ -246,6 +264,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "dustlight-personal-monitor-overview",
     image: "/assets/dustlight.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Device guide",
     title: "Dustlight personal monitor overview",
     summary:
@@ -279,6 +299,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "verifair-platform-explainer",
     image: "/assets/verifair-logo.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "System overview",
     title: "How VerifAir extends Dustlight",
     summary:
@@ -297,7 +319,7 @@ export const verifAirResources: VerifAirResource[] = [
           "Automated redundancy and failover",
           "Local buffering during connectivity interruptions",
           "Customer-branded, project-specific dashboards",
-          "Authorised access from anywhere in the world",
+          "Authorised access from remotely where an authorised internet connection is available",
         ],
       },
     ],
@@ -305,6 +327,8 @@ export const verifAirResources: VerifAirResource[] = [
   {
     slug: "december-2026-workplace-exposure-limits",
     image: "/assets/reports.webp",
+    updated: "2026-08-05",
+    readingMinutes: 5,
     category: "Policy readiness",
     title: "Is your site ready for 1 December 2026?",
     summary:

@@ -9,6 +9,8 @@ import { SALES_EMAIL } from "@/lib/site";
 const HUBSPOT_PORTAL_ID = "442470070";
 const HUBSPOT_FORM_ID = "9bebb709-1b3f-4392-9f07-a2ea7478b2b4";
 const HUBSPOT_REGION = "ap1";
+const HUBSPOT_HOSTED_FORM_URL =
+  "https://7bfo3a.share-ap1.hsforms.com/2m-u3CRs_Q5KfB6LqdHiytA";
 
 type FormStatus = "loading" | "ready" | "error";
 
@@ -25,7 +27,6 @@ export default function ContactForm() {
     const formHost = formHostRef.current;
 
     const hasEmbeddedForm = () =>
-      formHost.childElementCount > 0 ||
       Boolean(
         formHost.querySelector(
           "iframe, form, [data-hs-form-root], .hs-form",
@@ -81,9 +82,9 @@ export default function ContactForm() {
         <header className="contact-header">
           <p className="contact-eyebrow">Project enquiries</p>
 
-          <h2 id="contact-form-title">
+          <h1 id="contact-form-title">
             Discuss your monitoring requirements
-          </h2>
+          </h1>
 
           <p>
             Tell us about your project, site conditions and monitoring
@@ -124,18 +125,7 @@ export default function ContactForm() {
                 <span>Healthcare or sensitive-site considerations</span>
               </li>
             </ul>
-
-            <div className="contact-notice">
-              <InfoIcon />
-
-              <p>
-                VerifAir supports environmental monitoring, reporting and
-                operational decision-making. Site-specific regulatory and
-                compliance obligations should be assessed independently.
-              </p>
-            </div>
-
-            <div className="direct-contact">
+<div className="direct-contact">
               <span>Prefer to contact us directly?</span>
 
               <a href={`mailto:${SALES_EMAIL}`}>
@@ -184,8 +174,15 @@ export default function ContactForm() {
                 <strong>The enquiry form could not be loaded.</strong>
 
                 <p>
-                  Please refresh the page, check that optional website scripts
-                  are allowed, or email{" "}
+                  Please refresh the page, allow optional website scripts, or{" "}
+                  <a
+                    href={HUBSPOT_HOSTED_FORM_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    open the enquiry form in a new tab
+                  </a>
+                  . You can also email{" "}
                   <a href={`mailto:${SALES_EMAIL}`}>{SALES_EMAIL}</a>.
                 </p>
               </div>
@@ -263,7 +260,7 @@ export default function ContactForm() {
           text-transform: uppercase;
         }
 
-        .contact-header h2 {
+        .contact-header h1 {
           margin: 16px 0 20px;
           color: #ffffff;
           font-size: clamp(36px, 5vw, 58px);
@@ -575,32 +572,6 @@ function CheckIcon() {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function InfoIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="9"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-
-      <path
-        d="M12 10.8v5.4M12 7.6h.01"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
       />
     </svg>
   );

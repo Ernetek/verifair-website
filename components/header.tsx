@@ -17,7 +17,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
-      <div className="container flex h-24 items-center justify-between gap-8">
+      <div className="container flex h-20 items-center justify-between gap-8">
         <Link
           href="/"
           className="flex shrink-0 items-center"
@@ -26,9 +26,9 @@ export function Header() {
           <Image
             src="/assets/verifair-logo.webp"
             alt=""
-            width={46}
-            height={31}
-            className="h-9 w-auto object-contain"
+            width={150}
+            height={48}
+            className="h-10 w-auto object-contain"
             priority
           />
         </Link>
