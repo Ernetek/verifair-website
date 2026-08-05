@@ -2,11 +2,8 @@ import {
   BellAlertIcon,
   BoltIcon,
   BuildingOffice2Icon,
-  ChartBarIcon,
   CloudArrowUpIcon,
   ComputerDesktopIcon,
-  CpuChipIcon,
-  MapPinIcon,
   ServerStackIcon,
   SignalIcon,
   WifiIcon,
@@ -17,28 +14,6 @@ import Link from "next/link";
 
 import { Reveal } from "@/components/home/Reveal";
 
-const stages = [
-  {
-    icon: SignalIcon,
-    title: "Environmental monitoring",
-    body: "Dustlight particulate monitors capture PM1 and PM2.5 readings at selected monitoring points.",
-  },
-  {
-    icon: MapPinIcon,
-    title: "Site connectivity",
-    body: "Configured site-connectivity components transfer readings across the monitored environment.",
-  },
-  {
-    icon: CpuChipIcon,
-    title: "Secure data processing",
-    body: "Readings are processed and organised so authorised teams can review current conditions and trends locally or through the secure web dashboard.",
-  },
-  {
-    icon: ChartBarIcon,
-    title: "Dashboards, alerts and reports",
-    body: "VerifAir presents live conditions, configured alerts and downloadable records through a shared interface available to authorised users anywhere with an internet connection.",
-  },
-];
 
 const capabilities = [
   "PM1 and PM2.5 monitoring",
@@ -52,7 +27,7 @@ const capabilities = [
 const includedHardware = [
   {
     icon: SignalIcon,
-    title: "Dustlight particulate monitors",
+    title: "Dustlight personal particulate monitors",
     body: "Compact monitoring units installed at selected zones to capture PM1 and PM2.5 readings and provide a visible local air-quality status indication.",
   },
   {
@@ -120,7 +95,9 @@ export function TechnologyPage() {
             </h1>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
             <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-              VerifAir brings PM1 and PM2.5 monitoring, extended site connectivity, local resilience, alerts, dashboards and reporting together in one coordinated platform.
+              VerifAir brings environmental monitoring, site connectivity,
+              alerts, dashboards and reporting together in one coordinated
+              platform.
             </p>
             <Link
               href="/contact#project-enquiry"
@@ -146,64 +123,40 @@ export function TechnologyPage() {
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-slate-950 py-16 text-white sm:py-20 lg:py-24">
-        <div className="container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          <Reveal>
-            <p className="text-sm font-bold uppercase tracking-wide text-blue-400">
-              Why VerifAir was created
+      
+      <section className="border-b border-slate-200 bg-blue-50 py-16 sm:py-20 lg:py-24">
+        <div className="container grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-700">
+              Built by Erne Tech
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.45rem]">
-              Extending Dustlight beyond short-range Bluetooth access.
+            <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+              Extending an excellent personal monitor into an always-on site system.
             </h2>
-            <div className="mt-5 h-0.5 w-12 bg-blue-500" />
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="grid gap-4 text-base leading-7 text-slate-300 sm:text-lg">
-              <p>
-                Dustlight is designed to provide dependable particulate readings
-                at the monitoring point. Erne Tech developed VerifAir to connect
-                multiple Dustlight devices across larger sites where direct
-                Bluetooth access alone is not practical.
-              </p>
-              <p>
-                VerifAir adds site connectivity, local buffering, shared alerts,
-                reporting and a web dashboard that authorised teams can access
-                from anywhere in the world with an internet connection.
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
-        <div className="container">
-          <Reveal>
-            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              How the platform works
+          </div>
+          <div className="space-y-5 text-base leading-7 text-slate-700 sm:text-lg">
+            <p>
+              Dustlight is a strong personal wearable device. Its real-time readings,
+              traffic-light display and audible alerts give individual workers clear
+              feedback at the point of work.
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
-              Four coordinated stages from monitoring point to shared visibility.
-            </h2>
-            <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {stages.map(({ icon: Icon, title, body }, index) => (
-              <Reveal key={title} delay={index * 0.04}>
-                <article className="h-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <span className="flex size-11 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-                    <Icon className="size-6" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 text-lg font-bold text-slate-950">{title}</h3>
-                  <p className="mt-3 text-base leading-7 text-slate-600">{body}</p>
-                </article>
-              </Reveal>
-            ))}
+            <p>
+              Erne Tech created VerifAir to address the operational limitations of
+              phone-dependent Bluetooth workflows. Workers can forget a device, leave
+              it switched off, fail to pair it or prevent cloud synchronisation.
+              VerifAir adds always-on gateways, automated redundancy, local buffering
+              and failover so site monitoring remains real time and available.
+            </p>
+            <p>
+              Each dashboard can be configured for customer branding, project zones,
+              alert workflows and reporting requirements, with authorised access from
+              anywhere in the world.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+<section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
         <div className="container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
           <Reveal>
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">

@@ -5,7 +5,6 @@ export type VerifAirResource = {
   summary: string;
   intro: string;
   image: string;
-  imageAlt: string;
   sections: Array<{
     title: string;
     paragraphs: string[];
@@ -16,19 +15,18 @@ export type VerifAirResource = {
 export const verifAirResources: VerifAirResource[] = [
   {
     slug: "pm-particle-size-guide",
+    image: "/assets/dustlight.webp",
     category: "Technical explainer",
     title: "PM1 and PM2.5 explained",
     summary:
       "A plain-language guide to the particulate-size readings used in environmental monitoring.",
     intro:
-      "PM1 and PM2.5 describe fine particle-size fractions measured by particulate monitors. They provide useful information about changing conditions, but they do not identify the chemical or mineral composition of airborne material.",
-    image: "/assets/dustlight.webp",
-    imageAlt: "Approved Dustlight particulate monitor",
+      "PM1 and PM2.5 describe particle-size fractions measured by particulate monitors. They provide useful information about changing conditions, but they do not identify the chemical or mineral composition of airborne material.",
     sections: [
       {
         title: "What the numbers mean",
         paragraphs: [
-          "The number refers to an aerodynamic particle-size fraction measured in micrometres. PM2.5 and PM1 describe progressively smaller fine-particle fractions that can be difficult to see.",
+          "The number refers to an aerodynamic particle-size fraction measured in micrometres. PM2.5 represents particles up to 2.5 micrometres, while PM1 represents the smaller fraction up to 1 micrometre.",
           "Different activities, weather conditions and control measures can change the balance of particulate sizes at a monitoring point.",
         ],
       },
@@ -43,14 +41,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "selecting-monitoring-locations",
+    image: "/assets/problem-active-dust.webp",
     category: "Monitoring guide",
     title: "Selecting monitoring locations",
     summary:
       "Factors to consider when choosing monitoring points around active work and occupied areas.",
     intro:
       "Monitoring locations should be selected to support a defined project objective. A useful location is one that helps a team understand a source, boundary, sensitive receptor or occupied interface.",
-    image: "/assets/problem-active-dust.webp",
-    imageAlt: "Dust-producing construction work beside an occupied environment",
     sections: [
       {
         title: "Start with the monitoring objective",
@@ -75,14 +72,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "multi-zone-monitoring-checklist",
+    image: "/assets/platform-dashboard.webp",
     category: "Project checklist",
     title: "Multi-zone monitoring checklist",
     summary:
       "A practical checklist for planning monitoring across multiple work areas and sensitive interfaces.",
     intro:
       "Multi-zone monitoring works best when the project team agrees on objectives, responsibilities, response settings and reporting expectations before deployment.",
-    image: "/assets/platform-dashboard.webp",
-    imageAlt: "VerifAir demonstration dashboard with multiple monitoring zones",
     sections: [
       {
         title: "Planning checklist",
@@ -106,14 +102,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "dust-migration-occupied-environments",
+    image: "/assets/industry-commercial-environment.webp",
     category: "Monitoring guide",
     title: "Dust migration near occupied environments",
     summary:
       "Planning considerations where active work occurs beside patients, staff, students, tenants or the public.",
     intro:
       "Dust can move beyond the immediate work area through openings, traffic routes, air movement and changing barriers. Monitoring plans should consider the interfaces between active work and occupied environments.",
-    image: "/assets/industry-healthcare-environment.webp",
-    imageAlt: "Hospital refurbishment beside an occupied corridor",
     sections: [
       {
         title: "Consider the whole interface",
@@ -132,14 +127,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "alert-response-planning",
+    image: "/assets/Alerts.webp",
     category: "Project checklist",
     title: "Alert and response planning",
     summary:
       "A framework for assigning alert settings, responsibilities and practical response steps.",
     intro:
       "An alert is useful only when the responsible people understand what it means, who receives it and what action should follow.",
-    image: "/assets/Alerts.webp",
-    imageAlt: "Demonstration alert notifications on a mobile device",
     sections: [
       {
         title: "Define the response workflow",
@@ -162,14 +156,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "monitoring-versus-occupational-hygiene",
+    image: "/assets/dustlight.webp",
     category: "Technical explainer",
     title: "Monitoring versus occupational hygiene",
     summary:
       "Understand the different roles of continuous particulate monitoring and specialist exposure assessment.",
     intro:
       "Continuous particulate monitoring and occupational hygiene assessment can support different project decisions. They should not be treated as interchangeable.",
-    image: "/assets/tech_hero.webp",
-    imageAlt: "Approved particulate monitoring technology",
     sections: [
       {
         title: "Continuous project monitoring",
@@ -188,14 +181,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "evidence-ready-reporting-checklist",
+    image: "/assets/reports.webp",
     category: "Reporting guidance",
     title: "Evidence-ready reporting checklist",
     summary:
       "Information to capture so monitoring records remain clear, reviewable and useful.",
     intro:
       "A useful monitoring record explains what was monitored, where, when and in what project context.",
-    image: "/assets/reports.webp",
-    imageAlt: "Demonstration monitoring report",
     sections: [
       {
         title: "Recommended record elements",
@@ -221,14 +213,13 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "hospital-construction-dust-monitoring",
+    image: "/assets/industry-healthcare-environment.webp",
     category: "Monitoring guide",
     title: "Hospital refurbishment monitoring guide",
     summary:
       "Planning monitoring around construction and refurbishment near occupied clinical environments.",
     intro:
       "Healthcare refurbishment can place active work beside patients, staff, visitors and sensitive clinical operations. Monitoring should be coordinated with the facility, contractor and relevant specialist procedures.",
-    image: "/assets/industry-healthcare-environment.webp",
-    imageAlt: "Healthcare refurbishment beside an occupied clinical area",
     sections: [
       {
         title: "Plan around sensitive interfaces",
@@ -251,70 +242,98 @@ export const verifAirResources: VerifAirResource[] = [
       },
     ],
   },
+
   {
-    slug: "dustlight-device-overview",
-    category: "Product guide",
-    title: "Dustlight device overview",
-    summary:
-      "Understand the role of Dustlight monitors within a VerifAir deployment.",
-    intro:
-      "Dustlight monitors provide local PM1 and PM2.5 readings at selected monitoring points. VerifAir connects those readings into a broader site-wide operational view.",
+    slug: "dustlight-personal-monitor-overview",
     image: "/assets/dustlight.webp",
-    imageAlt: "Approved Dustlight particulate monitor",
+    category: "Device guide",
+    title: "Dustlight personal monitor overview",
+    summary:
+      "How Dustlight gives individual workers immediate real-time particle awareness through a wearable traffic-light display.",
+    intro:
+      "Dustlight is a capable personal particulate monitor designed to be worn by a worker. Its clear green, amber and red traffic-light display and audible alerts make changing conditions immediately understandable at the point of work.",
     sections: [
       {
-        title: "What Dustlight contributes",
+        title: "A strong personal monitoring tool",
         paragraphs: [
-          "Dustlight provides continuous fine-particle measurements and a visible local status indication at the monitoring point.",
-          "The device is positioned according to the project monitoring objective, site conditions and agreed response plan.",
+          "Dustlight provides real-time PM1 and PM2.5 readings, local visual status and audible alerts in a compact wearable format.",
+          "When it is charged, switched on, paired and syncing correctly, it gives the wearer valuable immediate feedback and a useful record of personal monitoring conditions.",
         ],
         points: [
-          "PM1 and PM2.5 monitoring",
-          "Local visual status indication",
-          "Compact deployment at selected zones",
-          "Integration with VerifAir connectivity and reporting",
+          "Wearable and portable",
+          "Green, amber and red traffic-light status",
+          "Audible alerting",
+          "Bluetooth connection to a mobile phone",
+          "Local and cloud-supported data workflows",
         ],
       },
       {
-        title: "What VerifAir adds",
+        title: "Why installed monitoring is also needed",
         paragraphs: [
-          "VerifAir extends monitoring beyond direct device access by coordinating multiple Dustlight units, alerts, dashboards, local buffering and reporting across the project.",
+          "Personal wearables depend on human routines. Devices may be left at home, not switched on, not paired to Bluetooth or prevented from completing cloud synchronisation.",
+          "VerifAir complements Dustlight with an always-on installed architecture, automated redundancy, local buffering and failover so site-wide real-time monitoring does not depend on one worker or one phone.",
         ],
       },
     ],
   },
   {
-    slug: "from-bluetooth-to-verifair",
-    category: "Platform explainer",
-    title: "From Bluetooth monitoring to VerifAir",
+    slug: "verifair-platform-explainer",
+    image: "/assets/verifair-logo.webp",
+    category: "System overview",
+    title: "How VerifAir extends Dustlight",
     summary:
-      "How Erne Tech extended Dustlight monitoring across larger, multi-zone project environments.",
+      "A clear explanation of how VerifAir turns excellent personal Dustlight monitoring into an always-on site-wide system.",
     intro:
-      "Dustlight is designed for dependable local monitoring. Erne Tech created VerifAir to address the practical limitations of short-range Bluetooth access on larger and more complex sites.",
-    image: "/assets/Gateway.webp",
-    imageAlt: "Site connectivity component used in a VerifAir deployment",
+      "Erne Tech developed VerifAir to extend the value of Dustlight beyond the practical range and workflow limitations of a phone-connected Bluetooth wearable.",
     sections: [
       {
-        title: "Extending the monitoring footprint",
+        title: "From personal alerting to site-wide visibility",
         paragraphs: [
-          "Configured site-connectivity components allow multiple monitoring points to feed a shared operational view without requiring teams to remain within direct Bluetooth range of each device.",
-        ],
-      },
-      {
-        title: "Access beyond the site",
-        paragraphs: [
-          "Authorised users can review the VerifAir web dashboard from anywhere in the world with an internet connection, supporting remote project oversight and stakeholder communication.",
+          "Dustlight remains the trusted sensing and local alerting device. VerifAir adds fixed connectivity, edge processing, automated redundancy, failover, dashboards, alerts and reporting.",
+          "The result is real-time monitoring across selected zones without relying on a worker remembering to carry, switch on, pair or sync a device.",
         ],
         points: [
-          "Multi-zone visibility",
+          "Always-on monitoring",
+          "Automated redundancy and failover",
           "Local buffering during connectivity interruptions",
-          "Configured alerts and escalation",
-          "Remote dashboard access",
-          "Downloadable monitoring records",
+          "Customer-branded, project-specific dashboards",
+          "Authorised access from anywhere in the world",
         ],
       },
     ],
   },
+  {
+    slug: "december-2026-workplace-exposure-limits",
+    image: "/assets/reports.webp",
+    category: "Policy readiness",
+    title: "Is your site ready for 1 December 2026?",
+    summary:
+      "A practical readiness guide for Australia's transition to workplace exposure limits for airborne contaminants.",
+    intro:
+      "From 1 December 2026 Australia adopts workplace exposure limits for airborne contaminants. Project teams should review how monitoring, escalation, records and specialist assessment fit into their existing risk controls.",
+    sections: [
+      {
+        title: "Readiness questions",
+        paragraphs: [
+          "Use the transition as a prompt to check whether current monitoring arrangements provide timely information, clear responsibilities and reviewable records.",
+        ],
+        points: [
+          "Are monitoring locations aligned with current work and sensitive interfaces?",
+          "Are alert owners and backup recipients documented?",
+          "Can authorised leaders access current conditions remotely?",
+          "Are data gaps and connectivity interruptions visible?",
+          "Can reports be reviewed alongside occupational hygiene advice and other controls?",
+        ],
+      },
+      {
+        title: "Use official guidance",
+        paragraphs: [
+          "Confirm current duties and applicable limits with Safe Work Australia and the relevant state or territory regulator. VerifAir supports real-time monitoring and evidence generation but does not replace competent exposure assessment.",
+        ],
+      },
+    ],
+  },
+
 ];
 
 export function getResource(slug: string) {

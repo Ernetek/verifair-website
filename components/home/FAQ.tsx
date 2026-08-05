@@ -29,7 +29,7 @@ export function FAQSection() {
 
           <Reveal delay={0.12}>
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-              {faqs.map((faq, index) => (
+              {faqs.slice(0, 4).map((faq, index) => (
                 <details
                   key={faq.question}
                   className={index > 0 ? "group border-t border-slate-200" : "group"}

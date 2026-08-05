@@ -5,7 +5,7 @@ export const siteConfig = {
   name: "VerifAir",
   title: "VerifAir | Real-Time Dust Monitoring for Construction and Healthcare Projects",
   description:
-    "VerifAir connects Dustlight PM1 and PM2.5 monitoring with extended site connectivity, real-time alerts, globally accessible dashboards and evidence-ready reporting.",
+    "VerifAir connects Dustlight particulate monitoring with cloud-based alerts, reporting and environmental intelligence for construction, healthcare, infrastructure and sensitive sites.",
   url: "https://verifair.com.au",
   phone: "+61 452 447 696",
   email: SALES_EMAIL

@@ -123,17 +123,17 @@ export const pageContent: Record<string, MarketingPage> = {
     sections: [
       {
         title: "Dustlight particulate monitoring",
-        body: "Dustlight devices monitor airborne particulates at the deployed or worn location, including PM1 and PM2.5.",
-        points: ["Laser-based photometric measurement", "Visual and audible device alerts", "Indicative measurement for early awareness", "Maintenance intervals required for ongoing measurement quality"]
+        body: "Dustlight is a highly effective personal wearable monitor that gives workers immediate real-time PM1 and PM2.5 awareness through its clear traffic-light display and audible alerts.",
+        points: ["Laser-based photometric measurement", "Clear green, amber and red traffic-light alerts with audible warning", "Indicative measurement for early awareness", "Maintenance intervals required for ongoing measurement quality"]
       },
       {
         title: "Gateway and edge processing",
-        body: "VerifAir extends Dustlight with deterministic telemetry distribution, local buffering and gateway bridging.",
-        points: ["Concurrent BLE telemetry distribution", "Local processing independent of cloud availability", "Range extension through gateway bridging", "Priority handling for monitoring data"]
+        body: "VerifAir builds on Dustlight by removing dependence on a worker remembering, charging, switching on, pairing and cloud-syncing a phone-connected wearable. The installed system is always on, uses automated redundancy and failover, and delivers real-time site monitoring.",
+        points: ["Concurrent BLE telemetry distribution", "Automated redundancy, local buffering and failover to maximise uptime", "Always-on gateway bridging that removes reliance on a worker phone", "Priority handling for monitoring data"]
       },
       {
         title: "Secure cloud and reporting",
-        body: "Cloud services support authorised access, synchronisation and reporting while the operational app remains separate from the public website.",
+        body: "Secure cloud services make each customer-branded, project-specific dashboard available to authorised users anywhere in the world while maintaining real-time alerts, synchronisation and reporting.",
         points: ["Encrypted transport", "Cloudflare-hosted public site", "Future customer portal on app.verifair.com.au", complianceNote]
       }
     ]
@@ -167,7 +167,7 @@ export const pageContent: Record<string, MarketingPage> = {
     heading: "Visibility for construction beside occupied clinical areas.",
     intro:
       "VerifAir supports hospital infrastructure, infection prevention, facility and contractor teams with real-time airborne particle visibility across construction zones and sensitive areas.",
-    image: "/assets/verifair-sow-design.png",
+    image: "/assets/industry-healthcare-environment.webp",
     sections: [
       {
         title: "Monitor sensitive boundaries",
@@ -186,9 +186,10 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Construction",
     description: "Real-time construction dust monitoring for main contractors, WHS teams, environmental managers and project leaders.",
     eyebrow: "Construction",
-    heading: "Dust information while work is still happening.",
+    heading: "Real-time visibility across active construction work.",
     intro:
-      "VerifAir helps construction teams move from delayed or fragmented dust information to shared operational awareness across active sites.",
+      "VerifAir gives site teams real-time PM1 and PM2.5 visibility across selected work fronts, boundaries and occupied interfaces, with automated connectivity, alerting and reporting.",
+    image: "/assets/industry-construction-environment.webp",
     sections: [
       {
         title: "Operational visibility",
@@ -207,14 +208,15 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Infrastructure",
     description: "Dust monitoring and reporting support for infrastructure projects, public works and civil construction environments.",
     eyebrow: "Infrastructure",
-    heading: "Monitoring records for complex public works.",
+    heading: "Continuous visibility across changing infrastructure work fronts.",
     intro:
-      "Infrastructure projects often involve public interfaces, long corridors and multiple contractors. VerifAir gives teams a clearer view across changing work fronts.",
+      "VerifAir provides always-on monitoring across changing work fronts, compounds and sensitive receptors so authorised teams can review real-time conditions from anywhere in the world.",
+    image: "/assets/industry-infrastructure-environment.webp",
     sections: [
       {
         title: "Multi-site and multi-zone coverage",
         body: "Coordinate Dustlight devices across work fronts, compounds, occupied interfaces and sensitive receptors.",
-        points: ["Transport and civil works", "Public interfaces", "Project-wide dashboards", "Remote authorised access"]
+        points: ["Transport and civil works", "Public interfaces", "Customer-branded, project-specific dashboards", "Authorised dashboard access from anywhere in the world"]
       },
       {
         title: "Evidence for review",
@@ -228,9 +230,10 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Government",
     description: "Environmental monitoring visibility for government projects, procurement teams and public-sector construction programs.",
     eyebrow: "Government",
-    heading: "Clearer environmental intelligence for public-sector oversight.",
+    heading: "Real-time monitoring evidence for public-sector projects.",
     intro:
-      "VerifAir supports evidence-based conversations between project teams, facility operators, contractors and stakeholders.",
+      "VerifAir provides government project teams with continuous, remotely accessible monitoring records, alert history and project-specific dashboards.",
+    image: "/assets/industry-government-environment.webp",
     sections: [
       {
         title: "Procurement-ready framing",
@@ -249,9 +252,10 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Schools",
     description: "Airborne particle monitoring support for schools and education sites adjacent to construction activity.",
     eyebrow: "Schools",
-    heading: "Visibility when construction happens near learning environments.",
+    heading: "Real-time monitoring around occupied learning environments.",
     intro:
-      "VerifAir helps education authorities and project teams monitor conditions around construction works near occupied school communities.",
+      "VerifAir helps education authorities and project teams maintain real-time visibility around classrooms, access routes and construction boundaries without relying on workers to carry or pair a device.",
+    image: "/assets/industry-education-environment.webp",
     sections: [
       {
         title: "Monitor occupied interfaces",
@@ -270,14 +274,15 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Commercial Buildings",
     description: "Particulate monitoring for occupied commercial buildings, refurbishments, tenancies and facility teams.",
     eyebrow: "Commercial buildings",
-    heading: "Keep refurbishment visibility close to the people affected.",
+    heading: "Continuous monitoring for occupied commercial environments.",
     intro:
-      "VerifAir supports facility and project teams managing works inside or beside occupied workplaces, tenancies and public-facing buildings.",
+      "VerifAir gives facility and project teams an always-on view of PM1 and PM2.5 conditions across occupied floors, work zones and shared access points.",
+    image: "/assets/industry-commercial-environment.webp",
     sections: [
       {
         title: "Protect continuity",
         body: "Understand current conditions across work zones, occupied floors and shared access points.",
-        points: ["Tenant-facing works", "After-hours construction", "Dust migration visibility", "Facility team dashboards"]
+        points: ["Tenant-facing works", "After-hours construction", "Dust migration visibility", "Customer-branded dashboards configured for site and project requirements"]
       },
       {
         title: "Document conditions",

@@ -6,7 +6,6 @@ import ContactForm from "@/components/contact/VerifAirContactForm";
 import {
   BenefitsGrid,
   ContentSections,
-  FAQSection,
   FinalCTA,
   IndustryGrid,
   PageHero,
@@ -215,7 +214,6 @@ export default async function SlugPage({
             <ContactForm />
           </div>
 
-          <FinalCTA />
         </div>
       </>
     );
@@ -248,7 +246,6 @@ export default async function SlugPage({
           <ResourceList />
         ) : null}
 
-        <FAQSection />
 
         <FinalCTA />
       </div>

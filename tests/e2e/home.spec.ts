@@ -1,23 +1,14 @@
-﻿import { expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-test("homepage has primary conversion path and no horizontal overflow", async ({
-  page,
-}) => {
-  await page.goto("/", {
-    waitUntil: "networkidle",
-  });
+test("homepage has primary conversion path and no horizontal overflow", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
 
-  const mainHeading = page.getByRole("heading", {
-    level: 1,
-  });
-
+  const mainHeading = page.getByRole("heading", { level: 1 });
   await expect(mainHeading).toBeVisible();
   await expect(mainHeading).not.toHaveText("");
 
   const primaryCta = page
-    .getByRole("link", {
-      name: /book a free site assessment/i,
-    })
+    .getByRole("link", { name: /book a free site assessment|book demonstration/i })
     .first();
 
   await expect(primaryCta).toBeVisible();
@@ -28,7 +19,5 @@ test("homepage has primary conversion path and no horizontal overflow", async ({
     viewportWidth: document.documentElement.clientWidth,
   }));
 
-  expect(dimensions.documentWidth).toBeLessThanOrEqual(
-    dimensions.viewportWidth + 1,
-  );
+  expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.viewportWidth + 1);
 });

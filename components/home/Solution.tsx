@@ -45,7 +45,9 @@ export function SolutionSection() {
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-              VerifAir is the real-time operational layer that brings PM1 and PM2.5 readings, alerts, trends and records into one shared view, helping project teams respond earlier and minimise potential exposure risk.
+              VerifAir is the operational layer that brings particulate
+              readings, alerts, trends and records into a shared view for
+              project teams.
             </p>
           </Reveal>
 

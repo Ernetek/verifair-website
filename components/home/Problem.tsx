@@ -30,15 +30,18 @@ export function ProblemSection() {
                 The problem
               </p>
               <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
-                Fine particulate conditions can change before teams can see the risk.
+                Dangerous dust is often invisible until exposure has already
+                occurred.
               </h2>
               <div className="mt-5 h-0.5 w-12 bg-blue-600" />
               <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-                Construction, demolition and refurbishment activities can generate elevated fine-particle levels that are difficult to detect visually. VerifAir helps teams see changing PM1 and PM2.5 conditions in near real time so they can investigate earlier and help minimise potential exposure risk. Where silica, asbestos or other hazardous materials may be present, project-specific assessment, specialist monitoring and appropriate controls remain essential.
+                Construction, demolition and refurbishment activities can
+                generate elevated airborne particulate levels that are
+                difficult to detect visually.
               </p>
             </Reveal>
 
-            <div className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {risks.map(({ icon: Icon, label }) => (
                 <Reveal key={label}>
                   <div className="flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
