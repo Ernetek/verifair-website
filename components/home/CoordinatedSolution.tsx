@@ -57,11 +57,11 @@ function DemoDashboard({ report = false }: { report?: boolean }) {
             {report ? "Event review" : "Live monitoring view"}
           </p>
         </div>
-        <span className="text-xs font-semibold text-slate-500">Sample project</span>
+        <span className="text-xs font-semibold text-slate-500">Demonstration Project</span>
       </div>
       <div className="mt-5 grid gap-5 sm:grid-cols-[0.8fr_1.2fr]">
         <div>
-          <p className="text-sm text-slate-500">Zone B · PM2.5</p>
+          <p className="text-sm text-slate-500">Work Zone A · PM2.5</p>
           <p className="mt-2 text-4xl font-bold text-slate-950">
             18 <span className="text-base font-medium text-slate-500">{PARTICULATE_UNIT}</span>
           </p>

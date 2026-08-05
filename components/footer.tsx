@@ -15,7 +15,7 @@ export function Footer() {
               href="/contact"
               className="btn mt-7 min-h-12 !bg-white px-6 !text-slate-950 shadow-sm hover:!bg-slate-100 hover:!text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
             >
-              Book a free site assessment
+              Discuss a pilot project
             </Link>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

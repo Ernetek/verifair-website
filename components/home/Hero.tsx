@@ -48,7 +48,7 @@ export function HeroSection() {
               href="/contact"
               className="inline-flex min-h-14 items-center justify-center rounded-xl !bg-blue-600 px-7 text-base font-bold !text-white shadow-lg transition hover:!bg-blue-700 hover:!text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
             >
-              Book a free site assessment
+              Discuss a pilot project
             </Link>
 
             <Link

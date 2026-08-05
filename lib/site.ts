@@ -44,7 +44,7 @@ export const footerGroups = [
     title: "Resources",
     links: [
       { label: "Resources", href: "/resources" },
-      { label: "Case Studies", href: "/case-studies" },
+      { label: "Applications", href: "/applications" },
       { label: "About", href: "/about" }
     ]
   },

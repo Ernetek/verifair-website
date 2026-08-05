@@ -53,7 +53,7 @@ export function Header() {
             href="/contact#project-enquiry"
             className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
           >
-            Book a free site assessment
+            Discuss a pilot project
             <ArrowUpRightIcon className="h-5 w-5" aria-hidden="true" />
           </Link>
         </div>
@@ -99,7 +99,7 @@ export function Header() {
               className="mt-3 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 font-bold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
               onClick={() => setOpen(false)}
             >
-              Book a free site assessment
+              Discuss a pilot project
               <ArrowUpRightIcon className="h-5 w-5" aria-hidden="true" />
             </Link>
           </nav>

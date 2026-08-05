@@ -8,7 +8,7 @@ const PAGE_UPDATED = "2026-08-05";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const genericRoutes = Object.keys(pageContent).filter(
-    (route) => !["resources", "technology", "reporting", "reports", "search"].includes(route),
+    (route) => !["resources", "technology", "reporting", "reports", "search", "case-studies"].includes(route),
   );
 
   const routes = [

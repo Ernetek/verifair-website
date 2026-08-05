@@ -333,45 +333,64 @@ export const pageContent: Record<string, MarketingPage> = {
       }
     ]
   },
-  "case-studies": {
-    slug: "case-studies",
-    title: "Case Studies",
-    description: "Example VerifAir use cases for healthcare, infrastructure and commercial construction environments.",
-    eyebrow: "Case studies",
-    heading: "Use cases built around realistic project conditions.",
+  applications: {
+    slug: "applications",
+    title: "Applications",
+    description:
+      "Example deployment scenarios showing where VerifAir may support structured particulate monitoring, alerting and reporting.",
+    eyebrow: "Where VerifAir fits",
+    heading: "Example deployment scenarios for dust-sensitive environments.",
     intro:
-      "These example scenarios show how VerifAir can support project visibility. Named customer case studies should be added only with permission.",
+      "These scenarios are illustrative only. They describe potential monitoring approaches and are not customer case studies, completed deployments or evidence of customer adoption.",
     sections: [
       {
-        title: "Healthcare refurbishment scenario",
-        body: "A hospital project team monitors construction boundaries, nearby corridors and sensitive clinical areas during staged refurbishment.",
-        points: ["Multi-zone deployment", "Alert escalation", "Daily summary reporting", "Stakeholder review"]
+        title: "Example deployment scenario — occupied clinical interface",
+        body:
+          "A proposed monitoring approach may place Dustlight devices at a work zone, an occupied interface and an external boundary during staged refurbishment.",
+        points: [
+          "Work Zone A",
+          "Occupied Interface",
+          "External Boundary",
+          "Demonstration alert and reporting workflow",
+        ],
       },
       {
-        title: "Infrastructure corridor scenario",
-        body: "A civil project monitors work fronts and sensitive receptors across changing site conditions.",
-        points: ["Gateway bridging", "Trend reporting", "Public interface monitoring", "Incident review support"]
+        title: "Example deployment scenario — distributed civil works",
+        body:
+          "A proposed monitoring approach may use selected monitoring points across a compound, changing work front and public interface.",
+        points: [
+          "Monitoring-location review",
+          "Connectivity assessment",
+          "Alert-responsibility planning",
+          "Demonstration event review",
+        ],
       },
       {
-        title: "Commercial fit-out scenario",
-        body: "A facility team keeps watch over occupied floors during refurbishment works.",
-        points: ["Tenant communication", "After-hours works", "Elevated reading response", "Historical records"]
-      }
-    ]
+        title: "Example deployment scenario — occupied commercial refurbishment",
+        body:
+          "A proposed monitoring approach may support visibility between a controlled work area, shared access route and occupied tenancy interface.",
+        points: [
+          "Site and operational-context review",
+          "Monitoring approach",
+          "Demonstration or pilot deployment",
+          "Review and refinement",
+        ],
+      },
+    ],
   },
   about: {
     slug: "about",
     title: "About",
-    description: "Learn about VerifAir, an Australian monitoring and environmental intelligence solution developed by Erne Tech Solutions.",
+    description: "Learn about VerifAir, a launch-stage particulate monitoring product being developed by Australian startup Erne Tech.",
     eyebrow: "About VerifAir",
-    heading: "Australian operational technology for difficult monitoring environments.",
+    heading: "A launch-stage monitoring product developed by Erne Tech.",
     intro:
-      "VerifAir is developed by Erne Tech Solutions to provide practical visibility where airborne particles, construction activity and occupied environments intersect.",
+      "Erne Tech is an Australian startup developing VerifAir to improve visibility and coordination around changing particulate conditions in dust-sensitive environments.",
     sections: [
       {
-        title: "Built for deployment",
-        body: "The focus is practical monitoring architecture, managed implementation and usable information for project teams.",
-        points: ["Deployable monitoring systems", "Australian support", "Edge-first architecture", "Managed project setup"]
+        title: "Developed for structured pilot deployment",
+        body: "The current focus is transparent product development, careful site review, demonstration workflows and structured pilot deployments.",
+        points: ["Project discussion", "Site and operational-context review", "Monitoring approach", "Pilot review and refinement"]
       },
       {
         title: "Clear product boundaries",

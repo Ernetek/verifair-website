@@ -44,6 +44,6 @@
 ## Post-launch Optimisation
 
 - Review enquiry conversion by source and industry.
-- Add approved case studies as soon as customer permissions are available.
+- Add approved example deployment scenarios as soon as customer permissions are available.
 - Tune FAQ and resource pages based on search queries and sales objections.
 - Add CRM routing once privacy and security settings are approved.

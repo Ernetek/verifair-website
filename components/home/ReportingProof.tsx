@@ -13,7 +13,7 @@ export function ReportingProof() {
           <div className="border border-slate-300 bg-white p-8 shadow-lg">
             <p className="text-xs font-bold uppercase tracking-wide text-blue-600">Demonstration report</p>
             <h3 className="mt-16 text-3xl font-bold text-slate-950">Project-period monitoring report</h3>
-            <p className="mt-4 text-slate-600">Sample project · 1–30 June 2026</p>
+            <p className="mt-4 text-slate-600">Demonstration Project · neutral sample period</p>
             <div className="mt-20 border-t border-slate-200 pt-5 text-sm text-slate-500">
               Generated for demonstration only
             </div>

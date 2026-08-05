@@ -18,7 +18,7 @@
 - Government
 - Schools
 - Commercial Buildings
-- Case Studies
+- Applications
 - About
 - Search
 - Privacy Policy
