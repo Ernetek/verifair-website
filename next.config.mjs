@@ -20,14 +20,14 @@ const nextConfig = {
   async headers() {
     const contentSecurityPolicy = [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://challenges.cloudflare.com`,
+      `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://challenges.cloudflare.com https://js-ap1.hsforms.net https://js.hsforms.net`,
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:",
+      "img-src 'self' data: blob: https://*.hubspot.com https://*.hubspotusercontent.com",
       "font-src 'self' data:",
-      "connect-src 'self' https://challenges.cloudflare.com",
-      "frame-src https://challenges.cloudflare.com",
+      "connect-src 'self' https://challenges.cloudflare.com https://api.hsforms.com https://forms.hsforms.com https://forms-ap1.hsforms.com https://*.hubspot.com",
+      "frame-src https://challenges.cloudflare.com https://forms.hsforms.com https://forms-ap1.hsforms.com https://meetings.hubspot.com",
       "base-uri 'self'",
-      "form-action 'self'",
+      "form-action 'self' https://forms.hsforms.com https://forms-ap1.hsforms.com",
       "frame-ancestors 'self'",
       !isDev && "upgrade-insecure-requests"
     ]

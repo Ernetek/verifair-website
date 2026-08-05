@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -59,6 +60,16 @@ export default async function ResourcePage({
           </h1>
           <div className="mt-5 h-0.5 w-12 bg-blue-600" />
           <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">{page.intro}</p>
+          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
+            <Image
+              src={page.image}
+              alt={page.imageAlt}
+              fill
+              priority
+              sizes="(min-width: 1024px) 56rem, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </section>
 

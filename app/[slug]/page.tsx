@@ -263,7 +263,7 @@ function ResourceList() {
       "/resources/hospital-construction-dust-monitoring",
     ],
     [
-      "PM1, PM2.5 and PM10 explainer",
+      "PM1 and PM2.5 explainer",
       "/resources/pm-particle-size-guide",
     ],
     [

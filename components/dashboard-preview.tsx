@@ -41,7 +41,7 @@ export function DashboardPreview() {
                   <th className="p-3">Zone</th>
                   <th className="p-3">PM1</th>
                   <th className="p-3">PM2.5</th>
-                  <th className="p-3">PM10</th>
+                  <th className="p-3">PM2.5</th>
                   <th className="p-3">Status</th>
                 </tr>
               </thead>

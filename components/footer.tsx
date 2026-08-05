@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <p className="text-3xl font-black">Verif<span className="text-blue-400">Air</span></p>
             <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
-              Dustlight measures particulate conditions. VerifAir coordinates monitoring data, alerts, reporting and operational visibility for dust-sensitive environments.
+              Dustlight measures PM1 and PM2.5 conditions. VerifAir extends monitoring across multiple zones with real-time alerts, globally accessible dashboards and evidence-ready reporting.
             </p>
             <Link
               href="/contact"

@@ -11,43 +11,43 @@ import { Reveal } from "./Reveal";
 const workflow = [
   {
     number: "01",
-    title: "Real-time monitoring",
-    text: "Dustlight particulate monitors collect PM1, PM2.5 and PM10 readings at selected monitoring points.",
+    title: "Real-time fine-particle monitoring",
+    text: "Dustlight monitors collect PM1 and PM2.5 readings at selected monitoring points.",
     image: "/assets/dustlight.webp",
     imageAlt: "Approved Dustlight particulate monitor",
   },
   {
     number: "02",
-    title: "Connectivity and site setup",
-    text: "Gateway and site-connectivity components securely transfer readings across the monitored environment.",
+    title: "Extended site connectivity",
+    text: "VerifAir extends the practical reach of Dustlight Bluetooth monitoring across multiple zones using configured site-connectivity components.",
     image: "/assets/Gateway.webp",
-    imageAlt: "Gateway and site-connectivity component",
+    imageAlt: "Site connectivity component used within a VerifAir deployment",
   },
   {
     number: "03",
-    title: "Edge and cloud processing",
-    text: "Local buffering and edge-first processing help maintain monitoring continuity during connectivity interruptions.",
+    title: "Local resilience",
+    text: "Edge-first processing and local buffering help preserve monitoring continuity during temporary connectivity interruptions.",
     image: "/assets/Edge.webp",
-    imageAlt: "Diagram representing edge-first processing and local buffering",
+    imageAlt: "Illustration representing local processing and data buffering",
   },
   {
     number: "04",
-    title: "Dashboards, alerts and reporting",
-    text: "VerifAir presents live conditions, configured alerts, trends and downloadable records through a shared operational interface.",
-    image: "/assets/alerts.webp",
-    imageAlt: "Demonstration VerifAir dashboard displayed on desktop and mobile",
+    title: "Dashboard access from anywhere",
+    text: "Authorised teams can review live conditions, alerts, trends and downloadable records through a shared web dashboard from anywhere with an internet connection.",
+    image: "/assets/Dashboard.webp",
+    imageAlt: "VerifAir demonstration dashboard shown on desktop and mobile",
   },
 ];
 
 const operationalOutcomes = [
   {
     title: "Earlier intervention",
-    body: "Identify changing particulate conditions before they become prolonged or widespread exposure events.",
+    body: "Identify changing fine-particle conditions before they become prolonged or widespread events.",
     icon: BoltIcon,
   },
   {
     title: "Coordinated response",
-    body: "Route alerts and information to the people responsible for taking action on site.",
+    body: "Route alerts and monitoring context to the people responsible for investigating and acting on site.",
     icon: BellAlertIcon,
   },
   {
@@ -57,7 +57,7 @@ const operationalOutcomes = [
   },
   {
     title: "Reduced manual oversight",
-    body: "Supplement periodic inspections and spot checks with continuous monitoring across selected zones.",
+    body: "Supplement inspections and spot checks with continuous monitoring across selected zones.",
     icon: CpuChipIcon,
   },
 ];
@@ -73,41 +73,43 @@ export function PlatformSection() {
         <Reveal>
           <div className="max-w-4xl">
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              Platform and benefits
+              The VerifAir system
             </p>
             <h2
               id="platform-heading"
               className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
             >
-              A technically clear path from monitoring point to shared action.
+              Real-time monitoring that helps teams minimise potential exposure risk.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
+              VerifAir connects approved Dustlight monitors, site connectivity,
+              local resilience and a globally accessible dashboard into one
+              coordinated operational system.
+            </p>
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {workflow.map((step, index) => (
-            <Reveal key={step.number} delay={index * 0.05}>
-              <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div className="p-5 pb-0 sm:p-6 sm:pb-0">
-                  <span className="inline-flex size-12 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
-                    {step.number}
-                  </span>
-                  <h3 className="mt-5 text-lg font-bold tracking-tight text-slate-950">
-                    {step.title}
-                  </h3>
-                </div>
-                <div className="relative mx-5 mt-5 flex min-h-48 items-center justify-center overflow-hidden rounded-xl bg-slate-50 sm:mx-6">
+            <Reveal key={step.number} delay={index * 0.04}>
+              <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <span className="inline-flex size-11 items-center justify-center rounded-full bg-blue-50 text-sm font-bold text-blue-600">
+                  {step.number}
+                </span>
+                <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-950">
+                  {step.title}
+                </h3>
+                <div className="relative mt-5 aspect-[4/3] overflow-hidden rounded-xl bg-slate-50">
                   <Image
                     src={step.image}
                     alt={step.imageAlt}
-                    width={640}
-                    height={480}
+                    fill
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                    className="max-h-56 w-full object-contain p-3"
+                    className="object-contain p-3"
                   />
                 </div>
-                <p className="mt-5 flex-1 px-5 pb-6 text-base leading-6 text-slate-600 sm:px-6">
+                <p className="mt-5 text-base leading-7 text-slate-600">
                   {step.text}
                 </p>
               </article>
@@ -115,53 +117,31 @@ export function PlatformSection() {
           ))}
         </div>
 
-        <p className="mt-5 text-sm leading-6 text-slate-500">
-          Product and interface imagery is illustrative unless explicitly
-          identified as approved production hardware or a live customer
-          deployment.
-        </p>
-
-        <div className="my-14 h-px bg-slate-200 sm:my-16" />
-
-        <section aria-labelledby="operational-outcomes-heading">
-          <Reveal>
-            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-              <div>
-                <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-                  Platform outcomes
-                </p>
-                <h3
-                  id="operational-outcomes-heading"
-                  className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]"
-                >
-                  Practical outcomes for project teams.
-                </h3>
-                <div className="mt-5 h-0.5 w-12 bg-blue-600" />
-              </div>
-            </div>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {operationalOutcomes.map((outcome, index) => {
-              const Icon = outcome.icon;
-              return (
-                <Reveal key={outcome.title} delay={index * 0.05}>
-                  <article className="h-full rounded-2xl border border-blue-100 bg-blue-50/60 p-5 sm:p-6">
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-blue-600 text-white">
-                      <Icon className="size-6" aria-hidden="true" />
-                    </div>
-                    <h4 className="mt-5 text-lg font-bold text-slate-950">
-                      {outcome.title}
-                    </h4>
-                    <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
-                      {outcome.body}
-                    </p>
-                  </article>
-                </Reveal>
-              );
-            })}
+        <Reveal>
+          <div className="mt-16 max-w-4xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
+              Platform outcomes
+            </p>
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem]">
+              Practical outcomes for project teams.
+            </h2>
+            <div className="mt-5 h-0.5 w-12 bg-blue-600" />
           </div>
-        </section>
+        </Reveal>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {operationalOutcomes.map(({ icon: Icon, title, body }, index) => (
+            <Reveal key={title} delay={index * 0.04}>
+              <article className="h-full rounded-xl border border-blue-100 bg-blue-50/70 p-6">
+                <span className="flex size-12 items-center justify-center rounded-xl bg-blue-600 text-white">
+                  <Icon className="size-6" aria-hidden="true" />
+                </span>
+                <h3 className="mt-6 text-xl font-bold text-slate-950">{title}</h3>
+                <p className="mt-3 text-base leading-7 text-slate-600">{body}</p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

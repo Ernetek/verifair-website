@@ -12,9 +12,9 @@ describe("VerifAir public page configuration", () => {
     expect(routes).toContain("/reporting");
   });
 
-  it("publishes eight VerifAir knowledge resources", () => {
-    expect(verifAirResources).toHaveLength(8);
-    expect(new Set(verifAirResources.map((resource) => resource.slug)).size).toBe(8);
+  it("publishes ten VerifAir knowledge resources", () => {
+    expect(verifAirResources).toHaveLength(10);
+    expect(new Set(verifAirResources.map((resource) => resource.slug)).size).toBe(10);
   });
 
   it("links reporting from the footer", () => {

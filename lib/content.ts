@@ -102,7 +102,7 @@ export const pageContent: Record<string, MarketingPage> = {
       {
         title: "Decision support for active environments",
         body: "Teams can review current conditions, understand trends and respond when configured thresholds are exceeded.",
-        points: ["Current PM1, PM2.5 and PM10 readings", "Escalation-ready alerts", "Historical trends", "Operational activity log"]
+        points: ["Current PM1 and PM2.5 readings", "Escalation-ready alerts", "Historical trends", "Operational activity log"]
       },
       {
         title: "Built for future expansion",
@@ -123,7 +123,7 @@ export const pageContent: Record<string, MarketingPage> = {
     sections: [
       {
         title: "Dustlight particulate monitoring",
-        body: "Dustlight devices monitor airborne particulates at the deployed or worn location, including PM1, PM2.5 and PM10.",
+        body: "Dustlight devices monitor airborne particulates at the deployed or worn location, including PM1 and PM2.5.",
         points: ["Laser-based photometric measurement", "Visual and audible device alerts", "Indicative measurement for early awareness", "Maintenance intervals required for ongoing measurement quality"]
       },
       {
@@ -193,7 +193,7 @@ export const pageContent: Record<string, MarketingPage> = {
       {
         title: "Operational visibility",
         body: "Site leaders can see current readings, zones with elevated conditions, sensor connectivity and recent alert history.",
-        points: ["PM1, PM2.5 and PM10 visibility", "Work-front and boundary monitoring", "Dust complaint context", "Incident review records"]
+        points: ["PM1 and PM2.5 visibility", "Work-front and boundary monitoring", "Dust complaint context", "Incident review records"]
       },
       {
         title: "Support response workflows",
@@ -324,7 +324,7 @@ export const pageContent: Record<string, MarketingPage> = {
       {
         title: "Featured resources",
         body: "Educational material should help teams make better decisions without overstating what monitoring alone can prove.",
-        points: ["Hospital construction dust monitoring guide", "PM1, PM2.5 and PM10 explainer", "Multi-zone monitoring checklist", "Compliance language guide"]
+        points: ["Hospital construction dust monitoring guide", "PM1 and PM2.5 explainer", "Multi-zone monitoring checklist", "Compliance language guide"]
       }
     ]
   },
@@ -396,7 +396,7 @@ export const faqs = [
   {
     question: "What particulate sizes are monitored?",
     answer:
-      "Configured Dustlight monitors collect PM1, PM2.5 and PM10 readings at selected monitoring points. These readings do not identify the chemical or mineral composition of airborne material.",
+      "Configured Dustlight monitors collect PM1 and PM2.5 readings at selected monitoring points. These readings do not identify the chemical or mineral composition of airborne material.",
   },
   {
     question: "Can multiple zones be monitored?",
