@@ -47,6 +47,29 @@ describe("dashboard demonstrations", () => {
     expect(site).not.toContain("Monitoring room demo");
   });
 
+
+
+  it("shows workflow steps, concrete actions and an action marker in the shared dashboard", () => {
+    const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
+
+    expect(dashboards).toContain("Current workflow");
+    expect(dashboards).toContain("Action recorded");
+    expect(dashboards).toContain("Example actions");
+    expect(dashboards).toContain("Dry sweeping stopped");
+    expect(dashboards).toContain("Example action indication");
+  });
+
+  it("uses a four-column desktop monitoring grid with coloured metric tiles", () => {
+    const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
+
+    expect(dashboards).toContain("grid-cols-2");
+    expect(dashboards).toContain("xl:grid-cols-4");
+    expect(dashboards).toContain("RoomMetricTile");
+    expect(dashboards).toContain("bg-emerald-600");
+    expect(dashboards).toContain("bg-amber-400");
+    expect(dashboards).toContain("bg-red-600");
+  });
+
   it("retains dedicated non-indexed demonstration routes", () => {
     const shared = read("app/demonstration/shared-dashboard/page.tsx");
     const room = read("app/demonstration/monitoring-room/page.tsx");

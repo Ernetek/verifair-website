@@ -69,6 +69,39 @@ const trendPaths = {
   },
 };
 
+const workflowSteps = [
+  "Detected",
+  "Transferred",
+  "Evaluated",
+  "Notified",
+  "Action recorded",
+  "Reviewed",
+];
+
+const compactActions = [
+  {
+    time: "10:42",
+    title: "Review condition detected",
+    detail: "PM2.5 crossed the configured review line.",
+  },
+  {
+    time: "10:44",
+    title: "Site contact acknowledged",
+    detail: "Nearby work activity and controls were checked.",
+  },
+  {
+    time: "10:51",
+    title: "Example action recorded",
+    detail: "Dry sweeping stopped; barriers checked; vacuum-assisted cleanup commenced.",
+  },
+  {
+    time: "11:20",
+    title: "Event closed",
+    detail: "Readings returned below the configured review line.",
+  },
+];
+
+
 function stateFor(pm25: number): ZoneState {
   if (pm25 >= 26) return "action";
   if (pm25 >= 15) return "review";
@@ -184,6 +217,34 @@ function SharedDashboard({
             </div>
           </div>
 
+          <section
+            className="mt-5 border border-slate-300 bg-slate-50"
+            aria-labelledby="shared-workflow-title"
+          >
+            <div className="border-b border-slate-300 px-4 py-3">
+              <p
+                id="shared-workflow-title"
+                className="text-xs font-bold uppercase tracking-[0.12em] text-blue-700"
+              >
+                Current workflow
+              </p>
+            </div>
+
+            <ol className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
+              {workflowSteps.map((step, index) => (
+                <li
+                  key={step}
+                  className="border-b border-r border-slate-200 px-3 py-3 last:border-r-0 xl:border-b-0"
+                >
+                  <span className="font-mono text-[0.65rem] font-bold text-slate-400">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <p className="mt-1 text-xs font-bold text-slate-800">{step}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+
           <div className={`mt-5 grid gap-5 ${compact ? "" : "xl:grid-cols-[1.35fr_0.65fr]"}`}>
             <div className="border border-slate-300">
               <div className="grid border-b border-slate-300 sm:grid-cols-2">
@@ -226,6 +287,45 @@ function SharedDashboard({
                     Configured review line
                   </text>
 
+                  <line
+                    x1="445"
+                    y1="34"
+                    x2="445"
+                    y2="224"
+                    stroke="#dc2626"
+                    strokeWidth="2"
+                    strokeDasharray="5 5"
+                  />
+                  <circle
+                    cx="445"
+                    cy="87"
+                    r="6"
+                    fill="#ffffff"
+                    stroke="#dc2626"
+                    strokeWidth="3"
+                  />
+                  <g transform="translate(455 42)">
+                    <rect
+                      width="166"
+                      height="42"
+                      rx="3"
+                      fill="#ffffff"
+                      stroke="#fecaca"
+                    />
+                    <text
+                      x="10"
+                      y="17"
+                      fill="#991b1b"
+                      fontSize="11"
+                      fontWeight="700"
+                    >
+                      Example action recorded
+                    </text>
+                    <text x="10" y="32" fill="#64748b" fontSize="10">
+                      10:51 · Work Zone A
+                    </text>
+                  </g>
+
                   <path
                     d={`M40 224 L${paths.pm1.slice(1)} L665 224 Z`}
                     fill="url(#sharedPm1)"
@@ -248,9 +348,38 @@ function SharedDashboard({
                   <span>— PM1</span>
                   <span className="text-emerald-700">— PM2.5</span>
                   <span className="text-amber-700">- - Configured review line</span>
+                  <span className="text-red-700">| Example action indication</span>
                 </div>
               </div>
             </div>
+
+            {compact ? (
+              <section className="border border-slate-300 bg-white">
+                <div className="border-b border-slate-300 bg-slate-50 px-4 py-3">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-700">
+                    Example actions
+                  </p>
+                </div>
+
+                <ol className="grid divide-y divide-slate-200 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                  {compactActions.map((action) => (
+                    <li key={`${action.time}-${action.title}`} className="p-4">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <p className="text-sm font-bold text-slate-950">
+                          {action.title}
+                        </p>
+                        <time className="font-mono text-xs font-bold text-blue-700">
+                          {action.time}
+                        </time>
+                      </div>
+                      <p className="mt-2 text-xs leading-5 text-slate-600">
+                        {action.detail}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ) : null}
 
             {!compact ? (
               <div className="border border-slate-300">
@@ -375,12 +504,14 @@ function MonitoringRoomDisplay({
         <p className="text-xl font-black tracking-tight text-slate-950">
           Verif<span className="text-blue-600">Air</span>
         </p>
+
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-700">
             Monitoring room display
           </p>
           <p className="mt-1 font-bold text-slate-950">Demonstration Project</p>
         </div>
+
         <div className="text-left sm:text-right">
           <p className="font-mono text-lg font-bold text-slate-950">
             {lastUpdated}
@@ -392,130 +523,161 @@ function MonitoringRoomDisplay({
       </div>
 
       <div
-        className={`grid gap-4 p-4 sm:p-5 ${
-          compact ? "lg:grid-cols-2" : "xl:grid-cols-2"
+        className={`grid grid-cols-2 gap-4 p-4 sm:p-5 ${
+          compact ? "xl:grid-cols-4" : "xl:grid-cols-4"
         }`}
       >
         {zones.map((zone, index) => {
-          const state = stateFor(zone.pm25);
-          const stateSurface = {
-            normal: "bg-emerald-600 text-white",
-            review: "bg-amber-400 text-slate-950",
-            action: "bg-red-600 text-white",
-          }[state];
-
-          const stateMuted = {
-            normal: "text-emerald-50",
-            review: "text-amber-950/75",
-            action: "text-red-50",
-          }[state];
+          const overallState = stateFor(zone.pm25);
 
           return (
             <article
               key={zone.id}
-              className="grid min-h-[19rem] overflow-hidden border border-slate-300 bg-white grid-rows-[20%_80%]"
+              className="overflow-hidden border border-slate-300 bg-white"
             >
-              <header className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-slate-300 bg-white px-5 py-4">
-                <span className="font-mono text-sm font-black text-blue-700">
-                  Z{String(index + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <h3 className="text-xl font-black text-slate-950 sm:text-2xl">
-                    {zone.name}
-                  </h3>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Configured monitoring location
-                  </p>
+              <header className="border-b border-slate-300 bg-white px-4 py-4 sm:px-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-xs font-black uppercase tracking-[0.16em] text-blue-700">
+                      Zone {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h3 className="mt-2 text-xl font-black leading-tight tracking-tight text-slate-950 sm:text-2xl">
+                      {zone.name}
+                    </h3>
+                  </div>
+
+                  <span
+                    className={`shrink-0 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-wide ${stateStyles[overallState].badge}`}
+                  >
+                    {stateLabel[overallState]}
+                  </span>
                 </div>
-                <span className={`size-4 rounded-full ${stateStyles[state].dot}`} />
+
+                <p className="mt-3 text-sm leading-5 text-slate-600">
+                  {zone.context}
+                </p>
               </header>
 
-              <div className={`grid p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8 sm:p-7 ${stateSurface}`}>
-                <div>
-                  <p className={`text-sm font-semibold ${stateMuted}`}>
-                    {zone.context}
-                  </p>
-
-                  <div className="mt-7 grid grid-cols-2 gap-6">
-                    <RoomReading
-                      label="PM1"
-                      value={zone.pm1}
-                      inverse={state !== "review"}
-                    />
-                    <RoomReading
-                      label="PM2.5"
-                      value={zone.pm25}
-                      inverse={state !== "review"}
-                    />
-                  </div>
-
-                  <div className={`mt-7 flex items-center gap-2 text-xs font-bold uppercase tracking-wide ${stateMuted}`}>
-                    <span className="size-2 rounded-full bg-current" />
-                    Updated just now
-                  </div>
-                </div>
-
-                <div className="mt-7 border-t border-current/25 pt-6 text-left sm:mt-0 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0 sm:text-center">
-                  <p className={`text-xs font-black uppercase tracking-[0.16em] ${stateMuted}`}>
-                    Current status
-                  </p>
-                  <p className="mt-3 text-4xl font-black uppercase tracking-tight sm:text-5xl">
-                    {stateLabel[state]}
-                  </p>
-                </div>
+              <div className="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2 sm:p-4">
+                <RoomMetricTile label="PM1" value={zone.pm1} />
+                <RoomMetricTile label="PM2.5" value={zone.pm25} />
               </div>
+
+              <footer className="flex items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-4 py-3">
+                <span className="text-xs font-semibold text-slate-500">
+                  Overall status
+                </span>
+
+                <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wide text-slate-700">
+                  <span
+                    className={`size-2.5 rounded-full ${stateStyles[overallState].dot}`}
+                  />
+                  {stateLabel[overallState]}
+                </span>
+              </footer>
             </article>
           );
         })}
       </div>
 
-      <div className="flex flex-wrap justify-center gap-6 border-t border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-700">
-        <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded-full bg-emerald-600" />
-          Normal
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded-full bg-amber-400" />
-          Review
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded-full bg-red-600" />
-          Action
-        </span>
+      <div className="grid gap-4 border-t border-slate-300 bg-white px-5 py-4 md:grid-cols-[1fr_auto] md:items-center">
+        <div className="flex flex-wrap gap-6 text-sm font-semibold text-slate-700">
+          <span className="inline-flex items-center gap-2">
+            <span className="size-3 rounded-full bg-emerald-600" />
+            Normal
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="size-3 rounded-full bg-amber-400" />
+            Review
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="size-3 rounded-full bg-red-600" />
+            Action
+          </span>
+        </div>
+
+        <p className="text-xs font-semibold text-slate-500">
+          Levels and states update automatically for demonstration.
+        </p>
       </div>
     </div>
   );
 }
 
 
-function RoomReading({
+function RoomMetricTile({
   label,
   value,
-  inverse = false,
 }: {
-  label: string;
+  label: "PM1" | "PM2.5";
   value: number;
-  inverse?: boolean;
 }) {
+  const state = stateFor(value);
+
+  const tileStyles: Record<
+    ZoneState,
+    {
+      surface: string;
+      label: string;
+      value: string;
+      detail: string;
+    }
+  > = {
+    normal: {
+      surface: "border-emerald-300 bg-emerald-600",
+      label: "text-emerald-50",
+      value: "text-white",
+      detail: "text-emerald-50/90",
+    },
+    review: {
+      surface: "border-amber-300 bg-amber-400",
+      label: "text-amber-950/80",
+      value: "text-slate-950",
+      detail: "text-amber-950/75",
+    },
+    action: {
+      surface: "border-red-300 bg-red-600",
+      label: "text-red-50",
+      value: "text-white",
+      detail: "text-red-50/90",
+    },
+  };
+
+  const details: Record<ZoneState, string> = {
+    normal: "Within current range",
+    review: "Monitor closely",
+    action: "Requires review",
+  };
+
+  const styles = tileStyles[state];
+
   return (
-    <div>
-      <p
-        className={`text-xs font-black uppercase tracking-[0.14em] ${
-          inverse ? "text-white/75" : "text-slate-900/70"
-        }`}
-      >
-        {label}
-      </p>
-      <p className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">
-        {value}{" "}
-        <span
-          className={`text-xs font-semibold tracking-normal ${
-            inverse ? "text-white/80" : "text-slate-900/70"
-          }`}
+    <div
+      className={`flex min-h-44 flex-col justify-between border p-4 sm:min-h-48 ${styles.surface}`}
+    >
+      <div>
+        <p
+          className={`text-sm font-black uppercase tracking-[0.12em] ${styles.label}`}
         >
-          {PARTICULATE_UNIT}
-        </span>
-      </p>
+          {label}
+        </p>
+
+        <p className={`mt-6 text-4xl font-black tracking-tight sm:text-5xl ${styles.value}`}>
+          {value}{" "}
+          <span className="text-xs font-bold tracking-normal opacity-85">
+            {PARTICULATE_UNIT}
+          </span>
+        </p>
+      </div>
+
+      <div>
+        <p className={`text-xs font-semibold ${styles.detail}`}>
+          {details[state]}
+        </p>
+        <p className={`mt-2 text-[0.65rem] font-black uppercase tracking-[0.12em] ${styles.detail}`}>
+          {stateLabel[state]}
+        </p>
+      </div>
     </div>
   );
 }

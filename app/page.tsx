@@ -12,7 +12,9 @@ import { ReportingProof } from "@/components/home/ReportingProof";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function HomePage() {
