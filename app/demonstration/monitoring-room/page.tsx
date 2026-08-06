@@ -1,0 +1,30 @@
+import type { Metadata } from "next";
+
+import { MonitoringRoomDisplayPage } from "@/components/demonstration/ClinicalDashboards";
+import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
+
+export const metadata: Metadata = {
+  title: "Monitoring Room Display Demonstration",
+  description:
+    "Explore a VerifAir monitoring room display demonstration with live colour-coded status across four configured zones.",
+  alternates: {
+    canonical: "/demonstration/monitoring-room",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
+
+export default function MonitoringRoomDemonstrationPage() {
+  return (
+    <>
+      <main className="bg-slate-100 py-8 sm:py-12">
+        <div className="container">
+          <MonitoringRoomDisplayPage />
+        </div>
+      </main>
+      <PageDisclaimer />
+    </>
+  );
+}

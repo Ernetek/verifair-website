@@ -5,7 +5,7 @@ import { CoordinatedSolutionSection } from "@/components/home/CoordinatedSolutio
 import { FAQSection } from "@/components/home/FAQ";
 import { HeroSection } from "@/components/home/Hero";
 import { IndustriesSection } from "@/components/home/Industries";
-import { PilotDeploymentSection } from "@/components/home/PilotDeployment";
+import { MonitoringRoomSection } from "@/components/home/MonitoringRoomSection";
 import { PolicyReadinessBanner } from "@/components/home/PolicyReadinessBanner";
 import { ProblemSection } from "@/components/home/Problem";
 import { ReportingProof } from "@/components/home/ReportingProof";
@@ -22,9 +22,9 @@ export default function HomePage() {
       <PolicyReadinessBanner />
       <ProblemSection />
       <CoordinatedSolutionSection />
+      <MonitoringRoomSection />
       <IndustriesSection />
       <ReportingProof />
-      <PilotDeploymentSection />
       <FAQSection />
       <FinalCTA />
       <PageDisclaimer />

@@ -137,7 +137,7 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "alert-response-planning",
-    image: "/assets/Alerts.webp",
+    image: "/assets/alerts.webp",
     updated: "2026-08-05",
     readingMinutes: 5,
     category: "Project checklist",

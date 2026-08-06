@@ -80,8 +80,10 @@ describe("site quality requirements", () => {
       }
     }
 
-    for (const ref of refs) {
-      expect(fs.existsSync(path.join(root, "public", ref))).toBe(true);
-    }
+    const missing = [...refs].filter(
+      (ref) => !fs.existsSync(path.join(root, "public", ref)),
+    );
+
+    expect(missing, `Missing public assets: ${missing.join(", ")}`).toEqual([]);
   });
 });
