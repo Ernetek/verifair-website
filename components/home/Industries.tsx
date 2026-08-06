@@ -89,8 +89,21 @@ export function IndustriesSection() {
             ))}
           </div>
 
-          <div id="industry-panel" role="tabpanel" aria-labelledby={`industry-tab-${active}`} className="grid grid-cols-[1.05fr_0.95fr]">
-            <Image src={current.image} alt="" width={900} height={700} className="h-full min-h-[30rem] w-full object-cover" />
+          <div
+            id="industry-panel"
+            role="tabpanel"
+            aria-labelledby={`industry-tab-${active}`}
+            className="grid grid-cols-[1.05fr_0.95fr]"
+          >
+            <div className="relative min-h-[30rem] bg-slate-100">
+              <Image
+                src={current.image}
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-contain p-4"
+              />
+            </div>
             <div className="bg-slate-950 p-10 text-white">
               <h3 className="text-3xl font-bold">{current.title}</h3>
               <p className="mt-5 text-lg leading-8 text-slate-300">{current.copy}</p>
@@ -107,7 +120,15 @@ export function IndustriesSection() {
             <details key={industry.title} className="border-b border-slate-200 last:border-b-0" open={index === 0}>
               <summary className="cursor-pointer list-none py-5 text-lg font-bold marker:hidden">{industry.title}</summary>
               <div className="pb-7">
-                <Image src={industry.image} alt="" width={800} height={560} className="h-auto w-full object-cover" />
+                <div className="relative aspect-[4/3] bg-slate-100">
+                  <Image
+                    src={industry.image}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    className="object-contain p-3"
+                  />
+                </div>
                 <p className="mt-5 leading-7 text-slate-600">{industry.copy}</p>
                 <ul className="mt-5 border-y border-slate-200">
                   {industry.uses.map((use) => <li key={use} className="border-b border-slate-200 py-3 last:border-b-0">{use}</li>)}

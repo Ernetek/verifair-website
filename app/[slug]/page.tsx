@@ -7,7 +7,6 @@ import {
   ContentSections,
   FinalCTA,
   PageHero,
-  PageDisclaimerSection,
 } from "@/components/page-sections";
 import { pageContent } from "@/lib/content";
 import { SALES_EMAIL, siteConfig } from "@/lib/site";
@@ -238,7 +237,6 @@ export default async function SlugPage({
 
 
         <FinalCTA />
-        <PageDisclaimerSection />
       </div>
     </>
   );

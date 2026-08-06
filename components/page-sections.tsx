@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
+import { PARTICULATE_QUALIFICATION } from "@/lib/metrics";
 import type { MarketingPage } from "@/lib/content";
 
 const zoneLabels: Record<string, [string, string, string]> = {
@@ -71,14 +71,47 @@ export function ContentSections({ page }: { page: MarketingPage }) {
 export function FinalCTA() {
   return (
     <section className="bg-slate-950 py-16 text-white">
-      <div className="container flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-        <div><p className="text-sm font-bold uppercase tracking-wide text-blue-300">Project discussion</p><h2 className="mt-3 max-w-3xl text-3xl font-bold sm:text-4xl">Discuss a monitoring approach for your project.</h2></div>
-        <div className="flex flex-wrap gap-3"><Link href="/contact" className="rounded-lg bg-white px-6 py-4 font-bold text-slate-950">Contact VerifAir</Link><a href="mailto:verifair@ernelifting.com" className="px-6 py-4 font-bold text-blue-300">Email sales</a></div>
+      <div className="container">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-300">
+              Project discussion
+            </p>
+            <h2 className="mt-3 max-w-3xl text-3xl font-bold text-white sm:text-4xl">
+              Discuss a monitoring approach for your project.
+            </h2>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/contact"
+              className="inline-flex min-h-14 items-center justify-center rounded-lg !bg-blue-400 px-6 font-bold !text-slate-950 transition hover:!bg-blue-300 hover:!text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
+            >
+              Contact VerifAir
+            </Link>
+            <a
+              href="mailto:verifair@ernelifting.com"
+              className="inline-flex min-h-14 items-center justify-center rounded-lg border border-white/30 !bg-transparent px-6 font-bold !text-white transition hover:!bg-white/10 hover:!text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
+            >
+              Email sales
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-10 border-t border-white/15 pt-5 text-xs leading-5 text-slate-300">
+          <p>{PARTICULATE_QUALIFICATION}</p>
+          <p className="mt-2">
+            VerifAir supports operational monitoring, response and record
+            keeping, but does not replace competent risk assessment,
+            occupational-hygiene advice, exposure assessment, specialist
+            sampling, controls or project-specific legal obligations.
+          </p>
+        </div>
       </div>
     </section>
   );
 }
 
 export function PageDisclaimerSection() {
-  return <PageDisclaimer />;
+  return null;
 }

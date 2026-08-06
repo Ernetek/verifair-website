@@ -16,6 +16,7 @@ describe("homepage composition", () => {
   it("renders the monitoring room and reporting sections", () => {
     expect(source).toContain("<MonitoringRoomSection />");
     expect(source).toContain("<ReportingProof />");
+    expect(source).not.toContain("<PageDisclaimer />");
   });
 
   it("does not restore the launch-stage deployment section", () => {

@@ -6,10 +6,8 @@ import { FAQSection } from "@/components/home/FAQ";
 import { HeroSection } from "@/components/home/Hero";
 import { IndustriesSection } from "@/components/home/Industries";
 import { MonitoringRoomSection } from "@/components/home/MonitoringRoomSection";
-import { PolicyReadinessBanner } from "@/components/home/PolicyReadinessBanner";
 import { ProblemSection } from "@/components/home/Problem";
 import { ReportingProof } from "@/components/home/ReportingProof";
-import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
 export const metadata: Metadata = {
   alternates: {
@@ -21,7 +19,6 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <PolicyReadinessBanner />
       <ProblemSection />
       <CoordinatedSolutionSection />
       <MonitoringRoomSection />
@@ -29,7 +26,6 @@ export default function HomePage() {
       <ReportingProof />
       <FAQSection />
       <FinalCTA />
-      <PageDisclaimer />
     </>
   );
 }
