@@ -20,7 +20,9 @@ describe("operational challenge", () => {
 
   it("frames the challenge around changing conditions, shared context and response", () => {
     expect(source).toContain("Work conditions do not remain static");
-    expect(source).toContain("A response needs more than a number");
-    expect(source).toContain("who acknowledged it");
+    expect(source).toContain("A reading does not identify the hazard");
+    expect(source).toContain("respirable crystalline");
+    expect(source).toContain("asbestos fibres");
+    expect(source).toContain("a clear record of what happened next");
   });
 });

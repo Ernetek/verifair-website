@@ -18,7 +18,7 @@ const eventRecord = [
   {
     time: "10:42",
     title: "Review condition detected",
-    body: "PM2.5 at Work Zone A crossed the configured demonstration review line for three consecutive samples.",
+    body: "PM2.5 at Zone 1 crossed the configured demonstration review line for three consecutive samples.",
   },
   {
     time: "10:44",
@@ -49,14 +49,14 @@ const exportContents = [
 export function ReportingProof() {
   return (
     <section
-      className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24"
+      className="border-b border-amber-200 bg-amber-50 py-16 sm:py-20 lg:py-24"
       aria-labelledby="report-proof-title"
     >
       <div className="container">
         <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              Demonstration reporting
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-amber-800">
+              Report preview
             </p>
             <h2
               id="report-proof-title"
@@ -83,7 +83,12 @@ export function ReportingProof() {
           </div>
         </div>
 
-        <article className="mt-12 overflow-hidden border border-slate-300 bg-slate-50 shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)]">
+        <article className="relative mt-12 overflow-hidden border-2 border-slate-800 bg-white shadow-[12px_12px_0_0_rgba(120,53,15,0.18)]">
+          <div className="flex items-center justify-between border-b border-slate-300 bg-amber-100 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-amber-950 sm:px-8 lg:px-10">
+            <span>VerifAir project monitoring report</span>
+            <span>Page 1 of 1</span>
+          </div>
+
           <header className="grid gap-6 border-b border-slate-300 bg-slate-950 px-5 py-6 text-white sm:px-8 lg:grid-cols-[1fr_auto] lg:px-10">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">
@@ -145,7 +150,7 @@ export function ReportingProof() {
               <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
-                    Work Zone A
+                    Zone 1
                   </p>
                   <h4
                     id="report-trend-title"
@@ -192,7 +197,7 @@ export function ReportingProof() {
                   aria-labelledby="report-chart-title report-chart-description"
                 >
                   <title id="report-chart-title">
-                    Demonstration PM2.5 trend for Work Zone A
+                    Demonstration PM2.5 trend for Zone 1
                   </title>
                   <desc id="report-chart-description">
                     PM2.5 rises above the configured review line before
@@ -296,7 +301,7 @@ export function ReportingProof() {
                       Review event recorded
                     </text>
                     <text x="14" y="43" fill="#64748b" fontSize="12">
-                      10:42 · Work Zone A
+                      10:42 · Zone 1
                     </text>
                   </g>
                 </svg>

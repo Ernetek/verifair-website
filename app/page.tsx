@@ -20,10 +20,10 @@ export default function HomePage() {
     <>
       <HeroSection />
       <ProblemSection />
-      <CoordinatedSolutionSection />
       <MonitoringRoomSection />
-      <IndustriesSection />
+      <CoordinatedSolutionSection />
       <ReportingProof />
+      <IndustriesSection />
       <FAQSection />
       <FinalCTA />
     </>

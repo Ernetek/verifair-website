@@ -38,10 +38,10 @@ export function CoordinatedSolutionSection() {
       <div className="container">
         <div className="max-w-4xl">
           <p className="text-sm font-bold uppercase tracking-wide text-blue-300">
-            The VerifAir workflow
+            Shared environment overview & workflows
           </p>
           <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl">
-            From changing conditions to a documented response.
+            One shared view from detection to closure.
           </h2>
           <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">
             The shared dashboard connects detection, visibility, notification,

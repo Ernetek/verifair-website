@@ -15,8 +15,8 @@ const observations = [
   },
   {
     number: "03",
-    title: "A response needs more than a number.",
-    body: "Teams need to know where the change occurred, when it began, who acknowledged it, what action was taken and whether conditions returned to the configured range.",
+    title: "A reading does not identify the hazard.",
+    body: "Particulate trends can show that conditions are changing, but they cannot identify silica, asbestos or another material, and they do not determine personal exposure. Material identification, exposure assessment and specialist controls remain essential.",
   },
 ];
 
@@ -38,9 +38,11 @@ export function ProblemSection() {
 
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
             Active work can change particulate conditions between inspections
-            and before there is an obvious visual warning. Teams need a shared
-            view of where the change occurred, when it began and what action
-            followed.
+            and before there is an obvious visual warning. Some activities can
+            generate hazardous respirable dust, including respirable crystalline
+            silica, while disturbance of asbestos-containing material can release
+            asbestos fibres. Teams need timely visibility, material-specific risk
+            controls and a clear record of what happened next.
           </p>
 
           <ol className="mt-9 border-y border-slate-200">

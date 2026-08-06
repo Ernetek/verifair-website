@@ -12,6 +12,7 @@ describe("homepage layout refresh", () => {
 
     expect(source).toContain("<SharedDashboardPreview />");
     expect(source).toContain("sm:grid-cols-2 lg:grid-cols-3");
+    expect(source).toContain("Shared environment overview & workflows");
     expect(source).not.toContain("Earlier awareness");
     expect(source).not.toContain("Coordinated response");
   });

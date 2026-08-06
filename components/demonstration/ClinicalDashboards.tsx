@@ -17,52 +17,52 @@ type Zone = {
 
 const initialZones: Zone[] = [
   {
-    id: "work-zone-a",
-    name: "Work Zone A",
-    context: "Selected dust-producing work area",
+    id: "zone-1",
+    name: "Zone 1",
+    context: "Primary monitored work area",
     pm1: 11,
     pm25: 18,
   },
   {
-    id: "occupied-interface",
-    name: "Occupied Interface",
-    context: "Boundary adjoining an occupied area",
+    id: "zone-2",
+    name: "Zone 2",
+    context: "Secondary monitored location",
     pm1: 4,
     pm25: 7,
   },
   {
-    id: "external-boundary",
-    name: "External Boundary",
-    context: "Configured external monitoring point",
+    id: "zone-3",
+    name: "Zone 3",
+    context: "Configured reference location",
     pm1: 3,
     pm25: 5,
   },
   {
-    id: "shared-access-route",
-    name: "Shared Access Route",
-    context: "Worker and facility circulation path",
+    id: "zone-4",
+    name: "Zone 4",
+    context: "Additional monitored location",
     pm1: 17,
     pm25: 29,
   },
 ];
 
 const trendPaths = {
-  "work-zone-a": {
+  "zone-1": {
     pm1: "M40 188 C95 184 128 171 175 176 C230 182 260 150 310 159 C360 168 405 142 450 149 C500 156 548 134 596 140 C624 143 646 136 665 138",
     pm25:
       "M40 176 C90 168 128 155 175 161 C228 168 262 122 310 132 C358 141 395 72 445 87 C496 101 542 108 590 103 C622 100 646 108 665 105",
   },
-  "occupied-interface": {
+  "zone-2": {
     pm1: "M40 203 C96 201 140 193 183 196 C236 200 282 186 330 192 C384 198 430 184 482 190 C535 194 610 186 665 188",
     pm25:
       "M40 196 C96 191 136 182 183 187 C237 191 280 170 330 178 C380 186 425 166 480 174 C534 182 608 169 665 171",
   },
-  "external-boundary": {
+  "zone-3": {
     pm1: "M40 209 C95 207 142 201 188 204 C238 208 284 196 334 202 C388 207 432 195 485 201 C540 205 610 198 665 200",
     pm25:
       "M40 201 C96 197 140 190 186 194 C240 199 286 182 336 190 C388 197 434 181 487 189 C540 195 612 184 665 186",
   },
-  "shared-access-route": {
+  "zone-4": {
     pm1: "M40 181 C92 174 136 159 184 165 C235 171 276 125 322 136 C372 147 412 120 460 127 C510 135 558 113 607 121 C628 124 648 120 665 119",
     pm25:
       "M40 164 C89 155 132 135 180 143 C230 151 267 82 318 96 C368 110 405 47 455 62 C506 77 547 33 595 47 C624 53 647 50 665 49",
@@ -112,6 +112,27 @@ const stateLabel: Record<ZoneState, string> = {
   normal: "Normal",
   review: "Review",
   action: "Action",
+};
+
+const stateGuidance: Record<
+  ZoneState,
+  {
+    summary: string;
+    action: string;
+  }
+> = {
+  normal: {
+    summary: "Readings remain within the configured demonstration range.",
+    action: "Continue monitoring and maintain the current controls.",
+  },
+  review: {
+    summary: "The latest PM2.5 level has entered the configured review range.",
+    action: "Check nearby activity, controls and the recent trend.",
+  },
+  action: {
+    summary: "The latest PM2.5 level is in the configured action range.",
+    action: "Notify the nominated contact and record the site response.",
+  },
 };
 
 const stateStyles: Record<
@@ -168,10 +189,13 @@ function SharedDashboard({
 
       <div className="grid lg:grid-cols-[13rem_minmax(0,1fr)]">
         <div className="border-b border-slate-300 bg-slate-50 p-3 lg:border-b-0 lg:border-r">
-          <p className="px-2 pb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-            Monitoring locations
+          <p className="px-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+            Select a zone
           </p>
-          <div className="flex gap-2 overflow-x-auto lg:grid">
+          <p className="px-2 pb-3 pt-1 text-xs leading-5 text-blue-700 lg:hidden">
+            Tap any zone tile to update the readings, trend and response guidance.
+          </p>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
             {initialZones.map((zone) => {
               const zoneState = stateFor(zone.pm25);
               return (
@@ -180,12 +204,12 @@ function SharedDashboard({
                   type="button"
                   aria-pressed={activeId === zone.id}
                   onClick={() => setActiveId(zone.id)}
-                  className="grid min-w-48 grid-cols-[0.5rem_1fr_auto] items-center gap-2 px-3 py-3 text-left text-sm font-bold text-slate-700 hover:bg-white aria-pressed:bg-white aria-pressed:text-blue-700"
+                  className="grid min-h-24 grid-cols-[0.5rem_1fr] content-center items-center gap-x-2 gap-y-1 border border-slate-200 px-3 py-3 text-left text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:bg-white aria-pressed:border-blue-500 aria-pressed:bg-blue-50 aria-pressed:text-blue-800 lg:min-h-20"
                 >
                   <span className={`size-2 rounded-full ${stateStyles[zoneState].dot}`} />
                   <span>{zone.name}</span>
-                  <span className="text-xs font-medium text-slate-500">
-                    {zone.pm25}
+                  <span className="col-start-2 text-xs font-medium text-slate-500">
+                    PM2.5 {zone.pm25} · {stateLabel[zoneState]}
                   </span>
                 </button>
               );
@@ -215,6 +239,18 @@ function SharedDashboard({
               </p>
               <p className="mt-2 text-lg font-bold text-slate-950">10:58</p>
             </div>
+          </div>
+
+          <div className={`mt-4 border-l-4 p-4 ${stateStyles[state].band}`}>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-600">
+              {stateLabel[state]} guidance for {active.name}
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-950">
+              {stateGuidance[state].summary}
+            </p>
+            <p className="mt-1 text-sm leading-6 text-slate-700">
+              {stateGuidance[state].action}
+            </p>
           </div>
 
           <section
@@ -322,7 +358,7 @@ function SharedDashboard({
                       Example action recorded
                     </text>
                     <text x="10" y="32" fill="#64748b" fontSize="10">
-                      10:51 · Work Zone A
+                      10:51 · Zone 1
                     </text>
                   </g>
 

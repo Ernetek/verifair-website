@@ -24,7 +24,7 @@ describe("dashboard demonstrations", () => {
     const section = read("components/home/MonitoringRoomSection.tsx");
 
     expect(homepage).toContain("<MonitoringRoomSection />");
-    expect(section).toContain("Real-time monitoring");
+    expect(section).toContain("Platform monitoring dashboard");
     expect(section).toContain("MonitoringRoomPreview");
     expect(section).toContain("status colour");
   });
@@ -34,9 +34,14 @@ describe("dashboard demonstrations", () => {
 
     expect(dashboards).toContain("Demonstration Project");
     expect(dashboards).toContain("Demonstration data");
-    expect(dashboards).toContain("Work Zone A");
-    expect(dashboards).toContain("Occupied Interface");
-    expect(dashboards).toContain("External Boundary");
+    expect(dashboards).toContain('name: "Zone 1"');
+    expect(dashboards).toContain('name: "Zone 2"');
+    expect(dashboards).toContain('name: "Zone 3"');
+    expect(dashboards).toContain('name: "Zone 4"');
+    expect(dashboards).not.toContain("Work Zone A");
+    expect(dashboards).not.toContain("Occupied Interface");
+    expect(dashboards).not.toContain("External Boundary");
+    expect(dashboards).not.toContain("Shared Access Route");
     expect(dashboards).not.toMatch(/hospital|ward|contractor|customer deployment/i);
   });
 
