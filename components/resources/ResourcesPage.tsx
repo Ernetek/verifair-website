@@ -51,8 +51,8 @@ export function ResourcesPage() {
                   Download the VerifAir system flyer.
                 </h1>
                 <p className="mt-3 max-w-2xl text-base leading-7 text-slate-700">
-                  A concise overview of Dustlight, always-on VerifAir connectivity,
-                  real-time dashboards, alerting, redundancy and reporting.
+                  A concise overview of Dustlight monitoring, configured site
+                  connectivity, shared dashboards, event workflows and reporting.
                 </p>
               </div>
               <a

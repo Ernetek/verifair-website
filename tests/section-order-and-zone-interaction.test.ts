@@ -1,25 +1,22 @@
 import fs from "node:fs";
 import path from "node:path";
-
 import { describe, expect, it } from "vitest";
 
-const read = (relativePath: string) =>
-  fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
+const read = (relativePath: string) => fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
-describe("homepage section order and zone interaction", () => {
-  it("uses the approved homepage section order", () => {
+describe("homepage section order and platform interaction", () => {
+  it("uses the consolidated launch-stage homepage sequence", () => {
     const source = read("app/page.tsx");
     const expected = [
       "<HeroSection />",
       "<ProblemSection />",
-      "<MonitoringRoomSection />",
-      "<CoordinatedSolutionSection />",
-      "<ReportingProof />",
+      "<PlatformOverviewSection />",
       "<IndustriesSection />",
+      "<PilotDeploymentSection />",
       "<FAQSection />",
       "<FinalCTA />",
+      "<PageDisclaimer />",
     ];
-
     let previousIndex = -1;
     for (const section of expected) {
       const index = source.indexOf(section);
@@ -28,26 +25,19 @@ describe("homepage section order and zone interaction", () => {
     }
   });
 
-  it("uses simple Zone 1 to Zone 4 names and mobile-selectable equal tiles", () => {
-    const source = read("components/demonstration/ClinicalDashboards.tsx");
-
-    for (const zone of ["Zone 1", "Zone 2", "Zone 3", "Zone 4"]) {
-      expect(source).toContain(`name: "${zone}"`);
-    }
-
-    expect(source).toContain("Tap any zone tile");
-    expect(source).toContain("grid grid-cols-2 gap-2");
-    expect(source).toContain("stateGuidance");
-    expect(source).not.toContain("Occupied Interface");
-    expect(source).not.toContain("Shared Access Route");
+  it("uses the four agreed workflow zone names without auto cycling", () => {
+    const source = read("components/home/PlatformOverview.tsx");
+    expect(source).toContain("Construction Site Entry Door");
+    expect(source).toContain("Construction Site Exit Door");
+    expect(source).toContain("Shared Corridor");
+    expect(source).toContain("General Entry Door");
+    expect(source).not.toContain("setInterval");
   });
 
-  it("styles reporting as a distinct report artifact", () => {
-    const source = read("components/home/ReportingProof.tsx");
-
-    expect(source).toContain("Report preview");
-    expect(source).toContain("VerifAir project monitoring report");
-    expect(source).toContain("Page 1 of 1");
-    expect(source).toContain("bg-amber-50");
+  it("supports monitoring, workflow and reporting hashes", () => {
+    const source = read("components/home/PlatformOverview.tsx");
+    expect(source).toContain('"#monitoring": 0');
+    expect(source).toContain('"#workflow": 1');
+    expect(source).toContain('"#reportpreview": 2');
   });
 });

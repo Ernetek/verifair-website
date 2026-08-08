@@ -5,16 +5,29 @@ test("primary navigation targets resolve and homepage anchors scroll", async ({
 }) => {
   await page.goto("/", { waitUntil: "networkidle" });
 
-  const platformLink = page
-    .locator('a:visible[href="#platform"], a:visible[href="/#platform"]')
+  const monitoringLink = page
+    .locator('a:visible[href="#monitoring"], a:visible[href="/#monitoring"]')
     .first();
 
-  await expect(platformLink).toHaveAttribute("href", /^(?:\/)?#platform$/);
-  await platformLink.click();
-  await expect(page).toHaveURL(/#platform$/);
+  await expect(monitoringLink).toHaveAttribute("href", /^(?:\/)?#monitoring$/);
+  await monitoringLink.click();
+  await expect(page).toHaveURL(/#monitoring$/);
   await expect(page.locator("#platform")).toBeVisible();
 
-  for (const href of ["/technology", "/reporting", "/resources", "/contact"]) {
+  const workflowLink = page
+    .locator('a:visible[href="#workflow"], a:visible[href="/#workflow"]')
+    .first();
+  await workflowLink.click();
+  await expect(page).toHaveURL(/#workflow$/);
+
+  const reportingLink = page
+    .locator('a:visible[href="#reportpreview"], a:visible[href="/#reportpreview"]')
+    .first();
+  await reportingLink.click();
+  await expect(page).toHaveURL(/#reportpreview$/);
+  await expect(page.locator("#reportpreview")).toBeVisible();
+
+  for (const href of ["/technology", "/resources", "/contact"]) {
     const response = await page.request.get(href);
     expect(response.ok(), `${href} should resolve`).toBe(true);
   }
@@ -34,30 +47,36 @@ test("homepage has no horizontal overflow at 320px", async ({ page }) => {
   );
 });
 
-test("workflow, industry tabs and FAQ are keyboard operable", async ({
+test("industry tabs, platform reporting controls and FAQ are keyboard operable", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "networkidle" });
 
-  const stage = page.locator("[data-workflow-stage]").first();
-  await stage.focus();
-  await expect(stage).toBeFocused();
-
-  const industryTab = page.getByRole("tab").first();
+  const industryTab = page
+    .locator('#industries [role="tab"]:visible')
+    .first();
   if (await industryTab.isVisible()) {
     await industryTab.focus();
     await page.keyboard.press("ArrowRight");
-    await expect(page.getByRole("tab", { selected: true })).toHaveText(
-      /Construction/i,
-    );
+    const selected = page.locator('#industries [role="tab"][aria-selected="true"]');
+    await expect(selected).toHaveText(/Construction/i);
+    await expect(selected).toBeFocused();
   }
+
+  await page.goto("/#reportpreview", { waitUntil: "networkidle" });
+  const reportSelect = page.getByLabel("Report view");
+  await expect(reportSelect).toHaveValue("Summary report");
+  await reportSelect.selectOption({ label: "Trend and event review" });
+  await expect(reportSelect).toHaveValue("Trend and event review");
+  await expect(
+    page.getByText("Recent particulate trend", { exact: true }),
+  ).toBeVisible();
 
   const faqSummary = page.locator("#faq details summary").first();
   const faqDetails = faqSummary.locator("..");
 
   await faqSummary.focus();
   await expect(faqSummary).toBeFocused();
-
   await faqSummary.press("Enter");
 
   if (!(await faqDetails.evaluate((element) => (element as HTMLDetailsElement).open))) {
@@ -80,6 +99,26 @@ test("reduced motion disables smooth scrolling", async ({ page }) => {
   );
 
   expect(behavior).toBe("auto");
+});
+
+test("legacy reporting route redirects to the homepage report preview", async ({
+  page,
+}) => {
+  await page.goto("/reporting");
+  await expect(page).toHaveURL(/\/#reportpreview$/);
+  await expect(page.locator("#reportpreview")).toBeVisible();
+});
+
+test("mobile navigation closes with Escape and returns focus", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  const trigger = page.getByRole("button", { name: /Open navigation/i });
+  await trigger.click();
+  await expect(page.locator("#mobile-navigation")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#mobile-navigation")).toBeHidden();
+  await expect(trigger).toBeFocused();
 });
 
 test("HubSpot failure state provides hosted-form fallback", async ({ page }) => {

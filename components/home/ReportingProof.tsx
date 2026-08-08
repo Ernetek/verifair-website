@@ -1,423 +1,320 @@
-import {
-  ArrowRightIcon,
-  CheckCircleIcon,
-  DocumentArrowDownIcon,
-} from "@heroicons/react/24/outline";
+"use client";
+
 import Link from "next/link";
+import { useRef, useState } from "react";
 
 import { PARTICULATE_UNIT } from "@/lib/metrics";
 
-const reportSummary = [
-  ["Monitoring period", "Neutral sample period"],
-  ["Configured locations", "4 monitoring zones"],
-  ["Recorded events", "1 review event"],
-  ["Review status", "Completed"],
-];
+const reportTypes = [
+  {
+    title: "Operational snapshot",
+    description:
+      "A current view of selected locations, readings, system state and open events.",
+  },
+  {
+    title: "Trend and event review",
+    description:
+      "A focused review of particulate trends, configured events, acknowledgements and response notes.",
+  },
+  {
+    title: "Project-period report",
+    description:
+      "A structured record covering the reporting period, monitoring locations, data availability, events and review notes.",
+  },
+] as const;
 
-const eventRecord = [
-  {
-    time: "10:42",
-    title: "Review condition detected",
-    body: "PM2.5 at Zone 1 crossed the configured demonstration review line for three consecutive samples.",
-  },
-  {
-    time: "10:44",
-    title: "Site contact acknowledged",
-    body: "The nominated contact confirmed receipt and checked nearby work activity.",
-  },
-  {
-    time: "10:51",
-    title: "Example action recorded",
-    body: "Stopped dry sweeping, checked temporary barriers and changed the work area to vacuum-assisted cleanup.",
-  },
-  {
-    time: "11:20",
-    title: "Event reviewed and closed",
-    body: "PM2.5 returned below the configured review line and the example response was marked complete.",
-  },
-];
+const snapshotZones = [
+  ["Work Zone A", "PM2.5", "18", "Review"],
+  ["Occupied Interface", "PM2.5", "7", "Normal"],
+  ["External Boundary", "PM10", "21", "Normal"],
+] as const;
 
-const exportContents = [
-  "Reporting period and configured locations",
-  "PM1 and PM2.5 trend views",
-  "System and connection status",
-  "Recorded event chronology",
-  "Acknowledgement and response actions",
-  "Review status and generation date",
-];
+function OperationalSnapshot() {
+  return (
+    <div>
+      <div className="grid border-y border-slate-300 sm:grid-cols-3">
+        {snapshotZones.map(([zone, metric, value, status]) => (
+          <div
+            key={zone}
+            className="border-b border-slate-300 p-5 sm:border-b-0 sm:border-r last:border-r-0"
+          >
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+              {zone}
+            </p>
+            <p className="mt-3 text-3xl font-black text-slate-950">
+              {value}{" "}
+              <span className="text-sm font-semibold text-slate-500">
+                {PARTICULATE_UNIT}
+              </span>
+            </p>
+            <p className="mt-1 text-sm text-slate-500">{metric}</p>
+            <span
+              className={`mt-4 inline-flex px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${
+                status === "Review"
+                  ? "bg-amber-100 text-amber-900"
+                  : "bg-emerald-100 text-emerald-900"
+              }`}
+            >
+              {status}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <dl className="mt-6 grid gap-5 sm:grid-cols-3">
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            System state
+          </dt>
+          <dd className="mt-2 font-bold">3 locations online</dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            Open events
+          </dt>
+          <dd className="mt-2 font-bold">1 under review</dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            Latest update
+          </dt>
+          <dd className="mt-2 font-bold">10:58</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
+function TrendEventReview() {
+  return (
+    <div>
+      <div className="flex flex-wrap items-start justify-between gap-5 border-y border-slate-300 py-5">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Selected location
+          </p>
+          <p className="mt-2 text-xl font-bold">Work Zone A</p>
+        </div>
+        <div className="text-left sm:text-right">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Review period
+          </p>
+          <p className="mt-2 font-semibold">Neutral demonstration period</p>
+        </div>
+      </div>
+
+      <div className="mt-6 overflow-x-auto">
+        <svg
+          viewBox="0 0 620 250"
+          className="min-w-[36rem] w-full"
+          role="img"
+          aria-labelledby="homepage-reporting-trend-title homepage-reporting-trend-desc"
+        >
+          <title id="homepage-reporting-trend-title">
+            Demonstration PM2.5 trend and event
+          </title>
+          <desc id="homepage-reporting-trend-desc">
+            A demonstration trend crosses a project-specific review line before
+            returning below it.
+          </desc>
+          {[35, 85, 135, 185, 225].map((y) => (
+            <line key={y} x1="38" y1={y} x2="600" y2={y} stroke="#e2e8f0" />
+          ))}
+          <line
+            x1="38"
+            y1="120"
+            x2="600"
+            y2="120"
+            stroke="#d97706"
+            strokeWidth="2"
+            strokeDasharray="8 8"
+          />
+          <text x="390" y="108" fill="#92400e" fontSize="13" fontWeight="700">
+            Example project review line
+          </text>
+          <path
+            d="M38 205 C100 198 135 180 185 185 C235 190 260 148 310 154 C355 159 380 104 430 92 C480 80 520 132 600 116"
+            fill="none"
+            stroke="#2563eb"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+          <circle cx="430" cy="92" r="7" fill="#fff" stroke="#dc2626" strokeWidth="4" />
+        </svg>
+      </div>
+
+      <ol className="mt-7 border-y border-slate-300">
+        {[
+          "10:42 · Event recorded",
+          "10:44 · Nominated contact acknowledged",
+          "10:51 · Example response note added",
+          "11:20 · Review completed",
+        ].map((item) => (
+          <li key={item} className="border-b border-slate-300 py-4 last:border-b-0">
+            {item}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function ProjectPeriodReport() {
+  const fields = [
+    ["Project", "Demonstration Project"],
+    ["Reporting period", "Neutral demonstration period"],
+    ["Monitoring locations", "3 configured locations"],
+    ["Metrics", "PM1, PM2.5 and PM10"],
+    ["Data availability", "Illustrative system status summary"],
+    ["Recorded events", "1 reviewed demonstration event"],
+    ["Review notes", "3 time-stamped response entries"],
+    ["Generated", "Demonstration date"],
+  ];
+
+  return (
+    <div>
+      <div className="border-y border-slate-300">
+        {fields.map(([label, value]) => (
+          <div
+            key={label}
+            className="grid gap-2 border-b border-slate-300 py-4 last:border-b-0 sm:grid-cols-[12rem_1fr]"
+          >
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+              {label}
+            </p>
+            <p className="font-semibold text-slate-950">{value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 border-l-4 border-blue-600 bg-blue-50 p-4">
+        <p className="font-bold text-slate-950">Report record ready for review</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          The demonstration export brings together project context, selected
+          readings, event chronology and response notes.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ReportPanel({ active }: { active: number }) {
+  if (active === 0) return <OperationalSnapshot />;
+  if (active === 1) return <TrendEventReview />;
+  return <ProjectPeriodReport />;
+}
 
 export function ReportingProof() {
+  const [active, setActive] = useState(0);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  function selectTab(index: number) {
+    setActive(index);
+    window.requestAnimationFrame(() => tabRefs.current[index]?.focus());
+  }
+
   return (
     <section
-      className="border-b border-amber-200 bg-amber-50 py-16 sm:py-20 lg:py-24"
-      aria-labelledby="report-proof-title"
+      id="reportpreview"
+      className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24"
     >
       <div className="container">
-        <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-amber-800">
-              Report preview
-            </p>
-            <h2
-              id="report-proof-title"
-              className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl"
-            >
-              A structured record of conditions, events and response.
-            </h2>
-          </div>
+        <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
+          Reporting
+        </p>
+        <h2 className="mt-4 max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
+          Monitoring information organised for operational review.
+        </h2>
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+          Explore three distinct demonstration views using neutral project
+          labels, example settings and fictional data.
+        </p>
 
-          <div>
-            <p className="max-w-3xl text-lg leading-8 text-slate-600">
-              VerifAir reporting brings monitored conditions, configured
-              locations, event timing, acknowledgements and response actions
-              into one reviewable project-period document.
-            </p>
+        <div className="mt-12 grid gap-10 lg:grid-cols-[0.3fr_0.7fr]">
+          <div
+            role="tablist"
+            aria-label="Report type"
+            className="border-y border-slate-300"
+          >
+            {reportTypes.map((type, index) => (
+              <button
+                key={type.title}
+                ref={(element) => {
+                  tabRefs.current[index] = element;
+                }}
+                id={`homepage-report-tab-${index}`}
+                role="tab"
+                aria-selected={active === index}
+                aria-controls="homepage-report-panel"
+                tabIndex={active === index ? 0 : -1}
+                onClick={() => setActive(index)}
+                onKeyDown={(event) => {
+                  let next: number | null = null;
+                  if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                    next = (index + 1) % reportTypes.length;
+                  } else if (
+                    event.key === "ArrowUp" ||
+                    event.key === "ArrowLeft"
+                  ) {
+                    next = (index - 1 + reportTypes.length) % reportTypes.length;
+                  } else if (event.key === "Home") {
+                    next = 0;
+                  } else if (event.key === "End") {
+                    next = reportTypes.length - 1;
+                  }
 
-            <Link
-              href="/reporting"
-              className="mt-6 inline-flex items-center gap-2 font-bold text-blue-600 hover:underline"
-            >
-              View the demonstration report
-              <ArrowRightIcon className="size-4" aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-
-        <article className="relative mt-12 overflow-hidden border-2 border-slate-800 bg-white shadow-[12px_12px_0_0_rgba(120,53,15,0.18)]">
-          <div className="flex items-center justify-between border-b border-slate-300 bg-amber-100 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-amber-950 sm:px-8 lg:px-10">
-            <span>VerifAir project monitoring report</span>
-            <span>Page 1 of 1</span>
-          </div>
-
-          <header className="grid gap-6 border-b border-slate-300 bg-slate-950 px-5 py-6 text-white sm:px-8 lg:grid-cols-[1fr_auto] lg:px-10">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">
-                Demonstration data
-              </p>
-              <h3 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-                Project-period monitoring report
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                Demonstration Project · neutral sample period
-              </p>
-            </div>
-
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-              <div>
-                <dt className="text-slate-400">Document</dt>
-                <dd className="mt-1 font-semibold text-white">DEMO-RPT-001</dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Status</dt>
-                <dd className="mt-1 font-semibold text-emerald-300">
-                  Review completed
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Project</dt>
-                <dd className="mt-1 font-semibold text-white">
-                  Demonstration Project
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Generated</dt>
-                <dd className="mt-1 font-semibold text-white">
-                  Demonstration date
-                </dd>
-              </div>
-            </dl>
-          </header>
-
-          <div className="grid border-b border-slate-300 bg-white sm:grid-cols-2 lg:grid-cols-4">
-            {reportSummary.map(([label, value]) => (
-              <div
-                key={label}
-                className="border-b border-slate-200 px-5 py-5 last:border-b-0 sm:border-r lg:border-b-0 lg:last:border-r-0"
+                  if (next !== null) {
+                    event.preventDefault();
+                    selectTab(next);
+                  }
+                }}
+                className="block w-full border-b border-slate-300 border-l-2 border-l-transparent px-4 py-5 text-left last:border-b-0 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 aria-selected:border-l-blue-600 aria-selected:text-blue-600"
               >
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                  {label}
-                </p>
-                <p className="mt-2 font-bold text-slate-950">{value}</p>
-              </div>
+                <span className="block font-bold">{type.title}</span>
+                <span className="mt-2 block text-sm leading-6 text-slate-500">
+                  {type.description}
+                </span>
+              </button>
             ))}
           </div>
 
-          <div className="grid lg:grid-cols-[1.35fr_0.65fr]">
-            <section
-              className="border-b border-slate-300 bg-white px-5 py-8 sm:px-8 lg:border-b-0 lg:border-r lg:px-10 lg:py-10"
-              aria-labelledby="report-trend-title"
-            >
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
-                    Zone 1
-                  </p>
-                  <h4
-                    id="report-trend-title"
-                    className="mt-2 text-xl font-bold text-slate-950"
-                  >
-                    PM2.5 trend and recorded event
-                  </h4>
-                  <p className="mt-2 text-sm text-slate-500">
-                    Concentrations shown in {PARTICULATE_UNIT}.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-6 border-l-2 border-blue-600 pl-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-500">
-                      Latest
-                    </p>
-                    <p className="mt-1 text-2xl font-bold text-slate-950">
-                      18{" "}
-                      <span className="text-sm font-medium text-slate-500">
-                        {PARTICULATE_UNIT}
-                      </span>
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-500">
-                      Peak
-                    </p>
-                    <p className="mt-1 text-2xl font-bold text-slate-950">
-                      31{" "}
-                      <span className="text-sm font-medium text-slate-500">
-                        {PARTICULATE_UNIT}
-                      </span>
-                    </p>
-                  </div>
-                </div>
+          <div
+            id="homepage-report-panel"
+            role="tabpanel"
+            aria-labelledby={`homepage-report-tab-${active}`}
+            className="border border-slate-300 bg-slate-50 p-6 sm:p-8"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-300 pb-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                  Demonstration data
+                </p>
+                <h3 className="mt-2 text-2xl font-bold text-slate-950">
+                  {reportTypes[active].title}
+                </h3>
               </div>
-
-              <div className="mt-8 overflow-x-auto">
-                <svg
-                  viewBox="0 0 760 330"
-                  className="min-w-[42rem] w-full"
-                  role="img"
-                  aria-labelledby="report-chart-title report-chart-description"
-                >
-                  <title id="report-chart-title">
-                    Demonstration PM2.5 trend for Zone 1
-                  </title>
-                  <desc id="report-chart-description">
-                    PM2.5 rises above the configured review line before
-                    declining after the recorded example response.
-                  </desc>
-
-                  <defs>
-                    <linearGradient id="reportArea" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2563eb" stopOpacity="0.18" />
-                      <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-
-                  {[40, 100, 160, 220, 280].map((y) => (
-                    <line
-                      key={y}
-                      x1="70"
-                      y1={y}
-                      x2="730"
-                      y2={y}
-                      stroke="#e2e8f0"
-                    />
-                  ))}
-
-                  <g fill="#64748b" fontSize="13">
-                    <text x="28" y="45">40</text>
-                    <text x="28" y="105">30</text>
-                    <text x="28" y="165">20</text>
-                    <text x="28" y="225">10</text>
-                    <text x="38" y="285">0</text>
-                    <text x="70" y="315">09:30</text>
-                    <text x="220" y="315">10:00</text>
-                    <text x="370" y="315">10:30</text>
-                    <text x="520" y="315">11:00</text>
-                    <text x="680" y="315">11:30</text>
-                  </g>
-
-                  <line
-                    x1="70"
-                    y1="130"
-                    x2="730"
-                    y2="130"
-                    stroke="#d97706"
-                    strokeWidth="2"
-                    strokeDasharray="8 8"
-                  />
-                  <text
-                    x="535"
-                    y="119"
-                    fill="#92400e"
-                    fontSize="13"
-                    fontWeight="700"
-                  >
-                    Configured review line
-                  </text>
-
-                  <path
-                    d="M70 280 L70 245 C120 238 155 225 195 218 C240 210 270 190 310 198 C345 205 370 135 415 112 C455 92 485 145 520 158 C560 174 595 188 630 176 C670 164 695 172 730 168 L730 280 Z"
-                    fill="url(#reportArea)"
-                  />
-                  <path
-                    d="M70 245 C120 238 155 225 195 218 C240 210 270 190 310 198 C345 205 370 135 415 112 C455 92 485 145 520 158 C560 174 595 188 630 176 C670 164 695 172 730 168"
-                    fill="none"
-                    stroke="#2563eb"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                  />
-
-                  <line
-                    x1="415"
-                    y1="112"
-                    x2="415"
-                    y2="280"
-                    stroke="#dc2626"
-                    strokeWidth="2"
-                    strokeDasharray="5 6"
-                  />
-                  <circle
-                    cx="415"
-                    cy="112"
-                    r="8"
-                    fill="#ffffff"
-                    stroke="#dc2626"
-                    strokeWidth="4"
-                  />
-
-                  <g transform="translate(435 54)">
-                    <rect
-                      width="212"
-                      height="58"
-                      fill="#ffffff"
-                      stroke="#cbd5e1"
-                    />
-                    <text
-                      x="14"
-                      y="23"
-                      fill="#0f172a"
-                      fontSize="13"
-                      fontWeight="700"
-                    >
-                      Review event recorded
-                    </text>
-                    <text x="14" y="43" fill="#64748b" fontSize="12">
-                      10:42 · Zone 1
-                    </text>
-                  </g>
-                </svg>
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-x-7 gap-y-3 border-t border-slate-200 pt-5 text-xs font-semibold text-slate-600">
-                <span className="inline-flex items-center gap-2">
-                  <span className="h-0.5 w-7 bg-blue-600" aria-hidden="true" />
-                  PM2.5 trend
-                </span>
-                <span className="inline-flex items-center gap-2">
-                  <span
-                    className="h-0 w-7 border-t-2 border-dashed border-amber-600"
-                    aria-hidden="true"
-                  />
-                  Configured review line
-                </span>
-                <span className="inline-flex items-center gap-2">
-                  <span className="size-2 rounded-full bg-red-600" aria-hidden="true" />
-                  Recorded event
-                </span>
-              </div>
-            </section>
-
-            <section
-              className="bg-slate-50 px-5 py-8 sm:px-8 lg:px-10 lg:py-10"
-              aria-labelledby="report-event-title"
-            >
-              <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
-                Event chronology
-              </p>
-              <h4
-                id="report-event-title"
-                className="mt-2 text-xl font-bold text-slate-950"
-              >
-                From detection to closure
-              </h4>
-
-              <ol className="relative mt-7 border-l border-slate-300">
-                {eventRecord.map((event, index) => (
-                  <li
-                    key={`${event.time}-${event.title}`}
-                    className="relative pb-7 pl-6 last:pb-0"
-                  >
-                    <span
-                      className={`absolute -left-[5px] top-1 size-2.5 rounded-full ${
-                        index === eventRecord.length - 1
-                          ? "bg-emerald-600"
-                          : "bg-blue-600"
-                      }`}
-                      aria-hidden="true"
-                    />
-                    <div className="flex items-baseline justify-between gap-4">
-                      <h5 className="font-bold text-slate-950">{event.title}</h5>
-                      <time className="font-mono text-xs font-bold text-slate-500">
-                        {event.time}
-                      </time>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {event.body}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          </div>
-
-          <footer className="grid border-t border-slate-300 bg-white lg:grid-cols-[1.25fr_0.75fr]">
-            <section className="px-5 py-8 sm:px-8 lg:border-r lg:border-slate-300 lg:px-10">
-              <div className="flex items-start gap-4">
-                <DocumentArrowDownIcon
-                  className="mt-0.5 size-6 shrink-0 text-blue-600"
-                  aria-hidden="true"
-                />
-                <div>
-                  <h4 className="text-lg font-bold text-slate-950">
-                    Included in the export
-                  </h4>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    The demonstration export shows how monitoring and response
-                    information can be assembled into one project-period record.
-                  </p>
-                </div>
-              </div>
-
-              <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-                {exportContents.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-3 text-sm leading-6 text-slate-700"
-                  >
-                    <CheckCircleIcon
-                      className="mt-0.5 size-4 shrink-0 text-blue-600"
-                      aria-hidden="true"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <div className="border-t border-slate-300 px-5 py-8 sm:px-8 lg:flex lg:flex-col lg:justify-between lg:border-t-0 lg:px-10">
-              <p className="text-sm leading-6 text-slate-600">
-                Values, times, locations and actions shown here are fictional demonstration data and do not represent a customer deployment, exposure determination or material identification.
-              </p>
-
-              <Link
-                href="/reporting"
-                className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 bg-blue-600 px-5 font-bold text-white hover:bg-blue-700"
-              >
-                View demonstration report
-                <ArrowRightIcon className="size-4" aria-hidden="true" />
-              </Link>
+              <p className="text-sm text-slate-500">Demonstration Project</p>
             </div>
-          </footer>
-        </article>
+            <div className="mt-7">
+              <ReportPanel active={active} />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-wrap gap-4">
+          <Link
+            href="/contact"
+            className="inline-flex min-h-12 items-center justify-center bg-blue-600 px-6 font-bold text-white hover:bg-blue-700"
+          >
+            Request a reporting walkthrough
+          </Link>
+          <Link
+            href="/downloads/verifair-demonstration-report.pdf"
+            className="inline-flex min-h-12 items-center justify-center border border-slate-300 px-6 font-bold text-slate-900 hover:bg-slate-50"
+          >
+            Download demonstration report
+          </Link>
+        </div>
       </div>
     </section>
   );

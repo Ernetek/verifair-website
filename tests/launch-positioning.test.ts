@@ -38,9 +38,7 @@ describe("launch-stage positioning", () => {
 
   it("uses neutral demonstration labels", () => {
     const source = [
-      read("components/home/CoordinatedSolution.tsx"),
-      read("components/home/ReportingProof.tsx"),
-      read("components/reporting/ReportingPage.tsx"),
+      read("components/home/PlatformOverview.tsx"),
     ].join("\n");
 
     expect(source).toContain("Demonstration data");
@@ -51,7 +49,7 @@ describe("launch-stage positioning", () => {
   it("does not use prohibited adoption language", () => {
     const source = [
       read("lib/content.ts"),
-      read("components/home/ReportingProof.tsx"),
+      read("components/home/PlatformOverview.tsx"),
       read("components/home/PilotDeployment.tsx"),
       read("components/home/CTA.tsx"),
     ].join("\n");

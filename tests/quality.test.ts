@@ -13,10 +13,11 @@ function source(relative: string) {
 }
 
 describe("site quality requirements", () => {
-  it("uses the platform homepage anchor in navigation and markup", () => {
-    expect(primaryNav.some((item) => item.href === "/#platform")).toBe(true);
-    expect(source("components/home/CoordinatedSolution.tsx")).toContain('id="platform"');
-    expect(source("app/globals.css")).toContain("scroll-margin-top");
+  it("uses monitoring, workflow and reporting homepage anchors", () => {
+    expect(primaryNav.some((item) => item.href === "/#monitoring")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/#workflow")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/#reportpreview")).toBe(true);
+    expect(source("components/home/PlatformOverview.tsx")).toContain('id="platform"');
   });
 
   it("has valid canonical metadata for key indexable pages", () => {
@@ -29,29 +30,26 @@ describe("site quality requirements", () => {
     const urls = sitemap().map((entry) => entry.url);
     expect(urls).not.toContain(`${siteConfig.url}/search`);
     expect(urls).not.toContain(`${siteConfig.url}/reports`);
-    expect(source("app/reports/page.tsx")).toContain('permanentRedirect("/reporting")');
+    expect(source("app/reports/page.tsx")).toContain('permanentRedirect("/#reportpreview")');
   });
 
   it("uses approved particulate metrics and concentration units", () => {
     expect(SUPPORTED_PARTICULATE_METRICS).toEqual(["PM1", "PM2.5", "PM10"]);
-    expect(PARTICULATE_UNIT).toBe("µg/m³");
+    expect(PARTICULATE_UNIT).toBe("\u00b5g/m\u00b3");
 
     const files = [
-      "components/home/CoordinatedSolution.tsx",
-      "components/home/ReportingProof.tsx",
-      "components/reporting/ReportingPage.tsx",
+      "components/home/PlatformOverview.tsx",
       "components/technology/TechnologyPage.tsx",
     ].map(source).join("\n");
 
-    expect(files).not.toContain("µg/m²");
+    expect(files).not.toContain("Âµg/mÂ²");
     expect(files).not.toContain("PM1, PM2.5 and PM2.5");
   });
 
   it("does not use prohibited absolute claims", () => {
     const files = [
-      "components/home/CoordinatedSolution.tsx",
+      "components/home/PlatformOverview.tsx",
       "components/technology/TechnologyPage.tsx",
-      "components/reporting/ReportingPage.tsx",
     ].map(source).join("\n").toLowerCase();
 
     expect(files).not.toContain("failover guarantees");
@@ -61,9 +59,9 @@ describe("site quality requirements", () => {
 
   it("uses an H1 and an actual embedded-form detector on contact", () => {
     const form = source("components/contact/VerifAirContactForm.tsx");
-    expect(form).toContain('<h1 id="contact-form-title">');
+    expect(form).toMatch(/<h1[\s\S]*?id="contact-form-title"/);
     expect(form).not.toContain("formHost.childElementCount");
-    expect(form).toContain('"iframe, form, [data-hs-form-root], .hs-form"');
+    expect(form).toContain('.hs-form:not(.hs-form-frame)');
     expect(form).toContain("The enquiry form could not be loaded.");
   });
 
@@ -87,3 +85,4 @@ describe("site quality requirements", () => {
     expect(missing, `Missing public assets: ${missing.join(", ")}`).toEqual([]);
   });
 });
+

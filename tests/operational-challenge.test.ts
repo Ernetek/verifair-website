@@ -9,20 +9,21 @@ const source = fs.readFileSync(
 );
 
 describe("operational challenge", () => {
-  it("uses the active dust image", () => {
+  it("uses the active dust image without fabricated hardware", () => {
     expect(source).toContain("/assets/problem-active-dust.webp");
     expect(source).not.toContain("/assets/problem-dust-monitoring.png");
   });
 
-  it("uses the approved operational challenge headline", () => {
-    expect(source).toContain("You can’t respond to what you can’t see.");
+  it("uses the updated operational challenge framing", () => {
+    expect(source).toContain("You can\u2019t respond to what you can\u2019t see.");
+    expect(source).toContain("Active work can change particulate conditions between inspections");
+    expect(source).toMatch(/respirable crystalline\s+silica/);
+    expect(source).toMatch(/asbestos\s+fibres/);
   });
 
-  it("frames the challenge around changing conditions, shared context and response", () => {
-    expect(source).toContain("Work conditions do not remain static");
-    expect(source).toContain("A reading does not identify the hazard");
-    expect(source).toContain("respirable crystalline");
-    expect(source).toContain("asbestos fibres");
-    expect(source).toContain("a clear record of what happened next");
+  it("moves the detailed measurement limitation out of the visible observations", () => {
+    expect(source).not.toContain("A reading does not identify the hazard");
+    expect(source).not.toContain("do not determine personal exposure");
   });
 });
+

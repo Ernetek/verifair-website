@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { PARTICULATE_QUALIFICATION } from "@/lib/metrics";
 import { SALES_EMAIL } from "@/lib/site";
 
 import { Reveal } from "./Reveal";
@@ -28,24 +27,15 @@ export function FinalCTA() {
               >
                 Discuss a pilot project
               </Link>
-              <Link
+              <a
                 className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/35 !bg-transparent px-7 font-bold !text-white transition hover:!bg-white/10 hover:!text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
                 href={`mailto:${SALES_EMAIL}`}
               >
-                Request a product walkthrough
-              </Link>
+                Email VerifAir
+              </a>
             </div>
           </div>
         </Reveal>
-
-        <div className="mt-10 border-t border-white/15 pt-5 text-xs leading-5 text-slate-300">
-          <p>{PARTICULATE_QUALIFICATION}</p>
-          <p className="mt-2">
-            VerifAir supplements, but does not replace, competent risk
-            assessment, occupational-hygiene advice, exposure assessment,
-            specialist sampling, controls or project-specific legal obligations.
-          </p>
-        </div>
       </div>
     </section>
   );

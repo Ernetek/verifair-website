@@ -1,35 +1,62 @@
 "use client";
 
+import {
+  CheckCircleIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
-import { SALES_EMAIL } from "@/lib/site";
+import { SALES_EMAIL, siteConfig } from "@/lib/site";
 
-const HUBSPOT_PORTAL_ID = "442470070";
-const HUBSPOT_FORM_ID = "9bebb709-1b3f-4392-9f07-a2ea7478b2b4";
-const HUBSPOT_REGION = "ap1";
+const HUBSPOT_PORTAL_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID ?? "442470070";
+const HUBSPOT_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_CONTACT_FORM_ID ??
+  "9bebb709-1b3f-4392-9f07-a2ea7478b2b4";
+const HUBSPOT_REGION = process.env.NEXT_PUBLIC_HUBSPOT_REGION ?? "ap1";
 const HUBSPOT_HOSTED_FORM_URL =
+  process.env.NEXT_PUBLIC_HUBSPOT_HOSTED_FORM_URL ??
   "https://7bfo3a.share-ap1.hsforms.com/2m-u3CRs_Q5KfB6LqdHiytA";
 
 type FormStatus = "loading" | "ready" | "error";
+
+const projectDetails = [
+  "Project type and operating environment",
+  "Site location and expected timing",
+  "Potential monitoring locations and sensitive interfaces",
+  "Alert responsibilities and reporting requirements",
+];
+
+const nextSteps = [
+  "Project discussion",
+  "Site and operational-context review",
+  "Proposed monitoring approach",
+  "Demonstration or pilot planning",
+];
 
 export default function ContactForm() {
   const formHostRef = useRef<HTMLDivElement>(null);
   const [scriptReady, setScriptReady] = useState(false);
   const [formStatus, setFormStatus] = useState<FormStatus>("loading");
+  const hasConfiguration = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_FORM_ID);
 
   useEffect(() => {
+    if (!hasConfiguration) {
+      setFormStatus("error");
+      return;
+    }
+
     if (!scriptReady || !formHostRef.current) {
       return;
     }
 
     const formHost = formHostRef.current;
-
     const hasEmbeddedForm = () =>
       Boolean(
         formHost.querySelector(
-          "iframe, form, [data-hs-form-root], .hs-form",
+          "iframe, form, [data-hs-form-root], .hs-form:not(.hs-form-frame)",
         ),
       );
 
@@ -45,16 +72,12 @@ export default function ContactForm() {
       }
     });
 
-    observer.observe(formHost, {
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(formHost, { childList: true, subtree: true });
 
     const timeout = window.setTimeout(() => {
       if (!hasEmbeddedForm()) {
         setFormStatus("error");
       }
-
       observer.disconnect();
     }, 12000);
 
@@ -62,141 +85,135 @@ export default function ContactForm() {
       window.clearTimeout(timeout);
       observer.disconnect();
     };
-  }, [scriptReady]);
+  }, [hasConfiguration, scriptReady]);
 
   return (
     <section
-      id="contact-form"
-      className="contact-section"
+      id="project-enquiry"
+      className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20 lg:py-24"
       aria-labelledby="contact-form-title"
     >
-      <Script
-        id="verifair-hubspot-current-form"
-        src={`https://js-${HUBSPOT_REGION}.hsforms.net/forms/embed/${HUBSPOT_PORTAL_ID}.js`}
-        strategy="afterInteractive"
-        onReady={() => setScriptReady(true)}
-        onError={() => setFormStatus("error")}
-      />
+      {hasConfiguration ? (
+        <Script
+          id="verifair-hubspot-current-form"
+          src={`https://js-${HUBSPOT_REGION}.hsforms.net/forms/embed/${HUBSPOT_PORTAL_ID}.js`}
+          strategy="afterInteractive"
+          onReady={() => setScriptReady(true)}
+          onError={() => setFormStatus("error")}
+        />
+      ) : null}
 
-      <div className="contact-container">
-        <header className="contact-header">
-          <p className="contact-eyebrow">Project enquiries</p>
-
-          <h1 id="contact-form-title">
-            Discuss your monitoring requirements
-          </h1>
-
-          <p>
-            Tell us about your project, site conditions and monitoring
-            requirements. We’ll review the information and contact you to
-            discuss the most appropriate next steps.
+      <div className="container">
+        <div className="max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
+            Project enquiries
           </p>
-        </header>
+          <h1
+            id="contact-form-title"
+            className="mt-4 text-4xl font-bold leading-[1.04] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl"
+          >
+            Discuss your monitoring requirements.
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-slate-600">
+            Tell us about the project, operating environment and the monitoring
+            questions your team needs to answer. We will review the information
+            and discuss an appropriate next step.
+          </p>
+        </div>
 
-        <div className="contact-grid">
-          <aside className="contact-information">
-            <p className="panel-eyebrow">What to include</p>
+        <div className="mt-12 grid gap-10 lg:grid-cols-[0.42fr_0.58fr] lg:gap-16">
+          <div>
+            <section aria-labelledby="contact-include-title">
+              <h2 id="contact-include-title" className="text-2xl font-bold text-slate-950">
+                What to include
+              </h2>
+              <ul className="mt-6 border-y border-slate-300">
+                {projectDetails.map((detail) => (
+                  <li
+                    key={detail}
+                    className="flex gap-3 border-b border-slate-300 py-4 last:border-b-0"
+                  >
+                    <CheckCircleIcon className="mt-0.5 size-5 shrink-0 text-blue-600" aria-hidden="true" />
+                    <span className="leading-7 text-slate-700">{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-            <h3>Help us understand your project</h3>
+            <section className="mt-10" aria-labelledby="contact-next-title">
+              <h2 id="contact-next-title" className="text-2xl font-bold text-slate-950">
+                What happens next
+              </h2>
+              <ol className="mt-6 border-y border-slate-300">
+                {nextSteps.map((step, index) => (
+                  <li
+                    key={step}
+                    className="grid grid-cols-[2.5rem_1fr] gap-3 border-b border-slate-300 py-4 last:border-b-0"
+                  >
+                    <span className="font-mono text-sm font-bold text-blue-600">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-semibold text-slate-800">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </section>
 
-            <p className="panel-description">
-              Include the project location, expected timing, monitoring
-              requirements and any sensitive-site considerations.
-            </p>
-
-            <ul>
-              <li>
-                <CheckIcon />
-                <span>Project type and industry</span>
-              </li>
-
-              <li>
-                <CheckIcon />
-                <span>Site location and expected timing</span>
-              </li>
-
-              <li>
-                <CheckIcon />
-                <span>Monitoring and reporting requirements</span>
-              </li>
-
-              <li>
-                <CheckIcon />
-                <span>Healthcare or sensitive-site considerations</span>
-              </li>
-            </ul>
-<div className="direct-contact">
-              <span>Prefer to contact us directly?</span>
-
-              <a href={`mailto:${SALES_EMAIL}`}>
+            <div className="mt-10 border-l-4 border-blue-600 pl-5">
+              <p className="text-sm text-slate-500">Contact VerifAir directly</p>
+              <a className="mt-2 block font-bold text-blue-700 hover:underline" href={`mailto:${SALES_EMAIL}`}>
                 {SALES_EMAIL}
               </a>
-
-              <a href="tel:+61452447696">
-                0452 447 696
+              <a className="mt-2 block font-bold text-blue-700 hover:underline" href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}>
+                {siteConfig.phone}
               </a>
             </div>
-          </aside>
+          </div>
 
-          <div
-            className={`form-panel ${
-              formStatus === "error" ? "form-panel--error" : ""
-            }`}
-          >
-            <div className="form-panel-header">
+          <div className="border border-slate-300 bg-white p-5 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5">
               <div>
-                <p className="panel-eyebrow">VerifAir</p>
-                <h3>Submit a project enquiry</h3>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-600">
+                  VerifAir
+                </p>
+                <h2 className="mt-2 text-2xl font-bold text-slate-950">
+                  Submit a project enquiry
+                </h2>
               </div>
-
-              <span className="secure-label">
-                <LockIcon />
+              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+                <LockClosedIcon className="size-4" aria-hidden="true" />
                 Secure form
               </span>
             </div>
 
             <noscript>
-              <div className="form-error" role="alert">
+              <div className="mt-6 border-l-4 border-red-600 bg-red-50 p-4 text-sm text-red-900" role="alert">
                 <strong>JavaScript is required to load this form.</strong>
-
-                <p>
-                  Email{" "}
-                  <a href={`mailto:${SALES_EMAIL}`}>
-                    {SALES_EMAIL}
-                  </a>{" "}
-                  if you cannot enable JavaScript.
-                </p>
+                <p className="mt-2">Email <a className="font-bold underline" href={`mailto:${SALES_EMAIL}`}>{SALES_EMAIL}</a> if you cannot enable JavaScript.</p>
               </div>
             </noscript>
 
             {formStatus === "error" ? (
-              <div className="form-error" role="alert">
+              <div className="mt-6 border-l-4 border-amber-600 bg-amber-50 p-5 text-amber-950" role="alert">
                 <strong>The enquiry form could not be loaded.</strong>
-
-                <p>
-                  Please refresh the page, allow optional website scripts, or{" "}
-                  <a
-                    href={HUBSPOT_HOSTED_FORM_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                <p className="mt-2 leading-7">
+                  Refresh the page, allow optional website scripts, or{" "}
+                  <a className="font-bold underline" href={HUBSPOT_HOSTED_FORM_URL} target="_blank" rel="noreferrer">
                     open the enquiry form in a new tab
                   </a>
-                  . You can also email{" "}
-                  <a href={`mailto:${SALES_EMAIL}`}>{SALES_EMAIL}</a>.
+                  . You can also email <a className="font-bold underline" href={`mailto:${SALES_EMAIL}`}>{SALES_EMAIL}</a>.
                 </p>
               </div>
             ) : (
               <>
                 {formStatus === "loading" ? (
-                  <p className="form-loading" role="status" aria-live="polite">
+                  <p className="mt-6 text-sm text-slate-500" role="status" aria-live="polite">
                     Loading the secure enquiry form…
                   </p>
                 ) : null}
-
                 <div
                   ref={formHostRef}
-                  className="hubspot-current-form"
+                  className="mt-6 min-h-96"
                   aria-label="VerifAir project enquiry form"
                   aria-busy={formStatus === "loading"}
                 >
@@ -210,397 +227,16 @@ export default function ContactForm() {
               </>
             )}
 
-            <p className="privacy-message">
+            <p className="mt-6 border-t border-slate-200 pt-5 text-xs leading-5 text-slate-500">
               Your information will be handled in accordance with our{" "}
-              <Link href="/privacy">privacy policy</Link>.
+              <Link className="font-semibold text-blue-700 hover:underline" href="/privacy">
+                privacy policy
+              </Link>
+              .
             </p>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .contact-section,
-        .contact-section *,
-        .contact-section *::before,
-        .contact-section *::after {
-          box-sizing: border-box;
-        }
-
-        .contact-section {
-          width: 100%;
-          padding: clamp(72px, 9vw, 120px) 24px;
-          color: #ffffff;
-          background:
-            radial-gradient(
-              circle at 20% 100%,
-              rgba(57, 113, 63, 0.24),
-              transparent 35%
-            ),
-            #021c15;
-        }
-
-        .contact-container {
-          width: min(1160px, 100%);
-          margin: 0 auto;
-        }
-
-        .contact-header {
-          max-width: 690px;
-          margin: 0 auto clamp(42px, 6vw, 64px);
-          text-align: center;
-        }
-
-        .contact-eyebrow,
-        .panel-eyebrow {
-          margin: 0;
-          color: #16a878;
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-        }
-
-        .contact-header h1 {
-          margin: 16px 0 20px;
-          color: #ffffff;
-          font-size: clamp(36px, 5vw, 58px);
-          font-weight: 800;
-          line-height: 1.05;
-          letter-spacing: -0.045em;
-          text-wrap: balance;
-        }
-
-        .contact-header > p:last-child {
-          margin: 0;
-          color: rgba(255, 255, 255, 0.68);
-          font-size: 17px;
-          line-height: 1.7;
-        }
-
-        .contact-grid {
-          display: grid;
-          grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.4fr);
-          gap: 28px;
-          align-items: stretch;
-        }
-
-        .contact-information,
-        .form-panel {
-          min-width: 0;
-          border: 1px solid rgba(126, 218, 185, 0.14);
-          border-radius: 24px;
-        }
-
-        .contact-information {
-          display: flex;
-          flex-direction: column;
-          padding: clamp(28px, 4vw, 48px);
-          background:
-            radial-gradient(
-              circle at 100% 0,
-              rgba(145, 180, 88, 0.25),
-              transparent 40%
-            ),
-            linear-gradient(145deg, #07553e, #06382d);
-        }
-
-        .contact-information h3 {
-          margin: 16px 0;
-          color: #ffffff;
-          font-size: clamp(30px, 3.5vw, 44px);
-          line-height: 1.05;
-          letter-spacing: -0.04em;
-        }
-
-        .panel-description {
-          margin: 0;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 15px;
-          line-height: 1.7;
-        }
-
-        .contact-information ul {
-          display: grid;
-          gap: 17px;
-          margin: 32px 0;
-          padding: 0;
-          list-style: none;
-        }
-
-        .contact-information li {
-          display: flex;
-          gap: 12px;
-          align-items: flex-start;
-          color: rgba(255, 255, 255, 0.84);
-          font-size: 14px;
-          line-height: 1.5;
-        }
-
-        .contact-information li :global(svg) {
-          flex: 0 0 auto;
-          width: 18px;
-          height: 18px;
-          color: #78d8b5;
-        }
-
-        .contact-notice {
-          display: flex;
-          gap: 12px;
-          margin-top: auto;
-          padding: 18px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
-          background: rgba(255, 255, 255, 0.07);
-        }
-
-        .contact-notice :global(svg) {
-          flex: 0 0 auto;
-          width: 18px;
-          height: 18px;
-          color: #ffb145;
-        }
-
-        .contact-notice p {
-          margin: 0;
-          color: rgba(255, 255, 255, 0.69);
-          font-size: 12px;
-          line-height: 1.6;
-        }
-
-        .direct-contact {
-          display: grid;
-          gap: 6px;
-          margin-top: 24px;
-        }
-
-        .direct-contact span {
-          color: rgba(255, 255, 255, 0.48);
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-        }
-
-        .direct-contact a {
-          width: fit-content;
-          color: #ffffff;
-          font-size: 14px;
-          font-weight: 750;
-          text-decoration: none;
-        }
-
-        .direct-contact a:hover {
-          text-decoration: underline;
-          text-underline-offset: 4px;
-        }
-
-        .form-panel {
-          display: flex;
-          min-height: 700px;
-          flex-direction: column;
-          padding: clamp(28px, 4vw, 48px);
-          background: rgba(3, 39, 30, 0.82);
-        }
-
-        .form-panel--error {
-          min-height: 0;
-          align-self: start;
-        }
-
-        .form-panel-header {
-          display: flex;
-          gap: 24px;
-          align-items: flex-start;
-          justify-content: space-between;
-          margin-bottom: 30px;
-          padding-bottom: 25px;
-          border-bottom: 1px solid rgba(126, 218, 185, 0.1);
-        }
-
-        .form-panel-header h3 {
-          margin: 10px 0 0;
-          color: #ffffff;
-          font-size: clamp(24px, 3vw, 34px);
-          font-weight: 500;
-          line-height: 1.2;
-          letter-spacing: -0.03em;
-        }
-
-        .secure-label {
-          display: inline-flex;
-          flex: 0 0 auto;
-          gap: 7px;
-          align-items: center;
-          padding: 8px 11px;
-          border: 1px solid rgba(126, 218, 185, 0.15);
-          border-radius: 999px;
-          color: #16a878;
-          font-size: 11px;
-          font-weight: 700;
-        }
-
-        .secure-label :global(svg) {
-          width: 14px;
-          height: 14px;
-        }
-
-        .form-loading {
-          margin: 0 0 18px;
-          color: rgba(255, 255, 255, 0.68);
-          font-size: 14px;
-          line-height: 1.6;
-        }
-
-        .hubspot-current-form {
-          width: 100%;
-          min-width: 0;
-          flex: 1;
-        }
-
-        .hubspot-current-form :global(.hs-form-frame) {
-          width: 100%;
-          min-height: 560px;
-        }
-
-        .hubspot-current-form :global(iframe) {
-          display: block;
-          width: 100% !important;
-          max-width: 100% !important;
-          min-height: 560px;
-          border: 0;
-        }
-
-        .form-error {
-          padding: 22px;
-          border: 1px solid rgba(255, 177, 69, 0.4);
-          border-radius: 16px;
-          background: rgba(255, 177, 69, 0.08);
-        }
-
-        .form-error strong {
-          display: block;
-          margin-bottom: 8px;
-        }
-
-        .form-error p {
-          margin: 0;
-          color: rgba(255, 255, 255, 0.72);
-          line-height: 1.6;
-        }
-
-        .form-error a,
-        .privacy-message a {
-          color: #8ce3c4;
-          font-weight: 700;
-        }
-
-        .privacy-message {
-          margin: 24px 0 0;
-          color: rgba(255, 255, 255, 0.56);
-          font-size: 11px;
-          line-height: 1.6;
-          text-align: center;
-        }
-
-        @media (max-width: 900px) {
-          .contact-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .form-panel {
-            min-height: 650px;
-          }
-
-          .form-panel--error {
-            min-height: 0;
-          }
-        }
-
-        @media (max-width: 600px) {
-          .contact-section {
-            padding: 64px 16px;
-          }
-
-          .contact-header {
-            text-align: left;
-          }
-
-          .contact-information,
-          .form-panel {
-            padding: 24px;
-            border-radius: 20px;
-          }
-
-          .form-panel {
-            min-height: 620px;
-          }
-
-          .form-panel--error {
-            min-height: 0;
-          }
-
-          .form-panel-header {
-            display: grid;
-            gap: 14px;
-          }
-
-          .secure-label {
-            width: fit-content;
-          }
-
-          .hubspot-current-form :global(.hs-form-frame),
-          .hubspot-current-form :global(iframe) {
-            min-height: 520px;
-          }
-        }
-      `}</style>
     </section>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="m5 12.5 4.2 4.2L19 7"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <rect
-        x="5"
-        y="10"
-        width="14"
-        height="10"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-
-      <path
-        d="M8 10V7a4 4 0 0 1 8 0v3"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }

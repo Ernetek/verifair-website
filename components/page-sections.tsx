@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { PARTICULATE_QUALIFICATION } from "@/lib/metrics";
 import type { MarketingPage } from "@/lib/content";
 
 const zoneLabels: Record<string, [string, string, string]> = {
@@ -16,13 +15,25 @@ const zoneLabels: Record<string, [string, string, string]> = {
 export function PageHero({ page }: { page: MarketingPage }) {
   return (
     <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
-      <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
+      <div className="container grid gap-9 lg:grid-cols-[0.9fr_1.1fr] lg:gap-x-12 lg:gap-y-8 lg:items-center">
+        <div className="lg:col-start-1 lg:row-start-1">
           <p className="text-sm font-bold uppercase tracking-wide text-blue-600">{page.eyebrow}</p>
           <h1 className="mt-4 text-4xl font-bold leading-[1.04] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">{page.heading}</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">{page.intro}</p>
         </div>
-        {page.image ? <Image src={page.image} alt="" width={1000} height={720} className="h-auto w-full object-cover" priority /> : null}
+        {page.image ? (
+          <Image
+            src={page.image}
+            alt={`${page.title} environment`}
+            width={1000}
+            height={720}
+            quality={92}
+            className="h-auto w-full object-cover lg:col-start-2 lg:row-span-2 lg:row-start-1"
+            priority
+          />
+        ) : null}
+        <p className="max-w-2xl text-lg leading-8 text-slate-600 lg:col-start-1 lg:row-start-2">
+          {page.intro}
+        </p>
       </div>
     </section>
   );
@@ -98,15 +109,6 @@ export function FinalCTA() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/15 pt-5 text-xs leading-5 text-slate-300">
-          <p>{PARTICULATE_QUALIFICATION}</p>
-          <p className="mt-2">
-            VerifAir supports operational monitoring, response and record
-            keeping, but does not replace competent risk assessment,
-            occupational-hygiene advice, exposure assessment, specialist
-            sampling, controls or project-specific legal obligations.
-          </p>
-        </div>
       </div>
     </section>
   );

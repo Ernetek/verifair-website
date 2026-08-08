@@ -19,11 +19,11 @@ export const metadata: Metadata = {
 export default function SharedDashboardDemonstrationPage() {
   return (
     <>
-      <main className="bg-slate-100 py-8 sm:py-12">
+      <section className="bg-slate-100 py-8 sm:py-12">
         <div className="container">
           <SharedDashboardPage />
         </div>
-      </main>
+      </section>
       <PageDisclaimer />
     </>
   );

@@ -5,18 +5,18 @@ import { Reveal } from "./Reveal";
 const observations = [
   {
     number: "01",
-    title: "Work conditions do not remain static.",
-    body: "Cutting, demolition, cleanup, access changes and temporary controls can alter particulate conditions during the shift—not only when a scheduled inspection occurs.",
+    title: "Conditions can change between inspections.",
+    body: "Cutting, drilling, demolition, cleanup, access changes and temporary controls can create short-duration changes that a scheduled inspection may miss.",
   },
   {
     number: "02",
-    title: "The people who need context are often in different places.",
-    body: "Site teams, facility representatives and project leaders may each see only part of the situation. Without a shared view, readings, location and work activity can become disconnected.",
+    title: "Hazards require material-specific controls.",
+    body: "Respirable crystalline silica and asbestos fibres require competent assessment, appropriate controls and specialist methods that match the material and work activity.",
   },
   {
     number: "03",
-    title: "A reading does not identify the hazard.",
-    body: "Particulate trends can show that conditions are changing, but they cannot identify silica, asbestos or another material, and they do not determine personal exposure. Material identification, exposure assessment and specialist controls remain essential.",
+    title: "The response needs a shared record.",
+    body: "Location, timing, readings, notifications and practical actions should be reviewed together so teams can understand what happened next.",
   },
 ];
 
@@ -26,19 +26,41 @@ export function ProblemSection() {
       id="problem"
       className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24"
     >
-      <div className="container grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <Reveal>
+      <div className="container grid gap-9 lg:grid-cols-[1.02fr_0.98fr] lg:gap-x-14 lg:gap-y-8 lg:items-start">
+        <Reveal className="lg:col-start-1 lg:row-start-1">
           <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-            The operational challenge
+            The operational site challenge
           </p>
 
           <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
             You can’t respond to what you can’t see.
           </h2>
+        </Reveal>
 
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Active work can change particulate conditions between inspections
-            and before there is an obvious visual warning. Some activities can
+        <Reveal delay={0.08} className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <figure>
+            <div className="overflow-hidden border border-slate-200 bg-slate-50">
+              <Image
+                src="/assets/problem-active-dust.webp"
+                alt="Active dusty work beside a dust-sensitive occupied environment"
+                width={1150}
+                height={1200}
+                quality={92}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            <figcaption className="mt-3 text-sm leading-6 text-slate-500">
+              Active work can change particulate conditions between inspections.
+              Monitoring locations and response arrangements are determined for
+              the project context.
+            </figcaption>
+          </figure>
+        </Reveal>
+
+        <Reveal className="lg:col-start-1 lg:row-start-2">
+          <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+            Active work can change particulate conditions between inspections and
+            before there is an obvious visual warning. Some activities can
             generate hazardous respirable dust, including respirable crystalline
             silica, while disturbance of asbestos-containing material can release
             asbestos fibres. Teams need timely visibility, material-specific risk
@@ -66,26 +88,8 @@ export function ProblemSection() {
             ))}
           </ol>
         </Reveal>
-
-        <Reveal delay={0.08}>
-          <figure>
-            <div className="overflow-hidden border border-slate-200 bg-slate-50">
-              <Image
-                src="/assets/problem-active-dust.webp"
-                alt="Active dusty work illustrating changing particulate conditions at a work interface"
-                width={1200}
-                height={1200}
-                className="h-auto w-full object-cover"
-              />
-            </div>
-            <figcaption className="mt-3 text-sm leading-6 text-slate-500">
-              Active work can change particulate conditions over time. Monitoring
-              locations and response settings are configured for the project
-              context.
-            </figcaption>
-          </figure>
-        </Reveal>
       </div>
     </section>
   );
 }
+

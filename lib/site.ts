@@ -12,10 +12,10 @@ export const siteConfig = {
 };
 
 export const primaryNav = [
-  { label: "Platform", href: "/#platform" },
-  { label: "Technology", href: "/technology" },
+  { label: "Monitoring", href: "/#monitoring" },
+  { label: "Workflow", href: "/#workflow" },
+  { label: "Reporting", href: "/#reportpreview" },
   { label: "Industries", href: "/#industries" },
-  { label: "Reporting", href: "/reporting" },
   { label: "Resources", href: "/resources" },
   { label: "Contact", href: "/contact" }
 ];
@@ -24,9 +24,10 @@ export const footerGroups = [
   {
     title: "Products",
     links: [
-      { label: "Platform", href: "/#platform" },
-      { label: "Technology", href: "/technology" },
-      { label: "Reporting", href: "/reporting" }
+      { label: "Monitoring", href: "/#monitoring" },
+      { label: "Workflow", href: "/#workflow" },
+      { label: "Reporting", href: "/#reportpreview" },
+      { label: "Technology", href: "/technology" }
     ]
   },
   {

@@ -7,7 +7,11 @@ const isDev = process.env.NODE_ENV === "development";
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   allowedDevOrigins: ["127.0.0.1"],
-  images: { formats: ["image/avif", "image/webp"], minimumCacheTTL: 31536000 },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 31536000,
+    qualities: [75, 92, 95],
+  },
   experimental: { optimizePackageImports: ["@heroicons/react"] },
   async headers() {
     const csp = [
@@ -18,6 +22,7 @@ const nextConfig = {
       "font-src 'self' data:",
       "connect-src 'self' https://*.hsforms.com https://*.hsforms.net https://challenges.cloudflare.com",
       "frame-src https://*.hsforms.com https://*.hsforms.net https://challenges.cloudflare.com",
+      "child-src 'self' https://*.hsforms.com",
       "form-action 'self' https://*.hsforms.com",
       "base-uri 'self'",
       "frame-ancestors 'self'",

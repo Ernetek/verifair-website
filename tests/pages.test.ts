@@ -4,12 +4,15 @@ import { verifAirResources } from "../lib/resources";
 import { footerGroups, primaryNav } from "../lib/site";
 
 describe("VerifAir public page configuration", () => {
-  it("includes the rebuilt primary routes", () => {
+  it("includes the rebuilt primary routes and homepage sections", () => {
     const routes = primaryNav.map((item) => item.href);
 
-    expect(routes).toContain("/technology");
+    expect(routes).toContain("/#monitoring");
+    expect(routes).toContain("/#workflow");
+    expect(routes).toContain("/#reportpreview");
     expect(routes).toContain("/resources");
-    expect(routes).toContain("/reporting");
+    expect(routes).not.toContain("/technology");
+    expect(routes).not.toContain("/#platform");
   });
 
   it("publishes a substantial resource library with unique slugs", () => {
@@ -19,12 +22,12 @@ describe("VerifAir public page configuration", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("links reporting from the footer", () => {
+  it("links reporting to the homepage preview from the footer", () => {
     const links = footerGroups.flatMap((group) => group.links);
 
     expect(links).toContainEqual({
       label: "Reporting",
-      href: "/reporting",
+      href: "/#reportpreview",
     });
   });
 });

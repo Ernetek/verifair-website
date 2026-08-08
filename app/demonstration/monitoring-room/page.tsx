@@ -19,11 +19,11 @@ export const metadata: Metadata = {
 export default function MonitoringRoomDemonstrationPage() {
   return (
     <>
-      <main className="bg-slate-100 py-8 sm:py-12">
+      <section className="bg-slate-100 py-8 sm:py-12">
         <div className="container">
           <MonitoringRoomDisplayPage />
         </div>
-      </main>
+      </section>
       <PageDisclaimer />
     </>
   );

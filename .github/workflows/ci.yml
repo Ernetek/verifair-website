@@ -1,10 +1,14 @@
-name: CI
+name: CI and production deploy
 
 on:
   pull_request:
   push:
     branches:
       - main
+
+concurrency:
+  group: verifair-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
@@ -15,7 +19,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: npm
       - name: Install
         run: npm ci
@@ -25,7 +29,34 @@ jobs:
         run: npm run lint
       - name: Unit tests
         run: npm test
-      - name: Build
+      - name: Production build
         run: npm run build
       - name: E2E tests
         run: npx playwright install --with-deps chromium webkit && npm run test:e2e
+      - name: Cloudflare build
+        run: npm run cf:build
+
+  deploy:
+    needs: quality
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Build for Cloudflare
+        run: npm run cf:build
+      - name: Deploy
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

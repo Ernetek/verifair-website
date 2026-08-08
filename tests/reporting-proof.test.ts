@@ -1,27 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
-
 import { describe, expect, it } from "vitest";
 
-const source = fs.readFileSync(
-  path.join(process.cwd(), "components/home/ReportingProof.tsx"),
-  "utf8",
-);
+const source = fs.readFileSync(path.join(process.cwd(), "components/home/PlatformOverview.tsx"), "utf8");
 
-describe("homepage reporting proof", () => {
-  it("uses concrete example response actions", () => {
-    expect(source).toContain("Stopped dry sweeping");
-    expect(source).toContain("vacuum-assisted cleanup");
+describe("homepage reporting preview", () => {
+  it("defaults to a manual summary report with a last-seven-days range", () => {
+    expect(source).toContain('useState<ReportView>("Summary report")');
+    expect(source).toContain('useState<DateRange>("Last 7 days")');
+    expect(source).not.toContain("setViewIndex");
   });
 
-  it("shows a structured report and event chronology", () => {
-    expect(source).toContain("Project-period monitoring report");
-    expect(source).toContain("From detection to closure");
-    expect(source).toContain("Included in the export");
-  });
-
-  it("clearly labels demonstration data", () => {
-    expect(source).toContain("Demonstration data");
-    expect(source).toContain("fictional demonstration data");
+  it("includes requested summary metrics", () => {
+    expect(source).toContain("Avg PM1");
+    expect(source).toContain("Avg PM2.5");
+    expect(source).toContain("Avg PM10");
+    expect(source).toContain("Highest recorded");
+    expect(source).toContain("Longest duration");
+    expect(source).toContain("Warnings");
+    expect(source).toContain("Actions");
+    expect(source).toContain("Downtime");
   });
 });

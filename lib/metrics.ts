@@ -5,5 +5,3 @@ export type SupportedParticulateMetric =
 
 export const PARTICULATE_UNIT = "µg/m³";
 
-export const PARTICULATE_QUALIFICATION =
-  "Particulate readings indicate particle-size fractions and changing conditions. They do not identify material composition or determine personal exposure.";

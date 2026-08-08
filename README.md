@@ -1,20 +1,35 @@
-# VerifAir Public Website
+# VerifAir public website
 
-Production-ready Next.js App Router website for VerifAir, built for Cloudflare Workers with Static Assets.
+Launch-stage public website for VerifAir, an Erne Tech particulate-monitoring platform.
 
-## Commands
+## Local development
 
-- `npm run dev`: local development.
-- `npm run build`: Next.js production build.
-- `npm run typecheck`: TypeScript checks.
-- `npm run lint`: ESLint.
-- `npm test`: content/unit tests.
-- `npm run test:e2e`: Playwright checks.
-- `npm run cf:build`: Cloudflare worker build through OpenNext.
-- `npm run cf:deploy`: Cloudflare deploy.
+Use Node 22.
 
-## Positioning
+```bash
+nvm use
+npm ci
+npm run dev
+```
 
-Dustlight provides particulate monitoring. VerifAir coordinates Dustlight devices into a real-time environmental intelligence platform for dust-sensitive projects.
+## Quality checks
 
-The public website is separate from the operational monitoring platform, which should be hosted under a separate subdomain such as `app.verifair.com.au`.
+```bash
+npm run typecheck
+npm run lint
+npm test
+npm run build
+npm run test:e2e
+npm run cf:build
+```
+
+## Deployment
+
+GitHub Actions runs the full quality job before the production Cloudflare deployment. A failed typecheck, lint, test, build or E2E check prevents deployment.
+
+Required GitHub secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+See `HUBSPOT_SETUP.md` for the public enquiry-form configuration.

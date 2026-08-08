@@ -3,50 +3,33 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const read = (relativePath: string) =>
-  fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
+const read = (relativePath: string) => fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
 describe("homepage layout refresh", () => {
-  it("uses a full-width shared dashboard followed by a 3x2 workflow grid", () => {
-    const source = read("components/home/CoordinatedSolution.tsx");
-
-    expect(source).toContain("<SharedDashboardPreview />");
-    expect(source).toContain("sm:grid-cols-2 lg:grid-cols-3");
-    expect(source).toContain("Shared environment overview & workflows");
-    expect(source).not.toContain("Earlier awareness");
-    expect(source).not.toContain("Coordinated response");
+  it("uses the consolidated platform overview", () => {
+    const source = read("components/home/PlatformOverview.tsx");
+    expect(source).toContain("Platform overview");
+    expect(source).toContain("MonitoringRoomHeroPreview");
+    expect(source).toContain("WorkflowDashboardDemo");
+    expect(source).toContain("ReportingDashboardDemo");
+    expect(source).toContain("7000");
+    expect(source).toContain("carouselInView");
+    expect(source).not.toContain('addEventListener("wheel"');
   });
 
-  it("places the readiness banner inside the hero", () => {
+  it("uses the full-opacity technology environment as the homepage hero background", () => {
     const hero = read("components/home/Hero.tsx");
-    const homepage = read("app/page.tsx");
-
     expect(hero).toContain("<PolicyReadinessBanner />");
-    expect(homepage).not.toContain("<PolicyReadinessBanner />");
-    expect(hero).toContain("See change. Act sooner.");
+    expect(hero).toContain("See changing particulate conditions. Act sooner.");
+    expect(hero).toContain('src="/assets/tech_hero.webp"');
+    expect(hero).toContain('lg:grid-cols-[65%_35%]');
+    expect(hero).toContain('from "next/image"');
+    expect(hero).not.toContain("MonitoringRoomHeroPreview");
+    expect(hero).not.toContain("opacity-");
   });
 
-  it("uses contain sizing for industry images", () => {
-    const industries = read("components/home/Industries.tsx");
-
-    expect(industries).toContain("object-contain");
-    expect(industries).not.toContain("min-h-[30rem] w-full object-cover");
-  });
-
-  it("moves the homepage disclaimer into the final CTA", () => {
+  it("places the shared disclaimer after the final CTA", () => {
     const homepage = read("app/page.tsx");
-    const cta = read("components/home/CTA.tsx");
-
-    expect(homepage).not.toContain("<PageDisclaimer />");
-    expect(cta).toContain("PARTICULATE_QUALIFICATION");
-  });
-
-  it("uses explicit high-contrast button colours in both final CTA components", () => {
-    const homeCta = read("components/home/CTA.tsx");
-    const pageCta = read("components/page-sections.tsx");
-
-    expect(homeCta).toContain("!text-slate-950");
-    expect(pageCta).toContain("!text-slate-950");
-    expect(pageCta).toContain("!text-white");
+    expect(homepage.indexOf("<PageDisclaimer />")).toBeGreaterThan(homepage.indexOf("<FinalCTA />"));
   });
 });

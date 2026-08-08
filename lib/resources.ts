@@ -137,7 +137,7 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "alert-response-planning",
-    image: "/assets/alerts.webp",
+    image: "/assets/Alerts.webp",
     updated: "2026-08-05",
     readingMinutes: 5,
     category: "Project checklist",
@@ -276,8 +276,8 @@ export const verifAirResources: VerifAirResource[] = [
       {
         title: "A strong personal monitoring tool",
         paragraphs: [
-          "Dustlight provides real-time PM1 and PM2.5 readings, local visual status and audible alerts in a compact wearable format.",
-          "When it is charged, switched on, paired and syncing correctly, it gives the wearer valuable immediate feedback and a useful record of personal monitoring conditions.",
+          "Dustlight provides real-time PM1, PM2.5 and PM10 readings, local visual status and audible alerts in a compact wearable format.",
+          "Used in accordance with the approved application and manufacturer guidance, it provides immediate feedback to the wearer and a useful record of monitored conditions.",
         ],
         points: [
           "Wearable and portable",
@@ -288,10 +288,10 @@ export const verifAirResources: VerifAirResource[] = [
         ],
       },
       {
-        title: "Why installed monitoring is also needed",
+        title: "Why project-level visibility may also be useful",
         paragraphs: [
-          "Personal wearables depend on human routines. Devices may be left at home, not switched on, not paired to Bluetooth or prevented from completing cloud synchronisation.",
-          "VerifAir complements Dustlight with an always-on installed architecture, automated redundancy, local buffering and failover so site-wide real-time monitoring does not depend on one worker or one phone.",
+          "Personal monitoring and project-level environmental visibility answer different operational questions. A project team may need an agreed shared view across selected locations, nominated recipients and reporting periods.",
+          "VerifAir is intended to complement approved Dustlight use with configured site connectivity, shared dashboards, project-specific event workflows and operational reporting.",
         ],
       },
     ],
@@ -304,22 +304,22 @@ export const verifAirResources: VerifAirResource[] = [
     category: "System overview",
     title: "How VerifAir extends Dustlight",
     summary:
-      "A clear explanation of how VerifAir turns excellent personal Dustlight monitoring into an always-on site-wide system.",
+      "A clear explanation of how VerifAir adds project-level connectivity, shared visibility, event workflows and reporting around approved Dustlight monitoring.",
     intro:
-      "Erne Tech developed VerifAir to extend the value of Dustlight beyond the practical range and workflow limitations of a phone-connected Bluetooth wearable.",
+      "Erne Tech is developing VerifAir to complement Dustlight with project-level connectivity, shared visibility, configured event workflows and reporting.",
     sections: [
       {
         title: "From personal alerting to site-wide visibility",
         paragraphs: [
-          "Dustlight remains the trusted sensing and local alerting device. VerifAir adds fixed connectivity, edge processing, automated redundancy, failover, dashboards, alerts and reporting.",
-          "The result is real-time monitoring across selected zones without relying on a worker remembering to carry, switch on, pair or sync a device.",
+          "Dustlight remains the approved sensing and local-alerting device for its intended application. VerifAir adds configured site connectivity, project dashboards, event workflows and reporting.",
+          "The proposed deployment approach is assessed for the site, including device use, monitoring locations, connectivity, maintenance and response ownership.",
         ],
         points: [
-          "Always-on monitoring",
-          "Automated redundancy and failover",
-          "Local buffering during connectivity interruptions",
-          "Customer-branded, project-specific dashboards",
-          "Authorised access from remotely where an authorised internet connection is available",
+          "Project-specific monitoring configuration",
+          "Configured site connectivity",
+          "Shared project dashboards",
+          "Time-stamped event and response records",
+          "Authorised remote access subject to the deployed service and connection",
         ],
       },
     ],

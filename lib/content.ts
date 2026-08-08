@@ -123,17 +123,17 @@ export const pageContent: Record<string, MarketingPage> = {
     sections: [
       {
         title: "Dustlight particulate monitoring",
-        body: "Dustlight is a highly effective personal wearable monitor that gives workers immediate real-time PM1 and PM2.5 awareness through its clear traffic-light display and audible alerts.",
+        body: "Dustlight is designed as a personal real-time dust monitor that provides PM1, PM2.5 and PM10 readings with a clear local status display and audible alerts.",
         points: ["Laser-based photometric measurement", "Clear green, amber and red traffic-light alerts with audible warning", "Indicative measurement for early awareness", "Maintenance intervals required for ongoing measurement quality"]
       },
       {
         title: "Gateway and edge processing",
-        body: "VerifAir builds on Dustlight by removing dependence on a worker remembering, charging, switching on, pairing and cloud-syncing a phone-connected wearable. The installed system is always on, uses automated redundancy and failover, and delivers real-time site monitoring.",
-        points: ["Concurrent BLE telemetry distribution", "Automated redundancy, local buffering and failover to maximise uptime", "Always-on gateway bridging that removes reliance on a worker phone", "Priority handling for monitoring data"]
+        body: "VerifAir is intended to complement approved Dustlight use with configured site connectivity and project-level visibility. The final connection, continuity and maintenance approach is validated for the proposed deployment.",
+        points: ["Configured telemetry transfer", "Project-specific continuity planning", "Shared dashboard visibility", "System-state and maintenance considerations"]
       },
       {
         title: "Secure cloud and reporting",
-        body: "Secure cloud services make each customer-branded, project-specific dashboard available to authorised users remotely where an authorised internet connection is available while maintaining real-time alerts, synchronisation and reporting.",
+        body: "Configured cloud services can make the project dashboard available to authorised users, subject to the deployed connection, service availability, access controls and project requirements.",
         points: ["Encrypted transport", "Cloudflare-hosted public site", "Future customer portal on app.verifair.com.au", complianceNote]
       }
     ]
@@ -210,13 +210,13 @@ export const pageContent: Record<string, MarketingPage> = {
     eyebrow: "Infrastructure",
     heading: "Continuous visibility across changing infrastructure work fronts.",
     intro:
-      "VerifAir provides always-on monitoring across changing work fronts, compounds and sensitive receptors so authorised teams can review real-time conditions from remotely where an authorised internet connection is available.",
+      "VerifAir can provide shared particulate visibility across selected work fronts, compounds and sensitive receptors, subject to the approved monitoring and connectivity design.",
     image: "/assets/industry-infrastructure-environment.webp",
     sections: [
       {
         title: "Multi-site and multi-zone coverage",
         body: "Coordinate Dustlight devices across work fronts, compounds, occupied interfaces and sensitive receptors.",
-        points: ["Transport and civil works", "Public interfaces", "Customer-branded, project-specific dashboards", "Authorised dashboard access from remotely where an authorised internet connection is available"]
+        points: ["Transport and civil works", "Public interfaces", "Project-specific dashboards", "Authorised remote access subject to the deployed service and connection"]
       },
       {
         title: "Evidence for review",
@@ -276,7 +276,7 @@ export const pageContent: Record<string, MarketingPage> = {
     eyebrow: "Commercial buildings",
     heading: "Continuous monitoring for occupied commercial environments.",
     intro:
-      "VerifAir gives facility and project teams an always-on view of PM1 and PM2.5 conditions across occupied floors, work zones and shared access points.",
+      "VerifAir can give facility and project teams a shared view of PM1, PM2.5 and PM10 conditions across selected occupied floors, work zones and access points.",
     image: "/assets/industry-commercial-environment.webp",
     sections: [
       {
@@ -430,7 +430,7 @@ export const faqs = [
   {
     question: "What happens if internet connectivity is interrupted?",
     answer:
-      "The edge-first design supports local buffering and processing during connectivity interruptions, with synchronisation resuming where configured when connectivity returns.",
+      "Continuity behaviour depends on the approved project design. Where technically configured and validated, the system may retain or recover data after a temporary connection interruption.",
   },
   {
     question: "How are alerts configured?",

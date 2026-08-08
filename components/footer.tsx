@@ -36,7 +36,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-8 text-sm text-slate-400 md:flex-row md:items-center md:justify-between">
-          <p>Copyright 2026 VerifAir. Developed by Erne Tech Solutions.</p>
+          <p>Copyright 2026 VerifAir. Developed by Erne Tech.</p>
           <p>
             <a className="hover:text-white" href={`mailto:${siteConfig.email}`}>
               {siteConfig.email}

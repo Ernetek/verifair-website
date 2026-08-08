@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import ContactForm from "@/components/contact/VerifAirContactForm";
+import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 import {
   ContentSections,
   FinalCTA,
@@ -211,7 +212,7 @@ export default async function SlugPage({
           <div id="project-enquiry">
             <ContactForm />
           </div>
-
+          <PageDisclaimer />
         </div>
       </>
     );
@@ -237,6 +238,7 @@ export default async function SlugPage({
 
 
         <FinalCTA />
+        <PageDisclaimer />
       </div>
     </>
   );
@@ -249,7 +251,7 @@ function ResourceList() {
       "/resources/hospital-construction-dust-monitoring",
     ],
     [
-      "PM1 and PM2.5 explainer",
+      "PM1, PM2.5 and PM10 explainer",
       "/resources/pm-particle-size-guide",
     ],
     [
