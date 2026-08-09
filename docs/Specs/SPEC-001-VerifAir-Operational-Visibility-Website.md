@@ -4,10 +4,12 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Draft governance baseline — human review required before commit |
-| Version | 1.1-draft |
+| Status | Approved baseline |
+| Version | 1.0 |
 | Owner | VerifAir / Erne Tech |
-| Architecture decisions | Approved for TASK 003B drafting |
+| Approval state | Human reviewed and approved |
+| Approval date | 2026-08-09 |
+| Architecture decisions | Governance/specification baseline approved; future implementation remains separately gated |
 | Regulatory approval | Not granted; identified regulatory content requires expert review |
 | Last revised | 2026-08-09 |
 
