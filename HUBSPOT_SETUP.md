@@ -5,6 +5,9 @@ The public contact page embeds the HubSpot form from:
 `components/contact/VerifAirContactForm.tsx`
 
 The previous custom form component and `/api/enquiries` route have been removed.
+The public contact page does not submit through a local VerifAir API route; the
+active embedded form submits directly to HubSpot and retains the hosted-form and
+direct-email fallbacks described below.
 
 ## Environment variables
 
