@@ -65,6 +65,11 @@ describe("site quality requirements", () => {
     expect(form).toContain("The enquiry form could not be loaded.");
   });
 
+  it("does not include the retired local enquiry implementation", () => {
+    expect(fs.existsSync(path.join(root, "app/api/enquiries/route.ts"))).toBe(false);
+    expect(fs.existsSync(path.join(root, "components/contact-form.tsx"))).toBe(false);
+  });
+
   it("has no missing or case-mismatched absolute public asset references", () => {
     const bases = ["app", "components", "lib"];
     const refs = new Set<string>();
