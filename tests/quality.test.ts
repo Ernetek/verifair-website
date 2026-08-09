@@ -70,9 +70,10 @@ describe("site quality requirements", () => {
     expect(fs.existsSync(path.join(root, "components/contact-form.tsx"))).toBe(false);
   });
 
-  it("has no missing absolute public asset references", () => {
+  it("has no missing or case-mismatched absolute public asset references", () => {
     const bases = ["app", "components", "lib"];
     const refs = new Set<string>();
+    const publicDirectory = path.join(root, "public");
 
     for (const base of bases) {
       const directory = path.join(root, base);
@@ -83,11 +84,19 @@ describe("site quality requirements", () => {
       }
     }
 
-    const missing = [...refs].filter(
-      (ref) => !fs.existsSync(path.join(root, "public", ref)),
+    const publicFiles = new Set(
+      fs
+        .readdirSync(publicDirectory, { recursive: true })
+        .filter((entry): entry is string => typeof entry === "string")
+        .filter((entry) => fs.statSync(path.join(publicDirectory, entry)).isFile())
+        .map((entry) => `/${entry.split(path.sep).join("/")}`),
     );
 
-    expect(missing, `Missing public assets: ${missing.join(", ")}`).toEqual([]);
+    const missing = [...refs].filter((ref) => !publicFiles.has(ref));
+
+    expect(
+      missing,
+      `Missing or case-mismatched public assets: ${missing.join(", ")}`,
+    ).toEqual([]);
   });
 });
-
