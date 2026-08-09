@@ -25,7 +25,17 @@ npm run cf:build
 
 ## Deployment
 
-GitHub Actions runs the full quality job before the production Cloudflare deployment. A failed typecheck, lint, test, build or E2E check prevents deployment.
+`.github/workflows/ci.yml` is the sole production deployment authority. On a
+push to `main`, GitHub Actions runs typecheck, lint, unit tests, the production
+build, E2E tests and the Cloudflare build before the production deploy job can
+run. A failure in any quality step prevents production deployment.
+
+Cloudflare Workers Builds remains connected for builds, version uploads and
+branch previews only. Its production and non-production deploy commands must
+remain `npx wrangler versions upload`, which uploads a version without
+promoting it to production. While GitHub Actions owns production deployment,
+do not configure `npm run deploy` or `wrangler deploy` as the Workers Builds
+production deploy command.
 
 Required GitHub secrets:
 
