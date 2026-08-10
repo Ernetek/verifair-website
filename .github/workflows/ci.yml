@@ -60,3 +60,49 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Production smoke test
+        shell: bash
+        env:
+          PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${PRODUCTION_URL:-}" ]; then
+            echo "::error::PRODUCTION_URL repository variable is not configured"
+            exit 1
+          fi
+
+          base="${PRODUCTION_URL%/}"
+
+          check_url() {
+            path="$1"
+            url="${base}${path}"
+            echo "Checking ${url}"
+
+            for attempt in 1 2 3 4 5; do
+              status="$(curl --silent --show-error --location --output /tmp/response --write-out '%{http_code}' --max-time 20 "${url}" || true)"
+
+              if [ "$status" = "200" ]; then
+                echo "PASS ${path} -> HTTP 200"
+                return 0
+              fi
+
+              echo "Attempt ${attempt}: ${path} -> HTTP ${status}"
+              sleep 10
+            done
+
+            echo "::error::Production health check failed: ${path}"
+            cat /tmp/response || true
+            exit 1
+          }
+
+          check_url "/"
+          check_url "/robots.txt"
+          check_url "/demonstration/monitoring-room"
+
+      - name: Record verified production deployment
+        run: |
+          echo "Production deployment verified"
+          echo "Commit: $GITHUB_SHA"
+          echo "URL: ${{ vars.PRODUCTION_URL }}"
