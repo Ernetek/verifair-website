@@ -1,6 +1,9 @@
 export type EntityId = string;
 
-export type DatasetReviewStatus = "MECHANICS_ONLY_TEST_FIXTURE" | "DATASET_REVIEW_REQUIRED";
+export type DatasetReviewStatus =
+  | "MECHANICS_ONLY_TEST_FIXTURE"
+  | "DATASET_REVIEW_REQUIRED"
+  | "APPROVED_PUBLIC_DEMONSTRATION";
 
 export interface ScenarioMetadata {
   readonly dataLabel: "SIMULATED_DEMONSTRATION_DATA";

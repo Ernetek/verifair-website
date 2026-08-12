@@ -4,10 +4,18 @@ import type { DatasetReviewStatus } from "@/lib/replay/domain";
 import { createMechanicsOnlyScenario } from "./replay-fixtures";
 
 describe("canonical replay domain", () => {
-  it("uses only the two authorised dataset review states", () => {
-    const statuses = ["MECHANICS_ONLY_TEST_FIXTURE", "DATASET_REVIEW_REQUIRED"] satisfies DatasetReviewStatus[];
+  it("uses only the authorised dataset review states", () => {
+    const statuses = [
+      "MECHANICS_ONLY_TEST_FIXTURE",
+      "DATASET_REVIEW_REQUIRED",
+      "APPROVED_PUBLIC_DEMONSTRATION",
+    ] satisfies DatasetReviewStatus[];
 
-    expect(statuses).toEqual(["MECHANICS_ONLY_TEST_FIXTURE", "DATASET_REVIEW_REQUIRED"]);
+    expect(statuses).toEqual([
+      "MECHANICS_ONLY_TEST_FIXTURE",
+      "DATASET_REVIEW_REQUIRED",
+      "APPROVED_PUBLIC_DEMONSTRATION",
+    ]);
   });
 
   it("labels fixtures as mechanics-only synthetic data", () => {

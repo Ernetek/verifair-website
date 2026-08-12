@@ -9,7 +9,7 @@ describe("homepage layout refresh", () => {
   it("uses the consolidated platform overview", () => {
     const source = read("components/home/PlatformOverview.tsx");
     expect(source).toContain("Platform overview");
-    expect(source).toContain("MonitoringRoomHeroPreview");
+    expect(source).toContain("ProductDemonstrationPreview");
     expect(source).toContain("WorkflowDashboardDemo");
     expect(source).toContain("ReportingDashboardDemo");
     expect(source).toContain("7000");

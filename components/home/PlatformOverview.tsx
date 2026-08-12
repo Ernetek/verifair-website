@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { MonitoringRoomHeroPreview } from "@/components/demonstration/ClinicalDashboards";
+import { ProductDemonstrationPreview } from "@/components/demonstration/ProductDemonstration";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
 
 type OverviewPanel = "monitoring" | "workflow" | "reporting";
@@ -840,7 +840,7 @@ export function PlatformOverviewSection() {
               </header>
 
               <div className="mt-6 min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0">
-                {panel.key === "monitoring" ? <MonitoringRoomHeroPreview /> : null}
+                {panel.key === "monitoring" ? <ProductDemonstrationPreview /> : null}
                 {panel.key === "workflow" ? <WorkflowDashboardDemo /> : null}
                 {panel.key === "reporting" ? <ReportingDashboardDemo /> : null}
               </div>
