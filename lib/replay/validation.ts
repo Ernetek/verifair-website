@@ -318,7 +318,11 @@ function validateScenarioSnapshot(input: unknown): ScenarioValidationResult {
         addError("INVALID_SIMULATION_METADATA", ["metadata", "dataLabel"]);
       }
       inspectRequiredString(metadata, "provenance", ["metadata"]);
-      if (metadata.reviewStatus !== "MECHANICS_ONLY_TEST_FIXTURE" && metadata.reviewStatus !== "DATASET_REVIEW_REQUIRED") {
+      if (
+        metadata.reviewStatus !== "MECHANICS_ONLY_TEST_FIXTURE" &&
+        metadata.reviewStatus !== "DATASET_REVIEW_REQUIRED" &&
+        metadata.reviewStatus !== "APPROVED_PUBLIC_DEMONSTRATION"
+      ) {
         addError("INVALID_SIMULATION_METADATA", ["metadata", "reviewStatus"]);
       }
       inspectOptionalString(metadata, "displayTimezone", ["metadata"]);
