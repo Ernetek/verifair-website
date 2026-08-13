@@ -40,21 +40,21 @@ export const CANONICAL_WORKFLOW_PHASES: readonly WorkflowPhase[] = [
 
 const workflowMedia = [
   {
-    src: "/assets/workflow-monitoring-alert.png",
-    alt: "Simulated monitoring-room scene with a wall display showing green, amber and red zone states",
+    src: "/assets/dust-monitoring-display-hub.webp",
+    alt: "VerifAir centralised site-wide monitoring hub with a wall display showing green, amber and red zone states",
     eyebrow: "Alert visibility",
     title: "The monitoring room sees the changed zone",
     body: "A high-visibility display helps the site team see which location requires attention.",
   },
   {
-    src: "/assets/workflow-site-investigation.png",
+    src: "/assets/workflow-site-investigation.webp",
     alt: "Simulated construction worker checking local controls after a particulate monitoring alert",
     eyebrow: "Site response",
     title: "A worker checks the area and local controls",
     body: "The investigation and response are recorded without claiming a specific contaminant or cause.",
   },
   {
-    src: "/assets/workflow-evidence-review.png",
+    src: "/assets/reports-evidence-review.webp",
     alt: "Simulated project team reviewing a monitoring evidence timeline and response record",
     eyebrow: "Evidence review",
     title: "The complete record is reviewed",

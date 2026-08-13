@@ -4,16 +4,16 @@ import Link from "next/link";
 const demonstrations = [
   {
     href: "/demonstration/monitoring-room",
-    image: "/assets/demonstration-monitoring-room-dashboard.png",
-    alt: "VerifAir monitoring-room dashboard showing proportionate green, amber and red monitoring zones",
+    image: "/assets/dust-monitoring-display-hub.webp",
+    alt: "VerifAir centralised site-wide monitoring hub showing live particulate monitoring across multiple zones",
     label: "Live visibility",
-    title: "Monitoring room",
-    description: "See every zone together on a high-visibility traffic-light display designed for a wall-mounted screen.",
+    title: "Centralised site-wide monitoring hub",
+    description: "See every zone together on a high-visibility traffic-light display designed for operational oversight and rapid response.",
     action: "Open monitoring-room demo",
   },
   {
     href: "/demonstration/workflow",
-    image: "/assets/workflow-site-investigation.png",
+    image: "/assets/workflow-site-investigation.webp",
     alt: "Simulated worker checking local controls during a guided VerifAir workflow",
     label: "Guided response",
     title: "Alert-to-evidence workflow",
@@ -22,7 +22,7 @@ const demonstrations = [
   },
   {
     href: "/demonstration/evidence-reporting",
-    image: "/assets/workflow-evidence-review.png",
+    image: "/assets/reports-evidence-review.webp",
     alt: "Simulated project team reviewing a monitoring evidence report",
     label: "Controlled records",
     title: "Evidence reporting",

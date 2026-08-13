@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { PARTICULATE_UNIT } from "@/lib/metrics";
 import { publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
@@ -106,7 +106,7 @@ export function SharedDashboard({
           <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div>
               <h3 className="text-lg font-black text-slate-950">
-                {selectedMonitor.name} â€” Current Readings
+                {selectedMonitor.name} — Current Readings
               </h3>
               <p className="text-xs text-slate-500">
                 {selectedMonitor.name}
@@ -120,15 +120,15 @@ export function SharedDashboard({
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <div className="border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs font-black uppercase text-slate-500">PM1</p>
-              <p className="mt-2 text-3xl font-black text-blue-700">{selectedPm1} Âµg/mÂ³</p>
+              <p className="mt-2 text-3xl font-black text-blue-700">{selectedPm1} µg/m³</p>
             </div>
             <div className="border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs font-black uppercase text-slate-500">PM2.5</p>
-              <p className="mt-2 text-3xl font-black text-emerald-700">{selectedPm25} Âµg/mÂ³</p>
+              <p className="mt-2 text-3xl font-black text-emerald-700">{selectedPm25} µg/m³</p>
             </div>
             <div className="border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs font-black uppercase text-slate-500">PM10</p>
-              <p className="mt-2 text-3xl font-black text-purple-700">{selectedPm10} Âµg/mÂ³</p>
+              <p className="mt-2 text-3xl font-black text-purple-700">{selectedPm10} µg/m³</p>
             </div>
           </div>
 
@@ -198,23 +198,33 @@ export function MonitoringRoomDisplay({
   );
   const { replayState, incidentState } = snapshot;
   const monitors = publicDemonstrationScenario.monitors;
+  
+  // Force re-render every second to animate PM level updates
+  const [, setUpdateTrigger] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdateTrigger(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="bg-slate-950 p-6 text-white shadow-2xl">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
           <p className="text-xs font-black uppercase tracking-widest text-sky-400">
-            Monitoring Room Wall Display
+            Centralised Site-wide Monitoring Hub
           </p>
           <h2 className="text-3xl font-black">Live Environmental Status</h2>
         </div>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-2 text-xs font-bold text-emerald-400">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            LIVE REPLAY
+            LIVE MONITORING
           </span>
           <span className="text-xs text-slate-400 font-mono">
-            {new Date(replayState.timestamp).toISOString()}
+            Updated every second
           </span>
         </div>
       </div>
@@ -222,6 +232,9 @@ export function MonitoringRoomDisplay({
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {monitors.map((m) => {
           const pm25 = observationValue(replayState, m.id, "PM2_5") ?? 0;
+          const pm1 = observationValue(replayState, m.id, "PM1") ?? 0;
+          const pm10 = observationValue(replayState, m.id, "PM10") ?? 0;
+          
           const tone =
             pm25 >= 25
               ? "border-red-500 bg-red-950/40 text-red-200"
@@ -236,8 +249,12 @@ export function MonitoringRoomDisplay({
               </p>
               <h3 className="mt-1 text-lg font-black truncate">{m.name}</h3>
               <p className="mt-3 text-4xl font-black">
-                {pm25} <span className="text-sm font-bold">Âµg/mÂ³</span>
+                {pm25} <span className="text-sm font-bold">µg/m³</span>
               </p>
+              <div className="mt-3 pt-3 border-t border-slate-700 flex gap-3 text-xs">
+                <span>PM1: <strong>{pm1}</strong></span>
+                <span>PM10: <strong>{pm10}</strong></span>
+              </div>
             </div>
           );
         })}
@@ -264,6 +281,16 @@ export function MonitoringRoomHeroPreview({
   );
   const { replayState, incidentState } = snapshot;
   const monitors = publicDemonstrationScenario.monitors;
+  
+  // Force re-render every second to animate PM level updates
+  const [, setUpdateTrigger] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdateTrigger(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="border border-slate-800 bg-slate-950 p-4 text-white rounded">
@@ -287,7 +314,7 @@ export function MonitoringRoomHeroPreview({
               }`}
             >
               <p className="font-bold truncate">{m.name}</p>
-              <p className="text-lg font-black">{pm25} Âµg/mÂ³</p>
+              <p className="text-lg font-black">{pm25} µg/m³</p>
             </div>
           );
         })}
@@ -295,7 +322,7 @@ export function MonitoringRoomHeroPreview({
       <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400">
         <span>Workflow: {incidentState.phase}</span>
         <Link href="/demonstration/monitoring-room" className="text-sky-400 hover:underline">
-          Full Display â†’
+          Full Display →
         </Link>
       </div>
     </div>
@@ -363,5 +390,6 @@ export function DashboardDemonstrationSection() {
     </section>
   );
 }
+
 
 

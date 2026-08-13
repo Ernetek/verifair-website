@@ -10,7 +10,7 @@ describe("homepage section order and platform interaction", () => {
     const expected = [
       "<HeroSection />",
       "<ProblemSection />",
-      "<PlatformOverviewSection />",
+      "<DemonstrationOverview />",
       "<IndustriesSection />",
       "<PilotDeploymentSection />",
       "<FAQSection />",
@@ -34,10 +34,10 @@ describe("homepage section order and platform interaction", () => {
     expect(source).not.toContain("setInterval");
   });
 
-  it("supports monitoring, workflow and reporting hashes", () => {
-    const source = read("components/home/PlatformOverview.tsx");
-    expect(source).toContain('"#monitoring": 0');
-    expect(source).toContain('"#workflow": 1');
-    expect(source).toContain('"#reportpreview": 2');
+  it("supports monitoring, workflow and reporting demonstrations", () => {
+    const source = read("components/demonstration/DemonstrationOverview.tsx");
+    expect(source).toContain("/demonstration/monitoring-room");
+    expect(source).toContain("/demonstration/workflow");
+    expect(source).toContain("/demonstration/evidence-reporting");
   });
 });

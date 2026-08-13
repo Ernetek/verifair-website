@@ -5,7 +5,7 @@ import { FAQSection } from "@/components/home/FAQ";
 import { HeroSection } from "@/components/home/Hero";
 import { IndustriesSection } from "@/components/home/Industries";
 import { PilotDeploymentSection } from "@/components/home/PilotDeployment";
-import { PlatformOverviewSection } from "@/components/home/PlatformOverview";
+import { DemonstrationOverview } from "@/components/demonstration/DemonstrationOverview";
 import { ProblemSection } from "@/components/home/Problem";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
@@ -20,7 +20,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <ProblemSection />
-      <PlatformOverviewSection />
+      <DemonstrationOverview />
       <IndustriesSection />
       <PilotDeploymentSection />
       <FAQSection />
