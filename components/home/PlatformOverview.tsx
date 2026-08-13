@@ -736,7 +736,7 @@ export function PlatformOverviewSection() {
     syncHash();
     window.addEventListener("hashchange", syncHash);
     return () => window.removeEventListener("hashchange", syncHash);
-  }, [reducedMotion]);
+  }, [goToPanel, reducedMotion]);
 
   useEffect(() => {
     const section = sectionRef.current;

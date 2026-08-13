@@ -15,15 +15,15 @@ describe("ReplayControls", () => {
     expect(source).toContain('aria-label="Scenario position"');
     expect(source).toContain('aria-label="Playback speed"');
     expect(source).toContain('aria-live="polite"');
-    expect(source).toContain("Previous step");
-    expect(source).toContain("Next step");
+    expect(source).toContain("Previous scenario marker");
+    expect(source).toContain("Next scenario marker");
   });
 
-  it("emits controller intent without owning demonstration facts", () => {
-    expect(source).toContain("controller.play()");
-    expect(source).toContain("controller.pause()");
-    expect(source).toContain("controller.restart()");
-    expect(source).toContain("controller.seek(");
-    expect(source).not.toMatch(/PM1|PM2\.5|PM4|PM10|incident|threshold/i);
+  it("emits session intent without owning demonstration facts", () => {
+    expect(source).toContain("session.play()");
+    expect(source).toContain("session.pause()");
+    expect(source).toContain("session.restart()");
+    expect(source).toContain("session.seek(");
+    expect(source).not.toMatch(/PM1|PM2\.5|PM4|PM10|threshold/i);
   });
 });

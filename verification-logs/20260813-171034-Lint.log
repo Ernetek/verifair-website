@@ -1,0 +1,18 @@
+
+> verifair-public-website@1.0.0 lint
+> eslint .
+
+
+C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\components\demonstration\ClinicalDashboards.tsx
+  16:6  warning  'MetricName' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\components\demonstration\ProductDemonstration.tsx
+   22:15  warning  'IncidentState' is defined but never used            @typescript-eslint/no-unused-vars
+   41:7   warning  'workflowMedia' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  629:9   warning  'visibleHistory' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\lib\demonstration\session.ts
+  20:3  warning  'createInitialIncidentState' is defined but never used  @typescript-eslint/no-unused-vars
+
+G£û 5 problems (0 errors, 5 warnings)
+

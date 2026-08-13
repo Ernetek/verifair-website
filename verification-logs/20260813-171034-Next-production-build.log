@@ -1,0 +1,76 @@
+
+> verifair-public-website@1.0.0 build
+> next build
+
+ GÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\SD\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\package-lock.json
+
+   Gû¦ Next.js 15.5.22
+   - Experiments (use with caution):
+     -+ optimizePackageImports
+
+   Creating an optimized production build ...
+ G£ô Compiled successfully in 4.3s
+   Linting and checking validity of types ...
+
+./components/demonstration/ClinicalDashboards.tsx
+16:6  Warning: 'MetricName' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./components/demonstration/ProductDemonstration.tsx
+22:15  Warning: 'IncidentState' is defined but never used.  @typescript-eslint/no-unused-vars
+41:7  Warning: 'workflowMedia' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+629:9  Warning: 'visibleHistory' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./lib/demonstration/session.ts
+20:3  Warning: 'createInitialIncidentState' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/44) ...
+   Generating static pages (11/44) 
+   Generating static pages (22/44) 
+   Generating static pages (33/44) 
+ G£ô Generating static pages (44/44)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                          Size  First Load JS
+Göî Gùï /                                             9.91 kB         175 kB
+Gö£ Gùï /_not-found                                     140 B         102 kB
+Gö£ GùÅ /[slug]                                       4.77 kB         116 kB
+Gö£   Gö£ /platform
+Gö£   Gö£ /industries
+Gö£   Gö£ /healthcare
+Gö£   Göö [+11 more paths]
+Gö£ Gùï /case-studies                                   140 B         102 kB
+Gö£ Gùï /demonstration                                  176 B         111 kB
+Gö£ Gùï /demonstration/evidence-reporting             5.29 kB         125 kB
+Gö£ Gùï /demonstration/monitoring-room                  170 B         128 kB
+Gö£ Gùï /demonstration/shared-dashboard                 171 B         128 kB
+Gö£ Gùï /demonstration/workflow                         168 B         126 kB
+Gö£ Gùï /faq                                            140 B         102 kB
+Gö£ Gùï /reporting                                      140 B         102 kB
+Gö£ Gùï /reports                                        140 B         102 kB
+Gö£ Gùï /resources                                      442 B         151 kB
+Gö£ GùÅ /resources/[resource]                           168 B         106 kB
+Gö£   Gö£ /resources/pm-particle-size-guide
+Gö£   Gö£ /resources/selecting-monitoring-locations
+Gö£   Gö£ /resources/multi-zone-monitoring-checklist
+Gö£   Göö [+8 more paths]
+Gö£ Gùï /robots.txt                                     140 B         102 kB
+Gö£ Gùï /search                                         168 B         106 kB
+Gö£ Gùï /sitemap.xml                                    140 B         102 kB
+Göö Gùï /technology                                     176 B         111 kB
++ First Load JS shared by all                      102 kB
+  Gö£ chunks/255-072886a3797f4d23.js                46.1 kB
+  Gö£ chunks/4bd1b696-3bd4cf4e5bec0624.js           54.2 kB
+  Göö other shared chunks (total)                   1.93 kB
+
+
+Gùï  (Static)  prerendered as static content
+GùÅ  (SSG)     prerendered as static HTML (uses generateStaticParams)
+

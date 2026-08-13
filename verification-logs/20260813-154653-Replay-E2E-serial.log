@@ -1,0 +1,74 @@
+[WebServer]  GÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+[WebServer]  We detected multiple lockfiles and selected the directory of C:\Users\SD\package-lock.json as the root directory.
+[WebServer]  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+[WebServer]    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+[WebServer]  Detected additional lockfiles: 
+[WebServer]    * C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\package-lock.json
+[WebServer] 
+
+Running 8 tests using 1 worker
+
+  G£ÿ  1 [Desktop Chrome] GÇ¦ tests\e2e\replay-demonstration.spec.ts:3:5 GÇ¦ approved demonstration keeps readings, timeline and controls synchronised (7.8s)
+  G£ô  2 [Desktop Chrome] GÇ¦ tests\e2e\replay-demonstration.spec.ts:43:5 GÇ¦ demonstration overview links to each dedicated experience (3.0s)
+  G£ô  3 [Desktop Chrome] GÇ¦ tests\e2e\replay-demonstration.spec.ts:50:5 GÇ¦ reporting portal switches between detailed report types (5.1s)
+  G£ô  4 [Desktop Chrome] GÇ¦ tests\e2e\replay-demonstration.spec.ts:60:5 GÇ¦ product demonstration has no horizontal overflow on mobile (1.7s)
+  G£ÿ  5 [Mobile Safari] GÇ¦ tests\e2e\replay-demonstration.spec.ts:3:5 GÇ¦ approved demonstration keeps readings, timeline and controls synchronised (7.5s)
+  G£ô  6 [Mobile Safari] GÇ¦ tests\e2e\replay-demonstration.spec.ts:43:5 GÇ¦ demonstration overview links to each dedicated experience (1.6s)
+  G£ô  7 [Mobile Safari] GÇ¦ tests\e2e\replay-demonstration.spec.ts:50:5 GÇ¦ reporting portal switches between detailed report types (1.9s)
+  G£ô  8 [Mobile Safari] GÇ¦ tests\e2e\replay-demonstration.spec.ts:60:5 GÇ¦ product demonstration has no horizontal overflow on mobile (1.7s)
+
+
+  1) [Desktop Chrome] GÇ¦ tests\e2e\replay-demonstration.spec.ts:3:5 GÇ¦ approved demonstration keeps readings, timeline and controls synchronised 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Simulated demonstration data', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Simulated demonstration data', { exact: true })
+
+
+      12 |   await expect(
+      13 |     page.getByText("Simulated demonstration data", { exact: true }),
+    > 14 |   ).toBeVisible();
+         |     ^
+      15 |   await expect(page.getByRole("heading", { name: "Respirable dust" })).toBeVisible();
+      16 |   await expect(page.getByRole("heading", { name: /^PM4(?:\.0)?$/i })).toHaveCount(0);
+      17 |   await expect(
+        at C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\tests\e2e\replay-demonstration.spec.ts:14:5
+
+    Error Context: test-results\replay-demonstration-appro-0266d-e-and-controls-synchronised-Desktop-Chrome\error-context.md
+
+  2) [Mobile Safari] GÇ¦ tests\e2e\replay-demonstration.spec.ts:3:5 GÇ¦ approved demonstration keeps readings, timeline and controls synchronised 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Simulated demonstration data', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Simulated demonstration data', { exact: true })
+
+
+      12 |   await expect(
+      13 |     page.getByText("Simulated demonstration data", { exact: true }),
+    > 14 |   ).toBeVisible();
+         |     ^
+      15 |   await expect(page.getByRole("heading", { name: "Respirable dust" })).toBeVisible();
+      16 |   await expect(page.getByRole("heading", { name: /^PM4(?:\.0)?$/i })).toHaveCount(0);
+      17 |   await expect(
+        at C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\tests\e2e\replay-demonstration.spec.ts:14:5
+
+    Error Context: test-results\replay-demonstration-appro-0266d-e-and-controls-synchronised-Mobile-Safari\error-context.md
+
+  2 failed
+    [Desktop Chrome] GÇ¦ tests\e2e\replay-demonstration.spec.ts:3:5 GÇ¦ approved demonstration keeps readings, timeline and controls synchronised 
+    [Mobile Safari] GÇ¦ tests\e2e\replay-demonstration.spec.ts:3:5 GÇ¦ approved demonstration keeps readings, timeline and controls synchronised 
+  6 passed (42.6s)

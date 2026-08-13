@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ProductDemonstration } from "@/components/demonstration/ProductDemonstration";
+import { SharedDashboardPage } from "@/components/demonstration/ClinicalDashboards";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default function SharedDashboardDemonstrationPage() {
     <>
       <section className="bg-slate-100 py-8 sm:py-12">
         <div className="container">
-          <ProductDemonstration />
+          <SharedDashboardPage />
         </div>
       </section>
       <PageDisclaimer />

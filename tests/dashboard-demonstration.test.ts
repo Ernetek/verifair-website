@@ -8,80 +8,56 @@ const read = (relativePath: string) =>
   fs.readFileSync(path.join(root, relativePath), "utf8");
 
 describe("dashboard demonstrations", () => {
-  it("keeps neutral labels and all supported PM metrics", () => {
+  it("uses canonical replay scenario data and supported PM metrics without Math.random", () => {
     const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
 
-    expect(dashboards).toContain("Demonstration Project");
-    expect(dashboards).toContain("Demonstration data");
-    expect(dashboards).toContain('name: "Level 1 - Construction Site Entry Door"');
-    expect(dashboards).toContain('name: "Level 1 - Construction Site Exit Door"');
-    expect(dashboards).toContain('name: "Level 1 - Shared Corridor"');
-    expect(dashboards).toContain('name: "Level 1 - General Entry Door"');
-    expect(dashboards).toContain('label="PM1"');
-    expect(dashboards).toContain('label="PM2.5"');
-    expect(dashboards).toContain('label="PM10"');
-    expect(dashboards).not.toMatch(/hospital|ward|contractor|customer deployment/i);
+    expect(dashboards).toContain("publicDemonstrationScenario");
+    expect(dashboards).toContain("selectLatestObservation");
+    expect(dashboards).not.toContain("Math.random()");
   });
 
-  it("pauses timer-driven changes for reduced motion", () => {
+  it("uses canonical demonstration session and replay controls", () => {
     const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
-    expect(dashboards).toContain(
-      'matchMedia("(prefers-reduced-motion: reduce)")',
-    );
+    expect(dashboards).toContain("DemonstrationSession");
+    expect(dashboards).toContain("getSharedDemonstrationSession");
+    expect(dashboards).toContain("<ReplayControls");
   });
 
-  it("keeps the hero monitoring-room preview live and traffic-light coded", () => {
+  it("keeps the hero monitoring-room preview live and connected to replay state", () => {
     const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
 
-    expect(dashboards).toContain("heroLiveFrames");
-    expect(dashboards).toContain("<HeroMetricTile");
-    expect(dashboards).toContain("zones.slice(0, 2)");
-    expect(dashboards).toContain("Live demo updates");
-    expect(dashboards).toContain("bg-emerald-600");
-    expect(dashboards).toContain("bg-amber-400");
-    expect(dashboards).toContain("bg-red-600");
+    expect(dashboards).toContain("MonitoringRoomHeroPreview");
+    expect(dashboards).not.toContain("heroLiveFrames");
+    expect(dashboards).toContain("replayState.timestamp");
   });
 
-
-  it("models state-dependent workflow progress and response activity", () => {
+  it("models canonical workflow phases", () => {
     const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
 
-    expect(dashboards).toContain("workflowForState");
-    expect(dashboards).toContain('status: "Not triggered"');
-    expect(dashboards).toContain('status: "No action yet"');
-    expect(dashboards).toContain('status: "Closed"');
-    expect(dashboards).toContain("No response activity");
-    expect(dashboards).toContain("Reviewed \u00b7 no action recorded");
-    expect(dashboards).toContain("Completed example workflow");
+    expect(dashboards).toContain("CANONICAL_WORKFLOW_PHASES");
+    expect(dashboards).toContain("incidentState.phase");
+    expect(dashboards).toContain("incidentState.progressStatus");
   });
 
-  it("shows PM10 plus horizontal warning/action limits and sustained trigger logic", () => {
-    const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
-
-    expect(dashboards).toContain("Configured warning line");
-    expect(dashboards).toContain("Configured action limit");
-    expect(dashboards).toContain("DEMO_ACTION_DWELL_MINUTES = 10");
-    expect(dashboards).toContain("min sustained above action limit");
-    expect(dashboards).toContain('stroke="#7c3aed"');
-    expect(dashboards).not.toContain("Example action indication");
-  });
-
-  it("uses only one main landmark supplied by the root layout", () => {
+  it("uses only section landmarks supplied within route pages", () => {
     const shared = read("app/demonstration/shared-dashboard/page.tsx");
     const room = read("app/demonstration/monitoring-room/page.tsx");
+    const workflow = read("app/demonstration/workflow/page.tsx");
 
     expect(shared).not.toContain("<main");
     expect(room).not.toContain("<main");
-    expect(shared).toContain("<section");
-    expect(room).toContain("<section");
+    expect(workflow).not.toContain("<main");
   });
 
   it("retains dedicated non-indexed demonstration routes", () => {
     const shared = read("app/demonstration/shared-dashboard/page.tsx");
     const room = read("app/demonstration/monitoring-room/page.tsx");
+    const workflow = read("app/demonstration/workflow/page.tsx");
 
     expect(shared).toContain("index: false");
     expect(room).toContain("index: false");
+    expect(workflow).toContain("index: false");
+    expect(room).toContain("MonitoringRoomDisplay");
+    expect(workflow).toContain("ProductDemonstration");
   });
 });
-

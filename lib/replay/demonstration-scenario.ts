@@ -81,8 +81,9 @@ const definition: ScenarioDefinition = {
       monitorId: "WORK_ZONE_A",
       openedOffsetMs: 120_000,
       openedTimestamp: timestampAt(120_000),
-      title: "Changing particulate conditions recorded",
-      description: "A review was started for Work Zone A.",
+      title: "Configured alert triggered and site contact notified",
+      description:
+        "A review was started for Work Zone A and the nominated demonstration contact received the notification.",
       severity: "review",
       category: "environmental-observation",
     },
@@ -131,7 +132,9 @@ const definition: ScenarioDefinition = {
       offsetMs: 120_000,
       timestamp: timestampAt(120_000),
       type: "INCIDENT_OPENED",
-      title: "Changing particulate conditions recorded; review started",
+      title: "Configured alert triggered; site contact notified",
+      description:
+        "The notification is part of this simulated workflow and does not represent a live message delivery.",
       orderSemantics: "ORDER_SENSITIVE",
       relatedEntityRefs: [
         { entityType: "incident", id: "INCIDENT_WORK_ZONE_REVIEW" },

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
-import { ProductDemonstration } from "@/components/demonstration/ProductDemonstration";
+import { MonitoringRoomDisplayPage } from "@/components/demonstration/ClinicalDashboards";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
 export const metadata: Metadata = {
   title: "Monitoring Room Display Demonstration",
   description:
-    "Replay a deterministic VerifAir product demonstration across four simulated monitoring locations.",
+    "View a high-visibility VerifAir monitoring-room display with green, amber and red zone status.",
   alternates: {
     canonical: "/demonstration/monitoring-room",
   },
@@ -21,7 +21,7 @@ export default function MonitoringRoomDemonstrationPage() {
     <>
       <section className="bg-slate-100 py-8 sm:py-12">
         <div className="container">
-          <ProductDemonstration />
+          <MonitoringRoomDisplayPage />
         </div>
       </section>
       <PageDisclaimer />

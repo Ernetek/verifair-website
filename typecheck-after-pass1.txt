@@ -1,0 +1,10 @@
+
+> verifair-public-website@1.0.0 typecheck
+> tsc --noEmit
+
+components/demonstration/ClinicalDashboards.tsx(14,10): error TS2459: Module '"@/components/demonstration/ProductDemonstration"' declares 'CANONICAL_WORKFLOW_PHASES' locally, but it is not exported.
+components/demonstration/ClinicalDashboards.tsx(140,47): error TS7006: Parameter 'p' implicitly has an 'any' type.
+components/demonstration/ClinicalDashboards.tsx(140,50): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+components/demonstration/ProductDemonstration.tsx(705,85): error TS2339: Property 'timezone' does not exist on type 'ScenarioMetadata'.
+components/home/DashboardDemonstration.tsx(1,10): error TS2305: Module '"@/components/demonstration/ClinicalDashboards"' has no exported member 'DashboardDemonstrationSection'.
+components/home/PlatformOverview.tsx(6,10): error TS2724: '"@/components/demonstration/ProductDemonstration"' has no exported member named 'ProductDemonstrationPreview'. Did you mean 'ProductDemonstration'?

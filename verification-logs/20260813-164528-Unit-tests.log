@@ -1,0 +1,33 @@
+
+> verifair-public-website@1.0.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/SD/OneDrive - ernelifting.com/Erne/verifair-github[39m
+
+ [32mG£ô[39m tests/workflow-accessibility.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32mG£ô[39m tests/replay-controls.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32mG£ô[39m tests/section-order-and-zone-interaction.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32mG£ô[39m tests/dashboard-demonstration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32mG£ô[39m tests/replay-domain.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32mG£ô[39m tests/pages.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32mG£ô[39m tests/launch-positioning.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32mG£ô[39m tests/incident-domain.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32mG£ô[39m tests/replay-demonstration-scenario.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32mG£ô[39m tests/replay-playback.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32mG£ô[39m tests/demonstration-session.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32mG£ô[39m tests/replay-engine.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32mG£ô[39m tests/replay-validation.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32mG£ô[39m tests/replay-selectors.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32mG£ô[39m tests/homepage-layout-refresh.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32mG£ô[39m tests/operational-challenge.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32mG£ô[39m tests/homepage-composition.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32mG£ô[39m tests/reporting-proof.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32mG£ô[39m tests/content.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32mG£ô[39m tests/quality.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m20 passed[39m[22m[90m (20)[39m
+[2m      Tests [22m [1m[32m99 passed[39m[22m[90m (99)[39m
+[2m   Start at [22m 16:45:34
+[2m   Duration [22m 2.01s[2m (transform 1.38s, setup 0ms, collect 4.09s, tests 240ms, environment 5ms, prepare 7.82s)[22m
+

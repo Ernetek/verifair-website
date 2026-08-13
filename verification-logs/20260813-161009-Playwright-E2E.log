@@ -1,0 +1,112 @@
+
+> verifair-public-website@1.0.0 test:e2e
+> playwright test
+
+[WebServer]  G‹· Warning: Next.js inferred your workspace root, but it may not be correct.
+[WebServer]  We detected multiple lockfiles and selected the directory of C:\Users\SD\package-lock.json as the root directory.
+[WebServer]  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+[WebServer]    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+[WebServer]  Detected additional lockfiles: 
+[WebServer]    * C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\package-lock.json
+[WebServer] 
+
+Running 22 tests using 4 workers
+
+  G£Ù   3 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:3:5 G«¶ primary navigation targets resolve and homepage anchors scroll (6.8s)
+[WebServer]  Gøª SyntaxError: Unexpected end of JSON input
+[WebServer]     at JSON.parse (<anonymous>) {
+[WebServer]   page: '/'
+[WebServer] }
+  G£Ù   5 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:36:5 G«¶ homepage has no horizontal overflow at 320px (3.8s)
+  G£Ù   2 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:3:5 G«¶ primary navigation targets resolve and homepage anchors scroll (11.2s)
+  G£Ù   7 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:36:5 G«¶ homepage has no horizontal overflow at 320px (1.9s)
+  G£Ù   6 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:50:5 G«¶ industry tabs, platform reporting controls and FAQ are keyboard operable (2.5s)
+  G£Ù   9 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:93:5 G«¶ reduced motion disables smooth scrolling (1.4s)
+  G£Ù   8 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:50:5 G«¶ industry tabs, platform reporting controls and FAQ are keyboard operable (2.0s)
+  G£Ù  11 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:93:5 G«¶ reduced motion disables smooth scrolling (2.2s)
+  G£Ù  10 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:104:5 G«¶ legacy reporting route redirects to the homepage report preview (2.7s)
+  G£Ù  12 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:104:5 G«¶ legacy reporting route redirects to the homepage report preview (1.9s)
+  G£Ù  13 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:112:5 G«¶ mobile navigation closes with Escape and returns focus (1.8s)
+  G£Ù  15 [Desktop Chrome] G«¶ tests\e2e\home.spec.ts:124:5 G«¶ HubSpot failure state provides hosted-form fallback (1.5s)
+  G£ˇ  14 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:112:5 G«¶ mobile navigation closes with Escape and returns focus (7.1s)
+  G£Ù  16 [Mobile Safari] G«¶ tests\e2e\home.spec.ts:124:5 G«¶ HubSpot failure state provides hosted-form fallback (1.2s)
+  G£ˇ   1 [Mobile Safari] G«¶ tests\e2e\replay-demonstration.spec.ts:3:5 G«¶ approved demonstration keeps readings, timeline and controls synchronised (30.1s)
+  G£ˇ   4 [Desktop Chrome] G«¶ tests\e2e\replay-demonstration.spec.ts:3:5 G«¶ approved demonstration keeps readings, timeline and controls synchronised (30.0s)
+  G£Ù  18 [Desktop Chrome] G«¶ tests\e2e\replay-demonstration.spec.ts:43:5 G«¶ demonstration overview links to each dedicated experience (1.4s)
+  G£Ù  17 [Mobile Safari] G«¶ tests\e2e\replay-demonstration.spec.ts:43:5 G«¶ demonstration overview links to each dedicated experience (1.6s)
+  G£Ù  19 [Desktop Chrome] G«¶ tests\e2e\replay-demonstration.spec.ts:50:5 G«¶ reporting portal switches between detailed report types (1.9s)
+  G£Ù  20 [Mobile Safari] G«¶ tests\e2e\replay-demonstration.spec.ts:50:5 G«¶ reporting portal switches between detailed report types (2.0s)
+  G£Ù  22 [Mobile Safari] G«¶ tests\e2e\replay-demonstration.spec.ts:60:5 G«¶ product demonstration has no horizontal overflow on mobile (912ms)
+  G£Ù  21 [Desktop Chrome] G«¶ tests\e2e\replay-demonstration.spec.ts:60:5 G«¶ product demonstration has no horizontal overflow on mobile (1.0s)
+
+
+  1) [Desktop Chrome] G«¶ tests\e2e\replay-demonstration.spec.ts:3:5 G«¶ approved demonstration keeps readings, timeline and controls synchronised 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Assign to specific user')
+
+
+      20 |
+      21 |   await page.getByRole("button", { name: "Acknowledge alert" }).click();
+    > 22 |   await page.getByLabel("Assign to specific user").selectOption("Jordan Lee");
+         |                                                    ^
+      23 |   await page.getByRole("button", { name: "Assign task" }).click();
+      24 |   await page.getByRole("button", { name: "Start work" }).click();
+      25 |   await page.getByLabel("Progress status").selectOption("Ready to close");
+        at C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\tests\e2e\replay-demonstration.spec.ts:22:52
+
+    Error Context: test-results\replay-demonstration-appro-0266d-e-and-controls-synchronised-Desktop-Chrome\error-context.md
+
+  2) [Mobile Safari] G«¶ tests\e2e\home.spec.ts:112:5 G«¶ mobile navigation closes with Escape and returns focus 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('#mobile-navigation')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('#mobile-navigation')
+
+
+      116 |   const trigger = page.getByRole("button", { name: /Open navigation/i });
+      117 |   await trigger.click();
+    > 118 |   await expect(page.locator("#mobile-navigation")).toBeVisible();
+          |                                                    ^
+      119 |   await page.keyboard.press("Escape");
+      120 |   await expect(page.locator("#mobile-navigation")).toBeHidden();
+      121 |   await expect(trigger).toBeFocused();
+        at C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\tests\e2e\home.spec.ts:118:52
+
+    Error Context: test-results\home-mobile-navigation-closes-with-Escape-and-returns-focus-Mobile-Safari\error-context.md
+
+  3) [Mobile Safari] G«¶ tests\e2e\replay-demonstration.spec.ts:3:5 G«¶ approved demonstration keeps readings, timeline and controls synchronised 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Assign to specific user')
+
+
+      20 |
+      21 |   await page.getByRole("button", { name: "Acknowledge alert" }).click();
+    > 22 |   await page.getByLabel("Assign to specific user").selectOption("Jordan Lee");
+         |                                                    ^
+      23 |   await page.getByRole("button", { name: "Assign task" }).click();
+      24 |   await page.getByRole("button", { name: "Start work" }).click();
+      25 |   await page.getByLabel("Progress status").selectOption("Ready to close");
+        at C:\Users\SD\OneDrive - ernelifting.com\Erne\verifair-github\tests\e2e\replay-demonstration.spec.ts:22:52
+
+    Error Context: test-results\replay-demonstration-appro-0266d-e-and-controls-synchronised-Mobile-Safari\error-context.md
+
+  3 failed
+    [Desktop Chrome] G«¶ tests\e2e\replay-demonstration.spec.ts:3:5 G«¶ approved demonstration keeps readings, timeline and controls synchronised 
+    [Mobile Safari] G«¶ tests\e2e\home.spec.ts:112:5 G«¶ mobile navigation closes with Escape and returns focus 
+    [Mobile Safari] G«¶ tests\e2e\replay-demonstration.spec.ts:3:5 G«¶ approved demonstration keeps readings, timeline and controls synchronised 
+  19 passed (42.6s)

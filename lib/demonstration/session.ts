@@ -1,0 +1,232 @@
+﻿/**
+ * VerifAir Demonstration Session & Controller Abstraction
+ * 
+ * Combines:
+ * 1. Environmental replay state (ReplayPlaybackController)
+ * 2. Interactive Incident Domain state (IncidentState & IncidentEvents)
+ * 3. Unified subscription model for React useSyncExternalStore
+ * 4. Meaningful scenario marker navigation (Prev / Next event markers)
+ */
+
+import {
+  publicDemonstrationScenario,
+} from "@/lib/replay/demonstration-scenario";
+import type { ReplayState } from "@/lib/replay/domain";
+import {
+  ReplayPlaybackController,
+  type ReplayRate,
+} from "@/lib/replay/playback-controller";
+import {
+  createInitialIncidentState,
+  reduceIncident,
+  reduceIncidentEvent,
+  type IncidentEvent,
+  type IncidentState,
+} from "@/lib/demonstration/incident-domain";
+
+
+type IncidentEventInput =
+  IncidentEvent extends infer Event
+    ? Event extends IncidentEvent
+      ? Omit<Event, "incidentId" | "sequence" | "timestampMs"> & {
+          incidentId?: string;
+          timestampMs?: number;
+        }
+      : never
+    : never;
+export interface DemonstrationMarker {
+  readonly offsetMs: number;
+  readonly label: string;
+  readonly description: string;
+}
+
+export const MEANINGFUL_SCENARIO_MARKERS: readonly DemonstrationMarker[] = [
+  { offsetMs: 0, label: "Start monitoring", description: "Normal baseline operating conditions" },
+  { offsetMs: 120_000, label: "Alert opened", description: "Elevated particulate readings detected at General Entry Door" },
+  { offsetMs: 240_000, label: "Investigation", description: "Response owner assigned and site investigation started" },
+  { offsetMs: 360_000, label: "Verification", description: "Control measures inspected and verification completed" },
+  { offsetMs: 480_000, label: "Closure", description: "Incident closed with evidence retained for audit" },
+] as const;
+
+export interface DemonstrationSessionSnapshot {
+  readonly replayState: ReplayState;
+  readonly incidentState: IncidentState;
+  readonly isPlaying: boolean;
+  readonly rate: ReplayRate;
+  readonly currentMarkerIndex: number;
+}
+
+type Listener = (snapshot: DemonstrationSessionSnapshot) => void;
+
+const INITIAL_SCENARIO_EVENTS: readonly IncidentEvent[] = [
+  {
+    type: "INCIDENT_OPENED",
+    incidentId: "INC-0042",
+    monitorId: "MON-004",
+    triggerCondition: "Action condition detected (PM2.5 > 25 Âµg/mÂ³)",
+    timestampMs: 120_000,
+    sequence: 1,
+  },
+];
+
+export class DemonstrationSession {
+  readonly #playbackController: ReplayPlaybackController;
+  readonly #listeners = new Set<Listener>();
+  #userEvents: IncidentEvent[] = [];
+  #snapshot: DemonstrationSessionSnapshot;
+
+  constructor(controller?: ReplayPlaybackController) {
+    this.#playbackController =
+      controller ?? new ReplayPlaybackController(publicDemonstrationScenario);
+
+    this.#snapshot = this.#computeSnapshot();
+    this.#playbackController.subscribe(this.#onPlaybackChange);
+  }
+
+  getSnapshot = (): DemonstrationSessionSnapshot => this.#snapshot;
+
+  subscribe = (listener: Listener): (() => void) => {
+    this.#listeners.add(listener);
+    return () => {
+      this.#listeners.delete(listener);
+    };
+  };
+
+  play(): void {
+    this.#playbackController.play();
+  }
+
+  pause(): void {
+    this.#playbackController.pause();
+  }
+
+  restart(): void {
+    this.#userEvents = [];
+    this.#playbackController.restart();
+    this.#updateSnapshot();
+  }
+
+  seek(offsetMs: number): void {
+    this.#playbackController.seek(offsetMs);
+  }
+
+  setRate(rate: ReplayRate): void {
+    this.#playbackController.setRate(rate);
+  }
+
+  seekToMarker(direction: "prev" | "next"): void {
+    const currentOffset = this.#snapshot.replayState.offsetMs;
+    if (direction === "next") {
+      const nextMarker = MEANINGFUL_SCENARIO_MARKERS.find(
+        (m) => m.offsetMs > currentOffset + 1_000,
+      );
+      if (nextMarker) {
+        this.seek(nextMarker.offsetMs);
+      } else {
+        this.seek(this.#playbackController.durationMs);
+      }
+    } else {
+      const prevMarkers = MEANINGFUL_SCENARIO_MARKERS.filter(
+        (m) => m.offsetMs < currentOffset - 1_000,
+      );
+      if (prevMarkers.length > 0) {
+        const prevMarker = prevMarkers[prevMarkers.length - 1];
+        this.seek(prevMarker.offsetMs);
+      } else {
+        this.seek(0);
+      }
+    }
+  }
+
+  dispatchIncidentEvent(
+    eventInput: IncidentEventInput,
+  ): { ok: true } | { ok: false; error: string } {
+    const currentOffset = this.#snapshot.replayState.offsetMs;
+    const timestampMs = eventInput.timestampMs ?? currentOffset;
+    const incidentId = eventInput.incidentId ?? "INC-0042";
+
+    const nextSeq =
+      INITIAL_SCENARIO_EVENTS.length + this.#userEvents.length + 1;
+
+    const fullEvent = {
+      ...eventInput,
+      incidentId,
+      timestampMs,
+      sequence: nextSeq,
+    } as IncidentEvent;
+
+    // Validate event against current effective incident state
+    const validationResult = reduceIncidentEvent(
+      this.#snapshot.incidentState,
+      fullEvent,
+    );
+
+    if (!validationResult.ok) {
+      return { ok: false, error: validationResult.error };
+    }
+
+    this.#userEvents.push(fullEvent);
+    this.#updateSnapshot();
+    return { ok: true };
+  }
+
+  #computeSnapshot(): DemonstrationSessionSnapshot {
+    const pbSnap = this.#playbackController.getSnapshot();
+    const currentOffset = pbSnap.state.offsetMs;
+
+    // Filter events at or before current replay timestamp
+    const activeEvents = [
+      ...INITIAL_SCENARIO_EVENTS,
+      ...this.#userEvents,
+    ].filter((e) => e.timestampMs <= currentOffset);
+
+    const incidentState = reduceIncident(activeEvents);
+
+    // Compute marker index
+    let currentMarkerIndex = 0;
+    for (let i = 0; i < MEANINGFUL_SCENARIO_MARKERS.length; i++) {
+      if (currentOffset >= MEANINGFUL_SCENARIO_MARKERS[i].offsetMs) {
+        currentMarkerIndex = i;
+      }
+    }
+
+    return {
+      replayState: pbSnap.state,
+      incidentState,
+      isPlaying: pbSnap.isPlaying,
+      rate: pbSnap.rate,
+      currentMarkerIndex,
+    };
+  }
+
+  #onPlaybackChange = (): void => {
+    this.#updateSnapshot();
+  };
+
+  #updateSnapshot(): void {
+    this.#snapshot = this.#computeSnapshot();
+    for (const listener of this.#listeners) {
+      listener(this.#snapshot);
+    }
+  }
+
+  get playbackController(): ReplayPlaybackController {
+    return this.#playbackController;
+  }
+
+  get durationMs(): number {
+    return this.#playbackController.durationMs;
+  }
+}
+
+// Global shared session singleton for unified view state across routes
+let sharedSessionInstance: DemonstrationSession | null = null;
+
+export function getSharedDemonstrationSession(): DemonstrationSession {
+  if (!sharedSessionInstance) {
+    sharedSessionInstance = new DemonstrationSession();
+  }
+  return sharedSessionInstance;
+}
+
+

@@ -1,38 +1,49 @@
-import { expect, test } from "@playwright/test";
+﻿import { expect, test } from "@playwright/test";
 
 test("primary navigation targets resolve and homepage anchors scroll", async ({
   page,
 }) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  // Test hash navigation with proper isolation: Each hash test navigates
+  // to homepage and awaits networkidle to ensure browser state fully settles
+  // before attempting the next hash click. This avoids race conditions where
+  // a pending hash transition could interrupt the next navigation.
+  // Reusing a single page instance avoids resource contention under
+  // concurrent testing (--workers=4 --repeat-each=10).
+  const hashes: Array<"#monitoring" | "#workflow" | "#reportpreview"> = [
+    "#monitoring",
+    "#workflow",
+    "#reportpreview",
+  ];
 
-  const monitoringLink = page
-    .locator('a:visible[href="#monitoring"], a:visible[href="/#monitoring"]')
-    .first();
+  for (const hash of hashes) {
+    // Use networkidle to ensure prior hash navigation fully settles
+    // before attempting next homepage navigation.
+    await page.goto("/", { waitUntil: "networkidle" });
 
-  await expect(monitoringLink).toHaveAttribute("href", /^(?:\/)?#monitoring$/);
-  await monitoringLink.click();
-  await expect(page).toHaveURL(/#monitoring$/);
-  await expect(page.locator("#platform")).toBeVisible();
+    const link = page
+      .locator(`a:visible[href="${hash}"], a:visible[href="/${hash}"]`)
+      .first();
 
-  const workflowLink = page
-    .locator('a:visible[href="#workflow"], a:visible[href="/#workflow"]')
-    .first();
-  await workflowLink.click();
-  await expect(page).toHaveURL(/#workflow$/);
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute(
+      "href",
+      new RegExp("^(?:/)?" + hash + "$"),
+    );
 
-  const reportingLink = page
-    .locator('a:visible[href="#reportpreview"], a:visible[href="/#reportpreview"]')
-    .first();
-  await reportingLink.click();
-  await expect(page).toHaveURL(/#reportpreview$/);
-  await expect(page.locator("#reportpreview")).toBeVisible();
+    await Promise.all([
+      page.waitForURL(new RegExp(hash + "$")),
+      link.click(),
+    ]);
 
+    await expect(page.locator(hash)).toBeVisible();
+  }
+
+  // Verify route availability independently of hash navigation tests.
   for (const href of ["/technology", "/resources", "/contact"]) {
     const response = await page.request.get(href);
     expect(response.ok(), `${href} should resolve`).toBe(true);
   }
 });
-
 test("homepage has no horizontal overflow at 320px", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/", { waitUntil: "networkidle" });
@@ -52,15 +63,22 @@ test("industry tabs, platform reporting controls and FAQ are keyboard operable",
 }) => {
   await page.goto("/", { waitUntil: "networkidle" });
 
-  const industryTab = page
-    .locator('#industries [role="tab"]:visible')
-    .first();
-  if (await industryTab.isVisible()) {
-    await industryTab.focus();
-    await page.keyboard.press("ArrowRight");
-    const selected = page.locator('#industries [role="tab"][aria-selected="true"]');
-    await expect(selected).toHaveText(/Construction/i);
-    await expect(selected).toBeFocused();
+  const healthcareTab = page.getByRole("tab", { name: /Healthcare/i });
+  const constructionTab = page.getByRole("tab", { name: /Construction/i });
+
+  if (await healthcareTab.isVisible()) {
+    // Prove the client tab handlers are hydrated before exercising keyboard navigation.
+    await constructionTab.click();
+    await expect(constructionTab).toHaveAttribute("aria-selected", "true");
+
+    await healthcareTab.click();
+    await expect(healthcareTab).toHaveAttribute("aria-selected", "true");
+
+    await healthcareTab.focus();
+    await healthcareTab.press("ArrowRight");
+
+    await expect(constructionTab).toHaveAttribute("aria-selected", "true");
+    await expect(constructionTab).toBeFocused();
   }
 
   await page.goto("/#reportpreview", { waitUntil: "networkidle" });
@@ -133,3 +151,6 @@ test("HubSpot failure state provides hosted-form fallback", async ({ page }) => 
     page.getByRole("link", { name: /open the enquiry form/i }),
   ).toHaveAttribute("href", /share-ap1\.hsforms\.com/);
 });
+
+
+

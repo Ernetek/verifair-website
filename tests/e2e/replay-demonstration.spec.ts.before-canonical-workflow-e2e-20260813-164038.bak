@@ -1,0 +1,76 @@
+﻿import { expect, test } from "@playwright/test";
+
+test("approved demonstration keeps readings, timeline and controls synchronised", async ({
+  page,
+}) => {
+  await page.goto("/demonstration/workflow");
+  await expect(page.getByTestId("product-demonstration")).toHaveAttribute(
+    "data-hydrated",
+    "true",
+  );
+
+  await expect(
+    page.getByText("Simulated demonstration data", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Respirable dust" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^PM4(?:\.0)?$/i })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "PM1" }).locator("..").getByText("8 µg/m³", { exact: true }),
+  ).toBeVisible();
+
+  // Sensor replay opens the incident; human workflow actions must not advance replay time.
+  await page.getByRole("button", { name: /Next scenario marker/i }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "PM1" }).locator("..").getByText("16 µg/m³", { exact: true }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Acknowledge alert" }).click();
+  await page.getByLabel("Assign to specific user").selectOption("Jordan Lee");
+  await page.getByRole("button", { name: "Assign task" }).click();
+  await page.getByRole("button", { name: "Start work" }).click();
+  await page.getByLabel("Progress status").selectOption("Ready to close");
+  await page.getByLabel("Status update details").fill("Area checked and local controls verified.");
+  await page.getByRole("button", { name: "Save status update" }).click();
+  await expect(page.getByRole("heading", { name: "Close incident" })).toBeVisible();
+  await expect(
+    page.getByText("Work reviewed and local controls checked", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Close incident and retain evidence" })).toBeDisabled();
+  await page.getByLabel("Closure category - required").selectOption("False positive");
+  await page.getByLabel("Closure details - required").fill("Area inspected; no continuing condition identified.");
+  await page.getByRole("button", { name: "Close incident and retain evidence" }).click();
+  await expect(page.getByRole("heading", { name: "Incident closed with evidence retained" })).toBeVisible();
+
+  await expect(page.getByText("Live current particulate levels")).toBeVisible();
+  await expect(page.getByLabel("Select location")).toBeHidden();
+  await expect(page.getByLabel("Upload photo evidence")).toBeVisible();
+});
+
+test("demonstration overview links to each dedicated experience", async ({ page }) => {
+  await page.goto("/demonstration");
+  await expect(page.getByRole("link", { name: /Open monitoring-room demo/ })).toHaveAttribute("href", "/demonstration/monitoring-room");
+  await expect(page.getByRole("link", { name: /Start guided workflow/ })).toHaveAttribute("href", "/demonstration/workflow");
+  await expect(page.getByRole("link", { name: /Open evidence-reporting demo/ })).toHaveAttribute("href", "/demonstration/evidence-reporting");
+});
+
+test("reporting portal switches between detailed report types", async ({ page }) => {
+  await page.goto("/demonstration/evidence-reporting");
+  await page.getByLabel("Report type").selectOption("Alert and response register");
+  await expect(page.getByRole("heading", { name: "Selected incident evidence" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Evidence attached to INC-0042" })).toBeVisible();
+  await expect(page.getByText("Site investigation · preloaded evidence")).toBeVisible();
+  await page.getByLabel("Report type").selectOption("Project-period evidence pack");
+  await expect(page.getByRole("heading", { name: "Project-period monitoring evidence pack" })).toBeVisible();
+});
+
+test("product demonstration has no horizontal overflow on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/demonstration/workflow");
+  const dimensions = await page.evaluate(() => ({
+    documentWidth: document.documentElement.scrollWidth,
+    viewportWidth: document.documentElement.clientWidth,
+  }));
+  expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.viewportWidth + 1);
+});
+

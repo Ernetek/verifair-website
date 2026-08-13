@@ -1,0 +1,32 @@
+
+> verifair-public-website@1.0.0 typecheck
+> tsc --noEmit
+
+app/demonstration/monitoring-room/page.tsx(3,10): error TS2724: '"@/components/demonstration/ClinicalDashboards"' has no exported member named 'MonitoringRoomDisplayPage'. Did you mean 'MonitoringRoomDisplay'?
+app/demonstration/shared-dashboard/page.tsx(3,10): error TS2724: '"@/components/demonstration/ClinicalDashboards"' has no exported member named 'SharedDashboardPage'. Did you mean 'SharedDashboard'?
+components/demonstration/ClinicalDashboards.tsx(14,10): error TS2459: Module '"@/components/demonstration/ProductDemonstration"' declares 'CANONICAL_WORKFLOW_PHASES' locally, but it is not exported.
+components/demonstration/ClinicalDashboards.tsx(93,20): error TS2339: Property 'locationDescription' does not exist on type 'Monitor'.
+components/demonstration/ClinicalDashboards.tsx(112,34): error TS2339: Property 'locationDescription' does not exist on type 'Monitor'.
+components/demonstration/ClinicalDashboards.tsx(140,47): error TS7006: Parameter 'p' implicitly has an 'any' type.
+components/demonstration/ClinicalDashboards.tsx(140,50): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+components/demonstration/ClinicalDashboards.tsx(235,20): error TS2339: Property 'locationDescription' does not exist on type 'Monitor'.
+components/demonstration/ProductDemonstration.tsx(168,7): error TS2353: Object literal may only specify known properties, and 'acknowledgedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(177,7): error TS2353: Object literal may only specify known properties, and 'assignee' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(186,7): error TS2353: Object literal may only specify known properties, and 'startedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(196,7): error TS2353: Object literal may only specify known properties, and 'status' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(208,7): error TS2353: Object literal may only specify known properties, and 'escalatedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(219,7): error TS2353: Object literal may only specify known properties, and 'verifier' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(228,7): error TS2353: Object literal may only specify known properties, and 'verifier' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(239,7): error TS2353: Object literal may only specify known properties, and 'category' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(258,9): error TS2353: Object literal may only specify known properties, and 'evidenceId' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+components/demonstration/ProductDemonstration.tsx(705,84): error TS2339: Property 'timezone' does not exist on type 'ScenarioMetadata'.
+components/demonstration/ProductDemonstration.tsx(718,32): error TS2339: Property 'locationDescription' does not exist on type 'Monitor'.
+components/home/CoordinatedSolution.tsx(1,10): error TS2724: '"@/components/demonstration/ClinicalDashboards"' has no exported member named 'SharedDashboardPage'. Did you mean 'SharedDashboard'?
+components/home/DashboardDemonstration.tsx(1,10): error TS2305: Module '"@/components/demonstration/ClinicalDashboards"' has no exported member 'DashboardDemonstrationSection'.
+components/home/MonitoringRoomSection.tsx(3,10): error TS2724: '"@/components/demonstration/ClinicalDashboards"' has no exported member named 'MonitoringRoomPreview'. Did you mean 'MonitoringRoomHeroPreview'?
+components/home/PlatformOverview.tsx(6,10): error TS2724: '"@/components/demonstration/ProductDemonstration"' has no exported member named 'ProductDemonstrationPreview'. Did you mean 'ProductDemonstration'?
+tests/demonstration-session.test.ts(25,7): error TS2353: Object literal may only specify known properties, and 'acknowledgedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+tests/demonstration-session.test.ts(41,59): error TS2353: Object literal may only specify known properties, and 'acknowledgedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+tests/demonstration-session.test.ts(60,59): error TS2353: Object literal may only specify known properties, and 'acknowledgedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+tests/demonstration-session.test.ts(61,55): error TS2353: Object literal may only specify known properties, and 'assignee' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.
+tests/demonstration-session.test.ts(96,59): error TS2353: Object literal may only specify known properties, and 'acknowledgedBy' does not exist in type 'Omit<IncidentEvent, "incidentId" | "sequence" | "timestampMs"> & { timestampMs?: number | undefined; incidentId?: string | undefined; }'.

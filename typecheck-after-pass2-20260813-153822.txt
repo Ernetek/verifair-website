@@ -1,0 +1,8 @@
+
+> verifair-public-website@1.0.0 typecheck
+> tsc --noEmit
+
+components/demonstration/ClinicalDashboards.tsx(351,30): error TS2322: Type '{ compact: true; }' is not assignable to type 'IntrinsicAttributes & { readonly session?: DemonstrationSession | undefined; }'.
+  Property 'compact' does not exist on type 'IntrinsicAttributes & { readonly session?: DemonstrationSession | undefined; }'.
+components/demonstration/ClinicalDashboards.tsx(359,36): error TS2322: Type '{ compact: true; }' is not assignable to type 'IntrinsicAttributes & { readonly session?: DemonstrationSession | undefined; }'.
+  Property 'compact' does not exist on type 'IntrinsicAttributes & { readonly session?: DemonstrationSession | undefined; }'.

@@ -3,10 +3,11 @@
 import { useSyncExternalStore } from "react";
 
 import {
-  REPLAY_RATES,
-  type ReplayPlaybackController,
-  type ReplayRate,
-} from "@/lib/replay/playback-controller";
+  DemonstrationSession,
+  getSharedDemonstrationSession,
+  MEANINGFUL_SCENARIO_MARKERS,
+} from "@/lib/demonstration/session";
+import { REPLAY_RATES, type ReplayRate } from "@/lib/replay/playback-controller";
 
 function formatElapsed(positionMs: number): string {
   const seconds = Math.floor(positionMs / 1_000);
@@ -15,17 +16,17 @@ function formatElapsed(positionMs: number): string {
 }
 
 export function ReplayControls({
-  controller,
+  session: sessionProp,
 }: {
-  readonly controller: ReplayPlaybackController;
+  readonly session?: DemonstrationSession;
 }) {
+  const session = sessionProp ?? getSharedDemonstrationSession();
   const snapshot = useSyncExternalStore(
-    controller.subscribe,
-    controller.getSnapshot,
-    controller.getSnapshot,
+    session.subscribe,
+    session.getSnapshot,
+    session.getSnapshot,
   );
-  const { state, isPlaying, rate } = snapshot;
-  const stepMs = Math.max(1_000, Math.round(controller.durationMs / 4));
+  const { replayState, isPlaying, rate, currentMarkerIndex } = snapshot;
 
   return (
     <section
@@ -36,15 +37,15 @@ export function ReplayControls({
         <button
           type="button"
           className="btn btn-primary"
-          disabled={state.isTerminal}
-          onClick={() => (isPlaying ? controller.pause() : controller.play())}
+          disabled={replayState.isTerminal}
+          onClick={() => (isPlaying ? session.pause() : session.play())}
         >
           {isPlaying ? "Pause" : "Play"}
         </button>
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => controller.restart()}
+          onClick={() => session.restart()}
         >
           Restart
         </button>
@@ -55,7 +56,7 @@ export function ReplayControls({
             className="min-h-11 border border-slate-300 bg-white px-3"
             value={rate}
             onChange={(event) =>
-              controller.setRate(Number(event.currentTarget.value) as ReplayRate)
+              session.setRate(Number(event.currentTarget.value) as ReplayRate)
             }
           >
             {REPLAY_RATES.map((availableRate) => (
@@ -74,32 +75,37 @@ export function ReplayControls({
           className="mt-2 block min-h-11 w-full accent-blue-600"
           type="range"
           min={0}
-          max={controller.durationMs}
+          max={session.durationMs}
           step={1_000}
-          value={state.offsetMs}
-          onChange={(event) => controller.seek(Number(event.currentTarget.value))}
+          value={replayState.offsetMs}
+          onChange={(event) => session.seek(Number(event.currentTarget.value))}
         />
       </label>
-      <p aria-live="polite" className="mt-2 text-sm text-slate-700">
-        {formatElapsed(state.offsetMs)} / {formatElapsed(controller.durationMs)}
-        {state.isTerminal ? " · Demonstration complete" : ""}
-      </p>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div aria-live="polite" className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-700">
+        <span>
+          {formatElapsed(replayState.offsetMs)} / {formatElapsed(session.durationMs)}
+          {replayState.isTerminal ? " · Demonstration complete" : ""}
+        </span>
+        <span className="font-semibold text-blue-700">
+          Marker {currentMarkerIndex + 1} of {MEANINGFUL_SCENARIO_MARKERS.length}: {MEANINGFUL_SCENARIO_MARKERS[currentMarkerIndex]?.label}
+        </span>
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
           type="button"
           className="btn btn-secondary"
-          disabled={state.offsetMs === 0}
-          onClick={() => controller.seek(state.offsetMs - stepMs)}
+          disabled={replayState.offsetMs === 0}
+          onClick={() => session.seekToMarker("prev")}
         >
-          Previous step
+          ← Previous scenario marker
         </button>
         <button
           type="button"
           className="btn btn-secondary"
-          disabled={state.isTerminal}
-          onClick={() => controller.seek(state.offsetMs + stepMs)}
+          disabled={replayState.isTerminal || replayState.offsetMs >= session.durationMs}
+          onClick={() => session.seekToMarker("next")}
         >
-          Next step
+          Next scenario marker →
         </button>
       </div>
     </section>

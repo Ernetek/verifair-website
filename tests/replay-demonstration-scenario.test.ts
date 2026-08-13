@@ -63,6 +63,7 @@ describe("approved public demonstration scenario", () => {
     }
     expect(before.state.incidents).toHaveLength(0);
     expect(opened.state.incidents[0]?.status).toBe("open");
+    expect(opened.state.timelineEvents[1]?.title).toContain("site contact notified");
     expect(acted.state.actions).toHaveLength(1);
     expect(evidenced.state.evidence).toHaveLength(1);
     expect(resolved.state.incidents[0]?.status).toBe("resolved");
