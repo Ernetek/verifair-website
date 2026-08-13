@@ -1,8 +1,8 @@
-﻿"use client";
+"use client";
 
 import { evaluateAt } from "@/lib/replay/engine";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,14 +12,13 @@ import {
 } from "@/lib/replay/demonstration-scenario";
 import {
   selectLatestObservation,
-  selectObservationHistory,
 } from "@/lib/replay/selectors";
 import {
   DemonstrationSession,
   getSharedDemonstrationSession,
   MEANINGFUL_SCENARIO_MARKERS,
 } from "@/lib/demonstration/session";
-import type { IncidentState, WorkflowPhase } from "@/lib/demonstration/incident-domain";
+import type { WorkflowPhase } from "@/lib/demonstration/incident-domain";
 import { ReplayControls } from "@/components/demonstration/ReplayControls";
 
 const chartColours: Record<string, string> = {
@@ -38,30 +37,6 @@ export const CANONICAL_WORKFLOW_PHASES: readonly WorkflowPhase[] = [
   "Close",
 ];
 
-const workflowMedia = [
-  {
-    src: "/assets/dust-monitoring-display-hub.webp",
-    alt: "VerifAir centralised site-wide monitoring hub with a wall display showing green, amber and red zone states",
-    eyebrow: "Alert visibility",
-    title: "The monitoring room sees the changed zone",
-    body: "A high-visibility display helps the site team see which location requires attention.",
-  },
-  {
-    src: "/assets/workflow-site-investigation.webp",
-    alt: "Simulated construction worker checking local controls after a particulate monitoring alert",
-    eyebrow: "Site response",
-    title: "A worker checks the area and local controls",
-    body: "The investigation and response are recorded without claiming a specific contaminant or cause.",
-  },
-  {
-    src: "/assets/reports-evidence-review.webp",
-    alt: "Simulated project team reviewing a monitoring evidence timeline and response record",
-    eyebrow: "Evidence review",
-    title: "The complete record is reviewed",
-    body: "Readings, notification, response notes and timestamps form an evidence package for authorised review.",
-  },
-] as const;
-
 function observationValue(
   state: ReturnType<DemonstrationSession["getSnapshot"]>["replayState"],
   monitorId: string,
@@ -69,11 +44,11 @@ function observationValue(
 ): string {
   const observation = selectLatestObservation(state, monitorId, metricId);
   return observation?.reading.status === "available"
-    ? String(observation.reading.value)
-    : "â€”";
+    ? String(Math.round(observation.reading.value))
+    : "—";
 }
 
-function MetricChart({
+function CompactMetricDisplay({
   session,
   monitorId,
   metricId,
@@ -89,161 +64,36 @@ function MetricChart({
     session.getSnapshot,
     session.getSnapshot,
   );
-  const history = selectObservationHistory(
-    publicDemonstrationScenario,
-    replayState,
-    monitorId,
-    metricId,
-  );
-  const available = history.filter(
-    (item) => item.reading.status === "available",
-  );
-  const maximum = Math.max(
-    1,
-    ...available.map((item) =>
-      item.reading.status === "available" ? item.reading.value : 0,
-    ),
-  );
-  const points = available
-    .map((item) => {
-      const x = 10 + (item.offsetMs / session.durationMs) * 280;
-      const value = item.reading.status === "available" ? item.reading.value : 0;
-      const y = 90 - (value / maximum) * 70;
-      return `${x},${y}`;
-    })
-    .join(" ");
 
   return (
-    <div className="border border-slate-200 bg-slate-50 p-3">
-      <div className="flex items-baseline justify-between gap-3">
-        <h3 className="text-sm font-black text-slate-900">{label}</h3>
-        <p className="text-sm text-slate-600">
-          {observationValue(replayState, monitorId, metricId)} µg/m³
-        </p>
-      </div>
-      <svg
-        viewBox="0 0 300 100"
-        className="mt-2 h-24 w-full"
-        role="img"
-        aria-label={`${label} simulated observation history for the selected location`}
-      >
-        <line x1="10" x2="290" y1="90" y2="90" stroke="#cbd5e1" />
-        {points ? (
-          <polyline
-            points={points}
-            fill="none"
-            stroke={chartColours[metricId]}
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        ) : null}
-      </svg>
+    <div className="flex items-baseline justify-between gap-2">
+      <span className="text-xs font-bold text-slate-600">{label}:</span>
+      <span className="text-sm font-black text-slate-900">
+        {observationValue(replayState, monitorId, metricId)} <span className="text-xs">µg/m³</span>
+      </span>
     </div>
   );
 }
 
-function OperationalWorkflow({ session }: { readonly session: DemonstrationSession }) {
-  const { incidentState } = useSyncExternalStore(
+function AutomatedWorkflow({ session }: { readonly session: DemonstrationSession }) {
+  const { incidentState, replayState } = useSyncExternalStore(
     session.subscribe,
     session.getSnapshot,
     session.getSnapshot,
   );
 
-  const [assigneeInput, setAssigneeInput] = useState("Jordan Lee");
-  const [escalationReason, setEscalationReason] = useState("");
-  const [statusUpdateInput, setStatusUpdateInput] = useState("");
-  const [verifierInput, setVerifierInput] = useState("Maria Chen");
-  const [verificationOutcome, setVerificationOutcome] = useState<"sufficient_to_close" | "further_action_required">("sufficient_to_close");
-  const [verificationNotes, setVerificationNotes] = useState("Area inspected; local control misting confirmed effective.");
-  const [closureCategoryInput, setClosureCategoryInput] = useState("False positive");
-  const [closureDetailsInput, setClosureDetailsInput] = useState("Area inspected; temporary flare resolved.");
-  const [photoEvidence, setPhotoEvidence] = useState<{ name: string; dataUrl: string } | null>(null);
-  const [dispatchError, setDispatchError] = useState<string | null>(null);
-
   const { phase, closed, isEscalated, progressStatus } = incidentState;
+  const workflowRef = useRef<HTMLDivElement>(null);
+  const [photoEvidence, setPhotoEvidence] = useState<{ name: string; dataUrl: string } | null>(null);
 
-  const handleAcknowledge = () => {
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "ACKNOWLEDGED",
-      acknowledgedBy: assigneeInput || "Jordan Lee",
-    });
-    if (!res.ok) setDispatchError(res.error);
-  };
-
-  const handleAssign = () => {
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "ASSIGNED",
-      assignee: assigneeInput,
-    });
-    if (!res.ok) setDispatchError(res.error);
-  };
-
-  const handleStartInvestigation = () => {
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "INVESTIGATION_STARTED",
-      startedBy: assigneeInput || "Jordan Lee",
-    });
-    if (!res.ok) setDispatchError(res.error);
-  };
-
-  const handleSaveProgress = () => {
-    if (!statusUpdateInput.trim()) return;
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "PROGRESS_UPDATED",
-      status: "Controls being checked",
-      details: statusUpdateInput,
-    });
-    if (!res.ok) setDispatchError(res.error);
-    else setStatusUpdateInput("");
-  };
-
-  const handleEscalate = () => {
-    if (!escalationReason.trim()) return;
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "ESCALATED",
-      escalatedBy: assigneeInput || "Jordan Lee",
-      reason: escalationReason,
-    });
-    if (!res.ok) setDispatchError(res.error);
-    else setEscalationReason("");
-  };
-
-  const handleStartVerification = () => {
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "VERIFICATION_STARTED",
-      verifier: verifierInput,
-    });
-    if (!res.ok) setDispatchError(res.error);
-  };
-
-  const handleCompleteVerification = () => {
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "VERIFICATION_COMPLETED",
-      verifier: verifierInput,
-      outcome: verificationOutcome,
-      notes: verificationNotes,
-    });
-    if (!res.ok) setDispatchError(res.error);
-  };
-
-  const handleClose = () => {
-    setDispatchError(null);
-    const res = session.dispatchIncidentEvent({
-      type: "INCIDENT_CLOSED",
-      category: closureCategoryInput,
-      details: closureDetailsInput,
-      closedBy: verifierInput || "Maria Chen",
-    });
-    if (!res.ok) setDispatchError(res.error);
-  };
+  // Auto-scroll workflow section into view when phase changes
+  useEffect(() => {
+    if (workflowRef.current) {
+      setTimeout(() => {
+        workflowRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+    }
+  }, [phase]);
 
   const handleUploadPhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -270,52 +120,96 @@ function OperationalWorkflow({ session }: { readonly session: DemonstrationSessi
     reader.readAsDataURL(file);
   };
 
+  // Auto-advance through workflow when scenario position changes
+  useEffect(() => {
+    if (!session || closed) return;
+
+    const advanceWorkflow = () => {
+      // Automatically dispatch events based on scenario progress
+      const markerIndex = Math.floor((replayState.offsetMs / session.durationMs) * 100);
+
+      if (phase === "Alert" && markerIndex > 5) {
+        session.dispatchIncidentEvent({
+          type: "ACKNOWLEDGED",
+          acknowledgedBy: "Automated Workflow",
+        });
+      } else if (phase === "Acknowledge" && markerIndex > 20) {
+        session.dispatchIncidentEvent({
+          type: "ASSIGNED",
+          assignee: "Jordan Lee",
+        });
+      } else if (phase === "Assign" && markerIndex > 35) {
+        session.dispatchIncidentEvent({
+          type: "INVESTIGATION_STARTED",
+          startedBy: "Jordan Lee",
+        });
+      } else if (phase === "Investigate" && markerIndex > 60) {
+        session.dispatchIncidentEvent({
+          type: "VERIFICATION_STARTED",
+          verifier: "Maria Chen",
+        });
+      } else if (phase === "Verify" && markerIndex > 80) {
+        session.dispatchIncidentEvent({
+          type: "VERIFICATION_COMPLETED",
+          verifier: "Maria Chen",
+          outcome: "sufficient_to_close",
+          notes: "Area inspected; local control misting confirmed effective.",
+        });
+      } else if (phase === "Close" && markerIndex > 90) {
+        session.dispatchIncidentEvent({
+          type: "INCIDENT_CLOSED",
+          category: "False positive",
+          details: "Area inspected; temporary flare resolved.",
+          closedBy: "Maria Chen",
+        });
+      }
+    };
+
+    advanceWorkflow();
+  }, [replayState.offsetMs, phase, closed, session]);
+
   return (
     <section
+      ref={workflowRef}
       aria-labelledby="operational-workflow-title"
-      className="sticky top-18 z-30 border-b border-blue-300 bg-blue-50 px-5 py-4 shadow-lg sm:top-20 sm:px-8"
+      className="border-b border-slate-200 bg-white px-5 py-6 sm:px-8"
     >
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
           <p id="operational-workflow-title" className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">
-            Canonical operational response workflow
+            Workflow progress
           </p>
-          <h2 className="mt-2 text-2xl font-black text-slate-950">
-            {closed ? "Incident closed with evidence retained" : `Phase: ${phase} â€” ${progressStatus}`}
+          <h2 className="mt-2 text-xl sm:text-2xl font-black text-slate-950">
+            {closed ? "Incident closed with evidence retained" : `${phase}: ${progressStatus}`}
           </h2>
-          <p className="mt-2 text-sm text-slate-700">
+          <p className="mt-1 text-xs text-slate-600">
             Incident INC-0042 · General Entry Door · Action condition
           </p>
         </div>
-        <span
-          className={`px-3 py-2 text-xs font-black uppercase ${
+        <div
+          className={`px-3 py-2 text-xs font-black uppercase min-w-fit ${
             closed
               ? "bg-emerald-700 text-white"
+              : phase === "Alert"
+              ? "bg-red-600 text-white animate-pulse ring-2 ring-red-400"
               : isEscalated
               ? "bg-red-700 text-white"
               : "bg-amber-300 text-amber-950"
           }`}
         >
-          {closed ? "Closed" : isEscalated ? "Escalated" : progressStatus}
-        </span>
+          {closed ? "Closed" : isEscalated ? "Escalated" : phase === "Alert" ? "ACTION REQUIRED" : progressStatus}
+        </div>
       </div>
 
-      {dispatchError ? (
-        <p role="alert" className="mt-3 rounded border border-red-300 bg-red-100 p-3 text-xs font-bold text-red-800">
-          Workflow action error: {dispatchError}
-        </p>
-      ) : null}
-
-      <ol className="mt-4 grid gap-2 sm:grid-cols-3 xl:grid-cols-6" aria-label="Workflow progress">
+      {/* Workflow phase progress */}
+      <ol className="grid gap-2 sm:grid-cols-3 xl:grid-cols-6" aria-label="Workflow progress">
         {CANONICAL_WORKFLOW_PHASES.map((p, index) => {
           const isActive = phase === p && !closed;
-          const isPast =
-            closed ||
-            CANONICAL_WORKFLOW_PHASES.indexOf(phase) > index;
+          const isPast = closed || CANONICAL_WORKFLOW_PHASES.indexOf(phase) > index;
           return (
             <li
               key={p}
-              className={`border px-3 py-2 text-xs font-bold ${
+              className={`border px-3 py-2 text-xs font-bold text-center transition-colors ${
                 isActive
                   ? "border-blue-700 bg-blue-700 text-white"
                   : isPast
@@ -329,276 +223,60 @@ function OperationalWorkflow({ session }: { readonly session: DemonstrationSessi
         })}
       </ol>
 
-      <div className="mt-4 border border-blue-200 bg-white p-4">
-        {phase === "Alert" && !closed ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-semibold">Simulated alert open. Confirm acknowledgement to take ownership of response.</p>
-            <button
-              type="button"
-              onClick={handleAcknowledge}
-              className="min-h-11 bg-blue-700 px-5 font-black text-white"
-            >
-              Acknowledge alert â†’
-            </button>
-          </div>
-        ) : null}
-
-        {phase === "Acknowledge" && !closed ? (
-          <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
-            <label className="text-xs font-black uppercase text-slate-500">
-              Assign to specific user
-              <select
-                aria-label="Assign to specific user"
-                value={assigneeInput}
-                onChange={(e) => setAssigneeInput(e.target.value)}
-                className="mt-2 block min-h-11 w-full border border-slate-300 bg-white px-3 text-sm font-semibold normal-case"
-              >
-                <option value="">Select response owner</option>
-                <option value="Jordan Lee">Jordan Lee</option>
-                <option value="Maria Chen">Maria Chen</option>
-                <option value="Site Supervisor">Site Supervisor</option>
-                <option value="Project Manager">Project Manager</option>
-              </select>
-            </label>
-            <button
-              type="button"
-              disabled={!assigneeInput}
-              onClick={handleAssign}
-              className="min-h-11 bg-blue-700 px-5 font-black text-white disabled:opacity-35"
-            >
-              Assign task â†’
-            </button>
-          </div>
-        ) : null}
-
-        {phase === "Assign" && !closed ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-semibold">
-              Assigned to {incidentState.assignedTo ?? assigneeInput}. Confirm when site investigation begins.
-            </p>
-            <button
-              type="button"
-              onClick={handleStartInvestigation}
-              className="min-h-11 bg-blue-700 px-5 font-black text-white"
-            >
-              Start work â†’
-            </button>
-          </div>
-        ) : null}
-
-        {phase === "Investigate" && !closed ? (
-          <div className="grid gap-4 lg:grid-cols-2">
+      {/* Photo evidence upload - only in Investigation and Close */}
+      {(phase === "Investigate" || phase === "Close") && !closed && (
+        <div className="mt-4 border border-slate-200 bg-slate-50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div className="flex flex-wrap gap-3">
-                <input
-                  type="text"
-                  placeholder="Reason for escalation..."
-                  value={escalationReason}
-                  onChange={(e) => setEscalationReason(e.target.value)}
-                  className="min-h-11 border border-slate-300 p-2 text-xs font-medium"
-                />
-                <button
-                  type="button"
-                  onClick={handleEscalate}
-                  disabled={!escalationReason.trim()}
-                  className="min-h-11 border border-red-600 px-4 font-black text-red-700 disabled:opacity-35"
-                >
-                  Escalate
-                </button>
-              </div>
-              {isEscalated ? (
-                <span className="mt-2 block text-xs font-bold text-red-700">
-                  Escalation recorded: {incidentState.escalationReason}
-                </span>
-              ) : null}
+              <p className="text-xs font-black uppercase text-slate-700">Photo evidence</p>
+              <p className="mt-1 text-sm text-slate-600">
+                Attach a site photo during investigation or closure.
+              </p>
             </div>
-
-            <div>
-              <label className="block text-xs font-black uppercase text-slate-500">
-                Status update details
-                <textarea
-                  aria-label="Status update details"
-                  value={statusUpdateInput}
-                  onChange={(e) => setStatusUpdateInput(e.target.value)}
-                  rows={2}
-                  placeholder="Record what was checked, changed or observed."
-                  className="mt-2 block w-full border border-slate-300 p-2 text-sm font-medium normal-case"
-                />
-              </label>
-              <div className="mt-3 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  disabled={!statusUpdateInput.trim()}
-                  onClick={handleSaveProgress}
-                  className="min-h-11 bg-blue-700 px-4 font-black text-white disabled:opacity-35"
-                >
-                  Save status update â†’
-                </button>
-                <button
-                  type="button"
-                  onClick={handleStartVerification}
-                  className="min-h-11 bg-slate-900 px-4 font-black text-white"
-                >
-                  Proceed to Verification â†’
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : null}
-
-        {phase === "Verify" && !closed ? (
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div>
-              <label className="text-xs font-black uppercase text-slate-500">
-                Verifier name
-                <input
-                  type="text"
-                  value={verifierInput}
-                  onChange={(e) => setVerifierInput(e.target.value)}
-                  className="mt-2 block min-h-11 w-full border border-slate-300 p-2 text-sm font-semibold"
-                />
-              </label>
-              <label className="mt-3 block text-xs font-black uppercase text-slate-500">
-                Verification outcome
-                <select
-                  value={verificationOutcome}
-                  onChange={(e) =>
-                    setVerificationOutcome(
-                      e.target.value as "sufficient_to_close" | "further_action_required",
-                    )
-                  }
-                  className="mt-2 block min-h-11 w-full border border-slate-300 bg-white px-3 text-sm font-semibold"
-                >
-                  <option value="sufficient_to_close">
-                    Sufficient to close (Controls effective)
-                  </option>
-                  <option value="further_action_required">
-                    Further action required (Loop back to Investigation)
-                  </option>
-                </select>
-              </label>
-            </div>
-            <div>
-              <label className="text-xs font-black uppercase text-slate-500">
-                Verification notes
-                <textarea
-                  value={verificationNotes}
-                  onChange={(e) => setVerificationNotes(e.target.value)}
-                  rows={3}
-                  className="mt-2 block w-full border border-slate-300 p-2 text-sm font-medium"
-                />
-              </label>
-              <button
-                type="button"
-                onClick={handleCompleteVerification}
-                className="mt-3 min-h-11 bg-blue-700 px-5 font-black text-white"
-              >
-                Complete verification â†’
-              </button>
-            </div>
-          </div>
-        ) : null}
-
-        {phase === "Close" && !closed ? (
-          <div className="grid gap-4 lg:grid-cols-2">
-            <label className="text-xs font-black uppercase text-slate-500">
-              Closure category - required
-              <select
-                aria-label="Closure category - required"
-                value={closureCategoryInput}
-                onChange={(e) => setClosureCategoryInput(e.target.value)}
-                className="mt-2 block min-h-11 w-full border border-slate-300 bg-white px-3 text-sm font-semibold normal-case"
-              >
-                <option value="">Select closure category</option>
-                <option value="False positive">False positive</option>
-                <option value="Work activity completed">Work activity completed</option>
-                <option value="Controls adjusted">Controls adjusted</option>
-                <option value="Device or data issue">Device or data issue</option>
-                <option value="No further action required">No further action required</option>
-              </select>
-            </label>
-            <label className="text-xs font-black uppercase text-slate-500">
-              Closure details - required
-              <textarea
-                aria-label="Closure details - required"
-                value={closureDetailsInput}
-                onChange={(e) => setClosureDetailsInput(e.target.value)}
-                rows={3}
-                placeholder="Explain the outcome and evidence supporting closure."
-                className="mt-2 block w-full border border-slate-300 p-3 text-sm font-medium normal-case"
+            <label className="inline-flex min-h-10 cursor-pointer items-center justify-center bg-slate-900 px-4 font-black text-white text-sm whitespace-nowrap">
+              Upload photo
+              <input
+                type="file"
+                aria-label="Upload photo evidence"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                onChange={handleUploadPhoto}
               />
             </label>
-            <div className="lg:col-span-2 flex justify-end">
-              <button
-                type="button"
-                disabled={!closureCategoryInput || !closureDetailsInput.trim()}
-                onClick={handleClose}
-                className="min-h-11 bg-slate-950 px-5 font-black text-white disabled:opacity-35"
-              >
-                Close incident and retain evidence
-              </button>
+          </div>
+          {photoEvidence && (
+            <div className="mt-3 flex flex-wrap items-center gap-3 pt-3 border-t border-slate-200">
+              <Image
+                src={photoEvidence.dataUrl}
+                alt="Uploaded incident evidence"
+                width={100}
+                height={75}
+                unoptimized
+                className="h-16 w-24 object-cover"
+              />
+              <div className="text-sm">
+                <p className="font-bold text-slate-900">{photoEvidence.name}</p>
+                <a
+                  href={photoEvidence.dataUrl}
+                  download={photoEvidence.name}
+                  className="text-xs font-black text-blue-700 hover:underline"
+                >
+                  Download
+                </a>
+              </div>
             </div>
-          </div>
-        ) : null}
+          )}
+        </div>
+      )}
 
-        {closed ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-semibold">
-              Closed by {incidentState.closedBy}. Category: {incidentState.closureCategory}. Details: {incidentState.closureDetails}. Audit trail ready.
-            </p>
-            <button
-              type="button"
-              onClick={() => session.restart()}
-              className="min-h-11 bg-slate-950 px-5 font-black text-white"
-            >
-              Restart demonstration
-            </button>
-          </div>
-        ) : null}
-      </div>
-
-      <div className="mt-3 grid gap-3 border border-slate-300 bg-white p-4 md:grid-cols-[1fr_auto] md:items-center">
-        <div>
-          <p className="text-xs font-black uppercase tracking-wide text-slate-500">
-            Photo evidence
-          </p>
-          <p className="mt-1 text-sm text-slate-600">
-            Attach a site photo while reviewing the alert. It remains in this demonstration session and is added to the incident report.
+      {/* Closed state */}
+      {closed && (
+        <div className="mt-4 p-4 border border-emerald-300 bg-emerald-50">
+          <p className="text-sm font-semibold text-emerald-900">
+            ✓ Closed by {incidentState.closedBy}. Category: {incidentState.closureCategory}.
           </p>
         </div>
-        <label className="inline-flex min-h-11 cursor-pointer items-center justify-center bg-slate-950 px-5 font-black text-white">
-          Upload photo evidence
-          <input
-            type="file"
-            aria-label="Upload photo evidence"
-            accept="image/jpeg,image/png,image/webp"
-            className="sr-only"
-            onChange={handleUploadPhoto}
-          />
-        </label>
-        {photoEvidence ? (
-          <div className="md:col-span-2 flex flex-wrap items-center gap-4 border-t border-slate-200 pt-3">
-            <Image
-              src={photoEvidence.dataUrl}
-              alt="Uploaded incident evidence preview"
-              width={120}
-              height={80}
-              unoptimized
-              className="h-20 w-30 object-cover"
-            />
-            <div>
-              <p className="font-bold text-slate-950">{photoEvidence.name}</p>
-              <a
-                href={photoEvidence.dataUrl}
-                download={photoEvidence.name}
-                className="mt-1 inline-flex text-sm font-black text-blue-700 hover:underline"
-              >
-                Download evidence
-              </a>
-            </div>
-          </div>
-        ) : null}
-      </div>
+      )}
     </section>
   );
 }
@@ -610,9 +288,6 @@ export function ProductDemonstration({
 }) {
   const session = sessionProp ?? getSharedDemonstrationSession();
   const [hydrated, setHydrated] = useState(false);
-  const [monitorId, setMonitorId] = useState(
-    publicDemonstrationScenario.monitors[0].id,
-  );
 
   const snapshot = useSyncExternalStore(
     session.subscribe,
@@ -620,25 +295,9 @@ export function ProductDemonstration({
     session.getSnapshot,
   );
 
-  const { replayState, incidentState, currentMarkerIndex } = snapshot;
+  const { incidentState, currentMarkerIndex } = snapshot;
 
-  const monitor = publicDemonstrationScenario.monitors.find(
-    ({ id }) => id === monitorId,
-  );
-
-  const visibleHistory = useMemo(
-    () =>
-      DEMONSTRATION_METRICS.map((metric) => ({
-        ...metric,
-        history: selectObservationHistory(
-          publicDemonstrationScenario,
-          replayState,
-          monitorId,
-          metric.id,
-        ),
-      })),
-    [monitorId, replayState],
-  );
+  const alertMonitorId = "MON-GED"; // General Entry Door
 
   useEffect(() => {
     setHydrated(true);
@@ -656,91 +315,72 @@ export function ProductDemonstration({
         </p>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black sm:text-4xl">
-              Follow the alert-to-evidence workflow
+            <h1 className="text-2xl sm:text-3xl font-black">
+              Watch the alert-to-evidence workflow
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">
-              Replay simulated observations, review the incident record and see
-              how evidence is retained for audit and management review.
+            <p className="mt-2 max-w-3xl text-xs sm:text-sm leading-6 text-slate-300">
+              The simulation automatically advances through monitoring, alert, investigation, verification and closure stages.
             </p>
           </div>
-          <div className="rounded bg-slate-900 p-3 text-right">
-            <p className="text-xs font-bold uppercase text-slate-400">Current Phase</p>
-            <p className="text-lg font-black text-sky-300">{incidentState.phase}</p>
-          </div>
+          {incidentState.phase === "Alert" && (
+            <div className="rounded bg-red-600 px-3 py-2 text-right animate-pulse">
+              <p className="text-[10px] font-bold uppercase text-red-100">Alert Status</p>
+              <p className="text-lg font-black text-white">Action Required</p>
+            </div>
+          )}
         </div>
       </header>
 
-      <OperationalWorkflow session={session} />
+      <AutomatedWorkflow session={session} />
 
-      <section aria-labelledby="replay-controls-heading" className="p-5 sm:p-8">
-        <h2 id="replay-controls-heading" className="sr-only">
-          Playback controls
+      {/* Playback controls - simplified */}
+      <section aria-labelledby="replay-controls-heading" className="border-t border-slate-200 bg-slate-50 p-5 sm:p-8">
+        <h2 id="replay-controls-heading" className="text-xs font-black uppercase tracking-wide text-slate-700 mb-3">
+          Playback
         </h2>
         <ReplayControls session={session} />
       </section>
 
-      <section aria-labelledby="scenario-step-heading" className="border-t border-slate-200 p-5 sm:p-8">
-        <div className="border border-sky-200 bg-sky-50 p-5">
+      {/* Current scenario step */}
+      <section aria-labelledby="scenario-step-heading" className="border-t border-slate-200 p-5 sm:p-8 bg-sky-50">
+        <div className="border border-sky-200 bg-white p-4 rounded">
           <p className="text-xs font-black uppercase tracking-[0.16em] text-sky-700">
             Scenario Marker {currentMarkerIndex + 1} of {MEANINGFUL_SCENARIO_MARKERS.length}
           </p>
-          <h2 id="scenario-step-heading" className="mt-1 text-2xl font-black text-slate-950">
+          <h2 id="scenario-step-heading" className="mt-2 text-lg font-black text-slate-950">
             {MEANINGFUL_SCENARIO_MARKERS[currentMarkerIndex]?.label}
           </h2>
-          <p className="mt-2 text-sm text-slate-700">
+          <p className="mt-1 text-sm text-slate-700">
             {MEANINGFUL_SCENARIO_MARKERS[currentMarkerIndex]?.description}
           </p>
         </div>
       </section>
 
-      <section aria-labelledby="simulated-readings-heading" className="border-t border-slate-200 p-5 sm:p-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p id="simulated-readings-heading" className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">
-              Live current particulate levels
-            </p>
-            <h2 className="mt-1 text-2xl font-black text-slate-950">
-              {monitor ? monitor.name : "Monitoring Location"}
-            </h2>
-            <p className="mt-1 text-xs text-slate-500">
-              <span>Simulated demonstration data</span>
-              <span aria-hidden="true"> · </span>
-              <span>Scenario time</span>
-            </p>
+      {/* Compact PM readings - location is known from alert */}
+      <section aria-labelledby="pm-readings-heading" className="border-t border-slate-200 p-5 sm:p-8">
+        <div>
+          <p id="pm-readings-heading" className="text-xs font-black uppercase tracking-[0.16em] text-blue-700 mb-2">
+            Live readings - General Entry Door
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {DEMONSTRATION_METRICS.map((metric) => (
+              <CompactMetricDisplay
+                key={metric.id}
+                session={session}
+                monitorId={alertMonitorId}
+                metricId={metric.id}
+                label={metric.label}
+              />
+            ))}
           </div>
-
-          <label className="text-xs font-black uppercase text-slate-500">
-            Select location
-            <select
-              value={monitorId}
-              onChange={(e) => setMonitorId(e.target.value)}
-              className="mt-2 block min-h-11 border border-slate-300 bg-white px-3 text-sm font-bold text-slate-900"
-            >
-              {publicDemonstrationScenario.monitors.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name} ({m.name})
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {DEMONSTRATION_METRICS.map((metric) => (
-            <MetricChart
-              key={metric.id}
-              session={session}
-              monitorId={monitorId}
-              metricId={metric.id}
-              label={metric.label}
-            />
-          ))}
+          <p className="mt-3 text-[10px] text-slate-500">
+            Simulated demonstration data • Location identified from alert context
+          </p>
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-slate-50 p-5 text-center text-xs text-slate-500">
-        Simulated demonstration data for VerifAir environmental intelligence platform replica.
+      <footer className="border-t border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-500">
+        Simulated demonstration - watch how evidence is recorded from alert through closure
       </footer>
     </div>
   );
@@ -748,81 +388,5 @@ export function ProductDemonstration({
 
 
 export function ProductDemonstrationPreview() {
-  const initial = evaluateAt(publicDemonstrationScenario, 0);
-
-  if (!initial.ok) {
-    return null;
-  }
-
-  const state = initial.state;
-
-  const monitor = state.monitorStates.find(
-    ({ monitor: item }) => item.id === "WORK_ZONE_A",
-  );
-
-  return (
-    <div className="overflow-hidden border border-slate-300 bg-white shadow-lg">
-      <div className="flex items-center justify-between gap-4 bg-slate-950 px-5 py-4 text-white">
-        <div>
-          <p className="text-xs font-black uppercase tracking-wide text-sky-300">
-            Simulated product demonstration
-          </p>
-
-          <h3 className="mt-1 text-lg font-black">
-            Work Zone A
-          </h3>
-        </div>
-
-        <span className="text-xs font-bold text-slate-300">
-          Start position
-        </span>
-      </div>
-
-      <div className="grid grid-cols-2 gap-px bg-slate-200">
-        {DEMONSTRATION_METRICS.map((metric) => {
-          const observation = monitor?.latestObservations.find(
-            ({ metricId }) => metricId === metric.id,
-          );
-
-          return (
-            <div
-              key={metric.id}
-              className="bg-white p-4"
-            >
-              <p className="text-xs font-black uppercase tracking-wide text-slate-500">
-                {metric.label}
-              </p>
-
-              <p className="mt-2 text-2xl font-black text-slate-950">
-                {observation?.reading.status === "available"
-                  ? observation.reading.value
-                  : "â€”"}{" "}
-
-                <span className="text-xs font-bold text-slate-500">
-                  µg/m³
-                </span>
-              </p>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="border-t border-slate-200 bg-slate-50 p-4">
-        <p className="text-sm leading-5 text-slate-600">
-          Includes PM1, PM2.5, respirable dust and PM10. No compliance or
-          source determination is made.
-        </p>
-
-        <Link
-          href="/demonstration/evidence-reporting"
-          className="mt-3 inline-flex min-h-11 items-center font-black text-blue-700 hover:underline"
-        >
-          Open evidence-reporting demonstration â†’
-        </Link>
-      </div>
-    </div>
-  );
+  return <ProductDemonstration />;
 }
-
-
-
