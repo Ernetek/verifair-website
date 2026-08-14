@@ -9,21 +9,20 @@ export function Footer() {
       <div className="container py-16">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
           <div>
-            <p className="text-3xl font-black">Verif<span className="text-blue-400">Air</span></p>
+            <Image
+              src="/assets/verifair_erne_tech_footer.webp"
+              alt="VerifAir by ERNE Tech"
+              width={480}
+              height={160}
+              className="h-auto w-full max-w-[11.2rem] bg-slate-950 object-contain"
+            />
+            <p className="mt-3 text-sm text-slate-400">
+              Powered by Dustlight sensing technology
+              <br />
+              Engineered by ERNE Tech
+            </p>
             <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
               Dustlight measures particulate conditions. VerifAir coordinates monitoring data, alerts, reporting and operational visibility for dust-sensitive environments.
-            </p>
-            <div className="mt-6 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
-              <Image
-                src="/assets/verifair_erne_tech_logo.webp"
-                alt="VerifAir by ERNE Tech"
-                width={480}
-                height={160}
-                className="h-12 w-auto object-contain sm:h-14"
-              />
-            </div>
-            <p className="mt-3 text-sm text-slate-400">
-              Powered by Dustlight. Engineered by ERNE Tech
             </p>
             <Link
               href="/contact"

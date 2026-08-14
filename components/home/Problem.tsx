@@ -5,18 +5,18 @@ import { Reveal } from "./Reveal";
 const problemCards = [
   {
     number: "01",
-    title: "YOU CAN'T RELY ON WHAT YOU CAN SEE",
-    body: "Respirable particulate can be invisible to the human eye. Conditions can change without an obvious visual warning, making continuous monitoring important where construction interfaces with occupied areas.",
+    title: "CONDITIONS AREN'T ALWAYS VISIBLE",
+    body: "Respirable particulate can be invisible to the human eye. Conditions can change without an obvious visual warning.",
   },
   {
     number: "02",
-    title: "CONSTRUCTION AND OCCUPANCY SHARE THE RISK ENVIRONMENT",
-    body: "Construction and refurbishment can generate airborne particulate while people continue working, receiving care, learning or moving nearby. Managing the interface between the work zone and surrounding occupied areas requires visibility beyond the immediate workface.",
+    title: "WORK AND OCCUPANCY COEXIST",
+    body: "Construction and refurbishment can generate airborne particulate while people continue working, receiving care, learning or moving nearby.",
   },
   {
     number: "03",
-    title: "THE EVENT DOESN'T END WHEN THE READING FALLS",
-    body: "When conditions require attention, teams need more than an alert. They need a record of what was observed, who was notified, what action was taken, how the event progressed and how it was resolved.",
+    title: "THE EVENT NEEDS A RECORD",
+    body: "When conditions require attention, teams need a record of what was observed, who was notified, what action was taken and how the event was resolved.",
   },
 ];
 

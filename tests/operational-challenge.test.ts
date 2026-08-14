@@ -18,9 +18,9 @@ describe("operational challenge", () => {
     expect(source).toContain("THE OPERATIONAL GAP");
     expect(source).toContain("Construction keeps moving. Occupied environments stay operational.");
     expect(source).toContain("faster response coordination and a clear record of what happened next.");
-    expect(source).toContain("YOU CAN'T RELY ON WHAT YOU CAN SEE");
-    expect(source).toContain("CONSTRUCTION AND OCCUPANCY SHARE THE RISK ENVIRONMENT");
-    expect(source).toContain("THE EVENT DOESN'T END WHEN THE READING FALLS");
+      expect(source).toContain("CONDITIONS AREN'T ALWAYS VISIBLE");
+      expect(source).toContain("WORK AND OCCUPANCY COEXIST");
+      expect(source).toContain("THE EVENT NEEDS A RECORD");
   });
 
   it("moves the detailed measurement limitation out of the visible observations", () => {

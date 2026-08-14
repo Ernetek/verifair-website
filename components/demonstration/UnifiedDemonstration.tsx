@@ -37,6 +37,16 @@ import {
 
 const DEMONSTRATION_START_MS = Date.parse(publicDemonstrationScenario.startTimestamp);
 const DEMONSTRATION_OPERATOR = "Operator";
+const customerWorkflowStages = [
+  "ALERT",
+  "ACKNOWLEDGE",
+  "ASSIGN TO ME",
+  "INVESTIGATE",
+  "RECORD ACTION",
+  "CONTINUE MONITORING",
+  "REVIEW",
+  "RESOLVE",
+] as const;
 
 function formatDemoTimestamp(offsetMs: number, options?: Intl.DateTimeFormatOptions): string {
   return new Date(DEMONSTRATION_START_MS + offsetMs).toLocaleString(undefined, options);
@@ -49,6 +59,8 @@ function formatDemoTimestamp(offsetMs: number, options?: Intl.DateTimeFormatOpti
 interface MonitorStatus {
   id: string;
   name: string;
+  zone: string;
+  location: string;
   status: "normal" | "review" | "action";
   pm25: number;
   pm1: number;
@@ -98,6 +110,8 @@ function LiveMonitoringSection({
       {
         id: "WORK_ZONE_A",
         name: "Work Zone",
+        zone: "Zone 01",
+        location: "Active work front",
         pm1: observationValue(replayState, "WORK_ZONE_A", "PM1"),
         pm25: observationValue(replayState, "WORK_ZONE_A", "PM2_5"),
         pm10: observationValue(replayState, "WORK_ZONE_A", "PM10"),
@@ -110,6 +124,8 @@ function LiveMonitoringSection({
       {
         id: "OCCUPIED_INTERFACE",
         name: "Work-Zone Boundary",
+        zone: "Zone 02",
+        location: "Work-zone boundary",
         pm1: observationValue(replayState, "OCCUPIED_INTERFACE", "PM1"),
         pm25: observationValue(replayState, "OCCUPIED_INTERFACE", "PM2_5"),
         pm10: observationValue(replayState, "OCCUPIED_INTERFACE", "PM10"),
@@ -122,6 +138,8 @@ function LiveMonitoringSection({
       {
         id: "SHARED_CORRIDOR",
         name: "Adjacent Corridor",
+        zone: "Zone 03",
+        location: "Adjacent corridor",
         pm1: observationValue(replayState, "SHARED_CORRIDOR", "PM1"),
         pm25: observationValue(replayState, "SHARED_CORRIDOR", "PM2_5"),
         pm10: observationValue(replayState, "SHARED_CORRIDOR", "PM10"),
@@ -134,6 +152,8 @@ function LiveMonitoringSection({
       {
         id: "EXTERNAL_BOUNDARY",
         name: "Occupied/Sensitive Area",
+        zone: "Zone 04",
+        location: "Occupied/sensitive area",
         pm1: observationValue(replayState, "EXTERNAL_BOUNDARY", "PM1"),
         pm25: observationValue(replayState, "EXTERNAL_BOUNDARY", "PM2_5"),
         pm10: observationValue(replayState, "EXTERNAL_BOUNDARY", "PM10"),
@@ -206,6 +226,10 @@ function LiveMonitoringSection({
                       : "border-slate-200 bg-white"
                   }`}
                 >
+                  <div className="mb-3 border-b border-slate-200 pb-2 text-[10px] leading-4 text-slate-500">
+                    <p><span className="font-bold uppercase tracking-[0.12em]">Site</span> · Occupied healthcare refurbishment</p>
+                    <p><span className="font-bold uppercase tracking-[0.12em]">Zone</span> · {monitor.zone} · <span className="font-bold uppercase tracking-[0.12em]">Monitoring location</span> · {monitor.location}</p>
+                  </div>
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
                       {monitor.name}
@@ -291,9 +315,9 @@ function LiveMonitoringSection({
             >
               <h2 id="system-health-title" className="sr-only">System health</h2>
               <div className="grid gap-3 border-t border-slate-200 pt-3 text-[11px] text-slate-500 sm:grid-cols-3 sm:items-center sm:justify-items-center">
-                <span>Gateway health: Healthy</span>
-                <span>Last observation: {new Date(replayState.timestamp).toLocaleTimeString()}</span>
-                <span>Communications: Connected · Monitors: 4/4 online</span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Gateway health: Healthy</span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Last observation: {new Date(replayState.timestamp).toLocaleTimeString()}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Communications: Connected · Monitors: 4/4 online</span>
               </div>
             </section>
           </div>
@@ -637,15 +661,30 @@ function IncidentWorkspaceSection({
         {/* Phase Progress */}
         <div className="mb-6 max-w-3xl">
           <p className="text-xs font-bold text-slate-700 uppercase mb-2">Workflow Progress</p>
-          <div className="grid gap-1 grid-cols-6 auto-cols-fr">
-            {["Alert", "Acknowledge", "Assign", "Investigate", "Verify", "Close"].map((p) => {
-              const isActive = incidentState.phase === p;
-              const isPast = ["Alert", "Acknowledge", "Assign", "Investigate", "Verify", "Close"].indexOf(incidentState.phase) > ["Alert", "Acknowledge", "Assign", "Investigate", "Verify", "Close"].indexOf(p as WorkflowPhase);
+          <div className="grid grid-cols-4 gap-1 sm:grid-cols-8">
+            {customerWorkflowStages.map((stage, index) => {
+              const workflowIndex = !incidentState.acknowledged
+                ? 0
+                : !incidentState.assignedTo
+                ? 1
+                : !incidentState.investigationStarted
+                ? 2
+                : incidentState.investigationNotes.length === 0 && incidentState.responses.length === 0
+                ? 3
+                : !incidentState.verificationStarted && !incidentState.verificationRecord
+                ? 5
+                : !incidentState.verificationRecord
+                ? 6
+                : !incidentState.closed
+                ? 7
+                : 8;
+              const isActive = index === workflowIndex;
+              const isPast = index < workflowIndex;
               const isCompleted = incidentState.closed;
               return (
                 <div
-                  key={p}
-                  className={`border px-2 py-2 text-xs font-bold text-center transition-all ${
+                  key={stage}
+                  className={`border px-1 py-2 text-center text-[10px] font-bold leading-4 transition-all sm:text-xs ${
                     isActive
                       ? "border-blue-700 bg-blue-700 text-white"
                       : isPast || isCompleted
@@ -653,7 +692,7 @@ function IncidentWorkspaceSection({
                       : "border-slate-300 bg-slate-100 text-slate-600"
                   }`}
                 >
-                  {p}
+                  {stage}
                 </div>
               );
             })}
@@ -1265,14 +1304,10 @@ function EvidenceAndReportingSection({
 }: {
   readonly session: DemonstrationSession;
 }) {
-  const { incidentState } = useSyncExternalStore(
+  const { incidentState, replayState } = useSyncExternalStore(
     session.subscribe,
     session.getSnapshot,
     session.getSnapshot,
-  );
-
-  const [reportType, setReportType] = useState<string>(
-    incidentState.closed ? "Incident report" : ""
   );
 
   const reportingRef = useRef<HTMLDivElement>(null);
@@ -1288,7 +1323,6 @@ function EvidenceAndReportingSection({
           block: "start",
         });
       });
-      setReportType("Incident report");
     }
   }, [incidentState.closed]);
 
@@ -1308,27 +1342,16 @@ function EvidenceAndReportingSection({
           </h2>
         </div>
 
-        <div className="mb-6">
-          <label className="block mb-4">
-            <span className="text-xs font-bold text-slate-700 uppercase">
-              Report type
-            </span>
-            <select
-              className="mt-2 w-full sm:w-64 min-h-10 border border-slate-300 bg-white px-3"
-              value={reportType}
-              onChange={(e) => setReportType(e.target.value)}
-            >
-              <option value="">Choose a report…</option>
-              <option value="Incident report">Incident report</option>
-              <option value="Alert & response register">Alert & response register</option>
-              <option value="Monitoring period summary">Monitoring period summary</option>
-              <option value="Evidence pack">Evidence pack</option>
-            </select>
-          </label>
-        </div>
+        <div className="border border-slate-300 bg-white p-5 sm:p-6">
+          <div className="border-2 border-blue-300 bg-blue-50 p-4 sm:p-5">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">GENERATED REPORT</p>
+            <h3 className="mt-2 text-2xl font-black text-slate-950">Incident evidence and operational record</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              This report is generated from the same simulated monitoring event and response records progressed through ASSESS and ACT.
+            </p>
+          </div>
 
-        {reportType === "Incident report" && incidentState.closed && (
-          <div className="border border-slate-300 bg-white p-6 space-y-6">
+          <div className="mt-6 space-y-6">
             {/* Incident Summary */}
             <div>
               <h3 className="text-lg font-bold text-slate-900 mb-4">Incident Summary</h3>
@@ -1341,7 +1364,7 @@ function EvidenceAndReportingSection({
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-600 uppercase">Status</p>
-                  <p className="mt-1 text-sm text-slate-900">Closed</p>
+                  <p className="mt-1 text-sm text-slate-900">{incidentState.closed ? "Resolved" : incidentState.phase}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-600 uppercase">Report generated</p>
@@ -1356,7 +1379,7 @@ function EvidenceAndReportingSection({
                 <div>
                   <p className="text-xs font-bold text-slate-600 uppercase">Closed</p>
                   <p className="mt-1 text-sm text-slate-900">
-                    {incidentState.closedAtMs !== undefined ? formatDemoTimestamp(incidentState.closedAtMs) : "Unknown"}
+                    {incidentState.closedAtMs !== undefined ? formatDemoTimestamp(incidentState.closedAtMs) : "In progress"}
                   </p>
                 </div>
                 <div>
@@ -1402,9 +1425,19 @@ function EvidenceAndReportingSection({
               </div>
             </div>
 
+            {/* Monitoring history */}
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Monitoring history</h3>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="border border-slate-200 bg-slate-50 p-3"><p className="text-xs font-bold uppercase text-slate-500">Latest observation</p><p className="mt-1 text-sm font-bold text-slate-900">{formatDemoTimestamp(replayState.offsetMs, { timeStyle: "medium" })}</p></div>
+                <div className="border border-slate-200 bg-slate-50 p-3"><p className="text-xs font-bold uppercase text-slate-500">Monitoring location</p><p className="mt-1 text-sm font-bold text-slate-900">Zone 04 — General Entry Door</p></div>
+                <div className="border border-slate-200 bg-slate-50 p-3"><p className="text-xs font-bold uppercase text-slate-500">Monitoring state</p><p className="mt-1 text-sm font-bold text-slate-900">{incidentState.closed ? "Continuing after resolution" : "Current observations available"}</p></div>
+              </div>
+            </div>
+
             {/* Chronology */}
             <div>
-              <h3 className="text-lg font-bold text-slate-900 mb-4">Event Chronology</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Event timeline</h3>
               <div className="space-y-2 text-sm">
                 {timeline.map((row) => (
                   <div key={`${row.timestampMs}-${row.action}`} className="border-l-4 border-blue-300 pl-4 py-2">
@@ -1423,11 +1456,29 @@ function EvidenceAndReportingSection({
               </div>
             </div>
 
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                ["Notifications", timeline.filter((row) => /alert|notifi/i.test(`${row.action} ${row.details}`)).map((row) => `${row.actor}: ${row.details}`).join(" ") || "Recorded in event timeline."],
+                ["Acknowledgement", incidentState.acknowledgedBy || "Pending"],
+                ["Assignment", incidentState.assignedTo || "Pending"],
+                ["Investigation", incidentState.investigationStatus || (incidentState.investigationStarted ? "Investigation started" : "Pending")],
+                ["Recorded actions", incidentState.responses.map((response) => response.responseType).join(", ") || incidentState.investigationNotes.map((note) => note.actionTaken).join(" ") || "Pending"],
+                ["Comments", incidentState.responseNotes.map((note) => note.note).join(" ") || "No additional comments recorded."],
+                ["Continued monitoring", "Observations remain part of the operational record after the event."],
+                ["Resolution", incidentState.closed ? `${incidentState.closureCategory || "Resolved"}: ${incidentState.closureDetails || "Resolution recorded."}` : "Pending"],
+              ].map(([title, value]) => (
+                <div key={title} className="border border-slate-200 bg-slate-50 p-3">
+                  <h3 className="text-xs font-black uppercase tracking-[0.12em] text-slate-600">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-800">{value}</p>
+                </div>
+              ))}
+            </div>
+
             {/* Evidence */}
             {incidentState.evidence.length > 0 && (
               <div>
                 <h3 className="text-lg font-bold text-slate-900 mb-4">
-                  Attached Evidence ({incidentState.evidence.length})
+                  Evidence ({incidentState.evidence.length})
                 </h3>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {incidentState.evidence.map((evd) => (
@@ -1462,25 +1513,7 @@ function EvidenceAndReportingSection({
               </div>
             )}
           </div>
-        )}
-
-        {!reportType && (
-          <div className="border border-slate-300 bg-white p-6 text-center text-slate-600">
-            <p>Select a report type to view details.</p>
-          </div>
-        )}
-
-        {reportType && reportType !== "Incident report" && (
-          <div className="border border-slate-300 bg-white p-6 text-center text-slate-600">
-            <p>Report type &ldquo;{reportType}&rdquo; not yet configured for this demonstration.</p>
-          </div>
-        )}
-
-        {reportType === "Incident report" && !incidentState.closed && (
-          <div className="border border-slate-300 bg-white p-6 text-center text-slate-600">
-            <p>Incident report will be available after the incident is closed.</p>
-          </div>
-        )}
+        </div>
       </div>
     </section>
   );
@@ -1530,10 +1563,13 @@ export function UnifiedDemonstration({
                 End-to-End Demonstration
               </p>
               <h1 className="mt-3 text-3xl sm:text-4xl font-black">
-                VerifAir Operational Workflow
+                See VerifAir in action.
               </h1>
+              <p className="mt-2 text-lg font-black tracking-[0.12em] text-sky-200">
+                ASSESS → ACT → RECORD
+              </p>
               <p className="mt-4 max-w-3xl text-base text-slate-300">
-                Watch how VerifAir brings multiple particulate monitoring points into one operational view, alerts the team when a configured operational trigger is reached, records actions and tracks subsequent conditions, then keeps the evidence together for review.
+                Watch how VerifAir brings multiple particulate monitoring points into one operational view, alerts the team when a configured operational trigger is reached, records actions and keeps the evidence together for review.
               </p>
               <p className="mt-3 text-sm text-slate-400">
                 💡 This is a simulated demonstration. All readings are demonstration values only.

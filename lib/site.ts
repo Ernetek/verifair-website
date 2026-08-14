@@ -1,4 +1,4 @@
-export const SALES_EMAIL = "verifair@ernelifting.com";
+export const SALES_EMAIL = "support@ernelifting.com";
 // Replace with the verified @verifair.com.au mailbox once configured and tested.
 
 export const siteConfig = {

@@ -16,8 +16,8 @@ describe("public page content", () => {
   it("prioritises the core VerifAir proposition and operational journey", () => {
     const hero = readFile("components/home/Hero.tsx");
     expect(hero).toContain("Know when particulate conditions change.");
-    expect(hero).toContain("OPERATIONAL PARTICULATE VISIBILITY &amp; CONTROL");
-    expect(hero).toContain("ASSESS. ACTION. DOCUMENT.");
+    expect(hero).toContain("OPERATIONAL PARTICULATE VISIBILITY &amp; RESPONSE");
+    expect(hero).toContain("ASSESS. ACT. RECORD.");
     expect(hero).toContain("See VerifAir in Action");
     expect(hero).toContain("Discuss Your Project");
     expect(hero).toContain("distributed Dustlight particulate monitors");
@@ -26,7 +26,7 @@ describe("public page content", () => {
   it("labels demonstration triggers as configured operational triggers and keeps causation out of the wording", () => {
     const demo = readFile("components/demonstration/UnifiedDemonstration.tsx");
     expect(demo).toContain("configured operational trigger");
-    expect(demo).toContain("tracks subsequent conditions");
+    expect(demo).toContain("keeps the evidence together for review");
     expect(demo).not.toContain("verifies control measures");
     expect(demo).not.toContain("PM2.5 > 25 µg/m³");
   });

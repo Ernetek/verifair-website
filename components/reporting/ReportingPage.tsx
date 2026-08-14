@@ -469,7 +469,7 @@ export function ReportingPage({
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <article className="border border-slate-200 p-3">
                   <Image
-                    src="/assets/workflow-site-investigation.png"
+                    src="/assets/workflow-site-investigation.webp"
                     alt="Preloaded demonstration evidence showing a site investigation"
                     width={900}
                     height={600}
@@ -479,7 +479,7 @@ export function ReportingPage({
                     Site investigation · preloaded evidence
                   </p>
                   <a
-                    href="/assets/workflow-site-investigation.png"
+                    href="/assets/workflow-site-investigation.webp"
                     download
                     className="mt-2 inline-flex text-sm font-black text-blue-700"
                   >

@@ -381,7 +381,7 @@ export const pageContent: Record<string, MarketingPage> = {
   about: {
     slug: "about",
     title: "About",
-    description: "Learn about VerifAir, a launch-stage particulate monitoring product being developed by Australian startup Erne Tech.",
+    description: "Learn how VerifAir connects Dustlight sensing, Edge infrastructure, operational workflow and evidence reporting, engineered by ERNE Tech.",
     eyebrow: "About VerifAir",
     heading: "A launch-stage monitoring product developed by Erne Tech.",
     intro:

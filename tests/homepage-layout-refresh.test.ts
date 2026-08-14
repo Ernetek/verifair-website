@@ -21,7 +21,7 @@ describe("homepage layout refresh", () => {
     const hero = read("components/home/Hero.tsx");
     expect(hero).not.toContain("<PolicyReadinessBanner />");
     expect(hero).toContain("Know when particulate conditions change.");
-    expect(hero).toContain("ASSESS. ACTION. DOCUMENT.");
+    expect(hero).toContain("ASSESS. ACT. RECORD.");
     expect(hero).toContain("See VerifAir in Action");
     expect(hero).toContain("Discuss Your Project");
     expect(hero).toContain('src="/assets/tech_hero.webp"');

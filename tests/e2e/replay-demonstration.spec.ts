@@ -6,7 +6,7 @@ test("unified demonstration shows the end-to-end workflow in one page", async ({
   await page.goto("/demonstration", { waitUntil: "networkidle" });
 
   await expect(
-    page.getByRole("heading", { name: /VerifAir Operational Workflow/i }),
+    page.getByRole("heading", { name: /See VerifAir in action/i }),
   ).toBeVisible({ timeout: 25000 });
 
   await page.getByRole("button", { name: "Start demo" }).click();
@@ -20,14 +20,14 @@ test("unified demonstration shows the end-to-end workflow in one page", async ({
   await expect(
     page.getByText("Evidence pack and operational record", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByLabel("Report type")).toBeVisible();
+  await expect(page.getByText("GENERATED REPORT", { exact: true })).toBeVisible();
 });
 
 test("demonstration page renders the single-page operational flow instead of legacy dedicated demos", async ({ page }) => {
   await page.goto("/demonstration", { waitUntil: "networkidle" });
 
   await expect(
-    page.getByRole("heading", { name: /VerifAir Operational Workflow/i }),
+    page.getByRole("heading", { name: /See VerifAir in action/i }),
   ).toBeVisible({ timeout: 10000 });
 
   await page.getByRole("button", { name: "Start demo" }).click();
@@ -43,23 +43,13 @@ test("demonstration page renders the single-page operational flow instead of leg
   ).toBeVisible();
 });
 
-test("reporting controls in the unified demo respond to report selection", async ({ page }) => {
+test("generated record output remains available in the unified demo", async ({ page }) => {
   await page.goto("/demonstration", { waitUntil: "networkidle" });
 
-  const reportSelect = page.getByLabel("Report type");
-  await expect(reportSelect).toBeVisible({ timeout: 10000 });
-
-  await reportSelect.selectOption("Incident report");
-  await expect(
-    page.getByText("Incident report will be available after the incident is closed.", {
-      exact: true,
-    }),
-  ).toBeVisible();
-
-  await reportSelect.selectOption("Alert & response register");
-  await expect(
-    page.getByText(/Report type .* not yet configured for this demonstration/i),
-  ).toBeVisible();
+  await expect(page.getByText("GENERATED REPORT", { exact: true })).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText("Incident Summary", { exact: true })).toBeVisible();
+  await expect(page.getByText("Event timeline", { exact: true })).toBeVisible();
+  await expect(page.getByText("Continued monitoring", { exact: true })).toBeVisible();
 });
 
 test("operator can work the incident manually from acknowledgement through closure", async ({ page }) => {
@@ -90,7 +80,7 @@ test("operator can work the incident manually from acknowledgement through closu
   await page.getByLabel("Closure details").fill("Operational response recorded and review completed.");
   await page.getByRole("button", { name: "Close incident" }).click();
 
-  await expect(page.getByLabel("Report type")).toHaveValue("Incident report");
+  await expect(page.getByText("GENERATED REPORT", { exact: true })).toBeVisible();
   await expect(page.getByText("CLOSED", { exact: true }).last()).toBeVisible();
   await expect(page.getByText("Operator", { exact: true }).last()).toBeVisible();
   await expect(page.getByText("Maria Chen", { exact: true }).last()).toBeVisible();

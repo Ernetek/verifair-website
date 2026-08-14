@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import ContactForm from "@/components/contact/VerifAirContactForm";
+import { AboutPage } from "@/components/about/AboutPage";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 import {
   ContentSections,
@@ -216,6 +217,10 @@ export default async function SlugPage({
         </div>
       </>
     );
+  }
+
+  if (slug === "about") {
+    return <AboutPage />;
   }
 
   return (

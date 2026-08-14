@@ -12,7 +12,15 @@ export function HeroSection() {
         fill
         priority
         sizes="100vw"
-        className="absolute inset-0 -z-20 size-full object-cover object-[64%_center] lg:object-center"
+        className="absolute inset-0 -z-20 hidden size-full object-cover object-center lg:block"
+      />
+      <Image
+        src="/assets/mobile_hero.webp"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="absolute inset-0 -z-20 size-full object-cover object-center lg:hidden"
       />
 
       {/* Keep the source image at full opacity. This overlay is confined to the
@@ -25,7 +33,7 @@ export function HeroSection() {
       <div className="container relative z-10 grid min-h-[42rem] items-end pt-48 sm:min-h-[44rem] sm:pt-56 lg:min-h-[46rem] lg:grid-cols-[65%_35%] lg:items-center lg:py-20 lg:pt-20">
         <Reveal className="max-w-3xl p-0 pb-10 sm:p-8 sm:pb-10 lg:bg-transparent lg:p-0 lg:pr-16 xl:pr-24">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-blue-300 drop-shadow-[0_2px_4px_rgba(2,6,23,0.9)]">
-            OPERATIONAL PARTICULATE VISIBILITY &amp; CONTROL
+            OPERATIONAL PARTICULATE VISIBILITY &amp; RESPONSE
           </p>
 
           <h1 className="mt-5 text-5xl font-black leading-[0.98] tracking-tight text-white drop-shadow-[0_3px_5px_rgba(2,6,23,0.95)] sm:text-6xl lg:text-7xl">
@@ -33,7 +41,7 @@ export function HeroSection() {
           </h1>
 
           <h2 className="mt-3 text-2xl font-bold tracking-[0.08em] text-slate-100 drop-shadow-[0_2px_4px_rgba(2,6,23,0.95)] sm:text-3xl lg:text-4xl">
-            ASSESS. ACTION. DOCUMENT.
+            ASSESS. ACT. RECORD.
           </h2>
 
           <p className="mt-6 max-w-2xl text-base leading-7 text-slate-100 drop-shadow-[0_2px_4px_rgba(2,6,23,0.95)] sm:text-lg">
@@ -44,7 +52,7 @@ export function HeroSection() {
 
           <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <Link
-              href="/demonstration"
+              href="/#monitoring"
               className="inline-flex min-h-14 items-center justify-center rounded-xl bg-blue-500 px-7 text-base font-bold text-slate-950 shadow-lg transition hover:bg-blue-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
             >
               See VerifAir in Action

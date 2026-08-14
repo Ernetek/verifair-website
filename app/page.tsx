@@ -7,6 +7,7 @@ import { IndustriesSection } from "@/components/home/Industries";
 import { PilotDeploymentSection } from "@/components/home/PilotDeployment";
 import {
   ArchitectureStorySection,
+  CapabilitySection,
 } from "@/components/demonstration/DemonstrationOverview";
 import { UnifiedDemonstration } from "@/components/demonstration/UnifiedDemonstration";
 import { ProblemSection } from "@/components/home/Problem";
@@ -24,6 +25,7 @@ export default function HomePage() {
       <HeroSection />
       <ProblemSection />
       <ArchitectureStorySection />
+      <CapabilitySection />
       <UnifiedDemonstration />
       <PilotDeploymentSection />
       <IndustriesSection />

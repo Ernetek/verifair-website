@@ -43,7 +43,7 @@ export const MEANINGFUL_SCENARIO_MARKERS: readonly DemonstrationMarker[] = [
   { offsetMs: 0, label: "Start monitoring", description: "Normal baseline operating conditions" },
   { offsetMs: 120_000, label: "Alert opened", description: "Fictional configured operational trigger reached at the monitored boundary" },
   { offsetMs: 240_000, label: "Investigation", description: "Response owner assigned and site investigation started" },
-  { offsetMs: 360_000, label: "Verification", description: "Recorded actions and subsequent conditions reviewed" },
+  { offsetMs: 360_000, label: "Verification", description: "Recorded actions and later observations reviewed" },
   { offsetMs: 480_000, label: "Closure", description: "Incident closed with evidence retained for audit" },
 ] as const;
 

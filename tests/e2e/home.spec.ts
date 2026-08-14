@@ -7,7 +7,7 @@ test("primary navigation destinations resolve and homepage calls to action are w
 
   const seeHowLink = page.getByRole("link", { name: /See VerifAir in Action/i }).first();
   await expect(seeHowLink).toBeVisible();
-  await expect(seeHowLink).toHaveAttribute("href", "/demonstration");
+  await expect(seeHowLink).toHaveAttribute("href", "/#monitoring");
 
   const contactLink = page.getByRole("link", { name: /Discuss Your Project/i }).first();
   await expect(contactLink).toBeVisible();
