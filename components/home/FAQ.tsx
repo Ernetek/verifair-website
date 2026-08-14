@@ -29,7 +29,7 @@ export function FAQSection() {
 
           <Reveal delay={0.12}>
             <div className="border-y border-slate-200">
-              {faqs.slice(0, 4).map((faq, index) => (
+              {faqs.map((faq, index) => (
                 <details
                   key={faq.question}
                   className={index > 0 ? "group border-t border-slate-200" : "group"}

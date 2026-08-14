@@ -1,15 +1,8 @@
 "use client";
 
-import { evaluateAt } from "@/lib/replay/engine";
-
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
-import {
-  DEMONSTRATION_METRICS,
-  publicDemonstrationScenario,
-} from "@/lib/replay/demonstration-scenario";
 import {
   selectLatestObservation,
 } from "@/lib/replay/selectors";
@@ -18,15 +11,9 @@ import {
   getSharedDemonstrationSession,
   MEANINGFUL_SCENARIO_MARKERS,
 } from "@/lib/demonstration/session";
+import { DEMONSTRATION_METRICS } from "@/lib/replay/demonstration-scenario";
 import type { WorkflowPhase } from "@/lib/demonstration/incident-domain";
 import { ReplayControls } from "@/components/demonstration/ReplayControls";
-
-const chartColours: Record<string, string> = {
-  PM1: "#0284c7",
-  PM2_5: "#059669",
-  RESPIRABLE_DUST: "#d97706",
-  PM10: "#7c3aed",
-};
 
 export const CANONICAL_WORKFLOW_PHASES: readonly WorkflowPhase[] = [
   "Alert",

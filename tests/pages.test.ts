@@ -7,12 +7,18 @@ describe("VerifAir public page configuration", () => {
   it("includes the rebuilt primary routes and homepage sections", () => {
     const routes = primaryNav.map((item) => item.href);
 
+    expect(primaryNav.map((item) => item.label)).toEqual([
+      "Product",
+      "How It Works",
+      "Solutions",
+      "Resources",
+      "About",
+    ]);
     expect(routes).toContain("/#monitoring");
     expect(routes).toContain("/#workflow");
-    expect(routes).toContain("/#reportpreview");
+    expect(routes).toContain("/#industries");
     expect(routes).toContain("/resources");
-    expect(routes).not.toContain("/technology");
-    expect(routes).not.toContain("/#platform");
+    expect(routes).toContain("/about");
   });
 
   it("publishes a substantial resource library with unique slugs", () => {

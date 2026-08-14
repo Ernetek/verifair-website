@@ -19,8 +19,11 @@ describe("homepage layout refresh", () => {
 
   it("uses the full-opacity technology environment as the homepage hero background", () => {
     const hero = read("components/home/Hero.tsx");
-    expect(hero).toContain("<PolicyReadinessBanner />");
-    expect(hero).toContain("See changing particulate conditions. Act sooner.");
+    expect(hero).not.toContain("<PolicyReadinessBanner />");
+    expect(hero).toContain("Know when particulate conditions change.");
+    expect(hero).toContain("ASSESS. ACTION. DOCUMENT.");
+    expect(hero).toContain("See VerifAir in Action");
+    expect(hero).toContain("Discuss Your Project");
     expect(hero).toContain('src="/assets/tech_hero.webp"');
     expect(hero).toContain('lg:grid-cols-[65%_35%]');
     expect(hero).toContain('from "next/image"');

@@ -4,6 +4,7 @@ import {
   createInitialIncidentState,
   reduceIncident,
   reduceIncidentEvent,
+  selectIncidentTimeline,
   type IncidentEvent,
 } from "@/lib/demonstration/incident-domain";
 
@@ -193,5 +194,25 @@ describe("Incident Domain", () => {
     if (!res.ok) {
       expect(res.error).toContain("Cannot process event 'RESPONSE_NOTE_ADDED' on closed incident");
     }
+  });
+
+  it("persists structured investigation, response, escalation, priority, and timeline facts", () => {
+    const events: IncidentEvent[] = [
+      { type: "INCIDENT_OPENED", incidentId: "INC-0042", monitorId: "MON-004", triggerCondition: "Action condition", timestampMs: 100, sequence: 1 },
+      { type: "ACKNOWLEDGED", incidentId: "INC-0042", acknowledgedBy: "Jordan Lee", timestampMs: 200, sequence: 2 },
+      { type: "ASSIGNED", incidentId: "INC-0042", assignee: "Jordan Lee", priority: "High", timestampMs: 300, sequence: 3 },
+      { type: "INVESTIGATION_STARTED", incidentId: "INC-0042", startedBy: "Jordan Lee", timestampMs: 400, sequence: 4 },
+      { type: "INVESTIGATION_UPDATED", incidentId: "INC-0042", actor: "Jordan Lee", status: "Controls being checked", notes: "Entry door inspected.", observedConditions: "Dust visible near the work interface.", actionTaken: "Local suppression applied.", timestampMs: 500, sequence: 5 },
+      { type: "RESPONSE_RECORDED", incidentId: "INC-0042", responseType: "Suppression applied", details: "Water misting recorded.", performedBy: "Jordan Lee", timestampMs: 600, sequence: 6 },
+      { type: "ESCALATED", incidentId: "INC-0042", escalatedBy: "Jordan Lee", target: "HSE Lead", reason: "Control effectiveness requires review", details: "Requested a second review.", timestampMs: 700, sequence: 7 },
+    ];
+
+    const state = reduceIncident(events);
+    expect(state.priority).toBe("High");
+    expect(state.investigationNotes[0].observedConditions).toContain("Dust visible");
+    expect(state.responses[0].performedBy).toBe("Jordan Lee");
+    expect(state.escalationTarget).toBe("HSE Lead");
+    expect(selectIncidentTimeline(state)).toHaveLength(events.length);
+    expect(selectIncidentTimeline(state)[5].action).toBe("Suppression applied");
   });
 });

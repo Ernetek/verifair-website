@@ -78,11 +78,11 @@ export function Header() {
           aria-label="VerifAir home"
         >
           <Image
-            src="/assets/verifair-logo.webp"
-            alt=""
-            width={170}
-            height={48}
-            className="h-9 w-auto object-contain sm:h-10"
+            src="/assets/verifair_erne_tech__light_logo.webp"
+            alt="VerifAir by ERNE Tech"
+            width={520}
+            height={160}
+            className="h-11 w-auto object-contain sm:h-14 lg:h-16"
             priority
           />
         </Link>
@@ -114,7 +114,7 @@ export function Header() {
             href="/contact#project-enquiry"
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
           >
-            Discuss a pilot project
+            Discuss Your Project
             <ArrowUpRightIcon className="h-5 w-5" aria-hidden="true" />
           </Link>
         </div>
@@ -162,7 +162,7 @@ export function Header() {
               className="mt-3 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 font-bold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
               onClick={closeMenu}
             >
-              Discuss a pilot project
+              Discuss Your Project
               <ArrowUpRightIcon className="h-5 w-5" aria-hidden="true" />
             </Link>
           </nav>

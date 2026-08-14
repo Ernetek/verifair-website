@@ -15,10 +15,12 @@ describe("operational challenge", () => {
   });
 
   it("uses the updated operational challenge framing", () => {
-    expect(source).toContain("You can\u2019t respond to what you can\u2019t see.");
-    expect(source).toContain("Active work can change particulate conditions between inspections");
-    expect(source).toMatch(/respirable crystalline\s+silica/);
-    expect(source).toMatch(/asbestos\s+fibres/);
+    expect(source).toContain("THE OPERATIONAL GAP");
+    expect(source).toContain("Construction keeps moving. Occupied environments stay operational.");
+    expect(source).toContain("faster response coordination and a clear record of what happened next.");
+    expect(source).toContain("YOU CAN'T RELY ON WHAT YOU CAN SEE");
+    expect(source).toContain("CONSTRUCTION AND OCCUPANCY SHARE THE RISK ENVIRONMENT");
+    expect(source).toContain("THE EVENT DOESN'T END WHEN THE READING FALLS");
   });
 
   it("moves the detailed measurement limitation out of the visible observations", () => {

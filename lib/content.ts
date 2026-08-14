@@ -413,43 +413,58 @@ export const pageContent: Record<string, MarketingPage> = {
 
 export const faqs = [
   {
-    question: "What does VerifAir monitor?",
+    question: "How does VerifAir work?",
     answer:
-      "VerifAir coordinates particulate monitoring data from configured Dustlight devices and presents readings, alerts, trends and records through a shared operational interface.",
+      "Dustlight monitors collect particulate observations at configured locations. VerifAir Edge transfers that information through the approved communications path to VerifAir Cloud, where authorised users can assess conditions, coordinate response and retain the operational record.",
   },
   {
-    question: "What particulate sizes are monitored?",
+    question: "Does VerifAir require the facility's Wi-Fi or network?",
     answer:
-      "Configured Dustlight monitors collect PM1 and PM2.5 readings at selected monitoring points. These readings do not identify the chemical or mineral composition of airborne material.",
+      "VerifAir's monitoring telemetry is designed to use an independent communications path and does not require connection to the facility's operational LAN or Wi-Fi. Customer cybersecurity and vendor review may still apply.",
   },
   {
-    question: "Can multiple zones be monitored?",
+    question: "What happens if cellular connectivity is interrupted?",
     answer:
-      "Yes. VerifAir is designed to coordinate multiple monitoring points across selected zones, work fronts, boundaries and occupied interfaces.",
+      "Continuity behaviour depends on the approved project design. Where configured and validated, VerifAir Edge can buffer observations locally and recover communications so the record can be reconciled after an interruption.",
   },
   {
-    question: "What happens if internet connectivity is interrupted?",
+    question: "Can VerifAir monitor multiple zones?",
     answer:
-      "Continuity behaviour depends on the approved project design. Where technically configured and validated, the system may retain or recover data after a temporary connection interruption.",
+      "Yes. VerifAir coordinates monitoring points across selected work zones, boundaries, occupied interfaces and other project locations in one operational view.",
   },
   {
-    question: "How are alerts configured?",
+    question: "Can VerifAir support multiple sites?",
     answer:
-      "Alerts are configured around project requirements, agreed thresholds and escalation workflows so information can be routed to the people responsible for taking action.",
+      "Yes. The platform is designed to present multiple sites and zones to authorised users, subject to the approved monitoring, connectivity and deployment design.",
   },
   {
-    question: "Can reports be exported?",
+    question: "Can monitoring zones move as construction progresses?",
     answer:
-      "Yes. Downloadable records and reports are intended to support project reviews, investigations, stakeholder updates and environmental-management processes.",
+      "Yes. Monitoring deployments can be reviewed and reconfigured as project stages, work fronts and occupied interfaces change. Relocation, commissioning and connectivity checks should be managed through the project deployment process.",
   },
   {
-    question: "Can VerifAir guarantee compliance?",
+    question: "What happens when a configured condition requires attention?",
     answer:
-      "No. VerifAir provides monitoring data, alerts and records that can support environmental-management, due-diligence and reporting processes. It does not replace competent risk assessment, occupational-hygiene advice, specialist sampling, statutory controls or other project-specific compliance requirements.",
+      "The configured condition is surfaced to the responsible users, who can acknowledge the alert, assign ownership, assess the situation, record actions, escalate where required, verify the response and resolve the event.",
   },
   {
-    question: "How do we get started?",
+    question: "What reports and records does VerifAir create?",
     answer:
-      "Book a free site assessment so the team can understand the project environment, monitoring objectives, zones, connectivity and reporting requirements.",
+      "VerifAir brings together observations, alerts, acknowledgements, assignments, actions, comments, escalation history, verification and incident records to support evidence and reporting.",
+  },
+  {
+    question: "How long are completed records retained?",
+    answer:
+      "Retention is determined by the approved project and service configuration. The applicable retention period should be confirmed during deployment and reflected in the relevant project or service documentation.",
+  },
+  {
+    question: "Does VerifAir determine workplace exposure or regulatory compliance?",
+    answer:
+      "No. VerifAir provides project-level particulate monitoring and operational records. It does not independently determine personal exposure, workplace exposure compliance or regulatory compliance, and does not replace occupational hygiene advice, specialist sampling or competent professional assessment.",
+  },
+  {
+    question: "How is VerifAir deployed?",
+    answer:
+      "Deployment covers project requirements, sites and zones, monitoring locations and operational triggers, Dustlight monitors, VerifAir Edge, communications and system-health verification before operational monitoring begins.",
   },
 ];

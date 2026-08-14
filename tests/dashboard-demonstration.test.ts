@@ -31,6 +31,16 @@ describe("dashboard demonstrations", () => {
     expect(dashboards).toContain("replayState.timestamp");
   });
 
+  it("uses distinct deterministic trend profiles for each monitoring zone", () => {
+    const dashboards = read("components/demonstration/UnifiedDemonstration.tsx");
+
+    expect(dashboards).toContain("monitorTrendPoints");
+    expect(dashboards).toContain("WORK_ZONE_A: \"0,48");
+    expect(dashboards).toContain("OCCUPIED_INTERFACE: \"0,30");
+    expect(dashboards).toContain("SHARED_CORRIDOR: \"0,35");
+    expect(dashboards).toContain("EXTERNAL_BOUNDARY: \"0,42");
+  });
+
   it("models canonical workflow phases", () => {
     const dashboards = read("components/demonstration/ClinicalDashboards.tsx");
 
@@ -49,7 +59,7 @@ describe("dashboard demonstrations", () => {
     expect(workflow).not.toContain("<main");
   });
 
-  it("retains dedicated non-indexed demonstration routes", () => {
+  it("redirects legacy demonstration routes to the unified single-page experience", () => {
     const shared = read("app/demonstration/shared-dashboard/page.tsx");
     const room = read("app/demonstration/monitoring-room/page.tsx");
     const workflow = read("app/demonstration/workflow/page.tsx");
@@ -57,7 +67,7 @@ describe("dashboard demonstrations", () => {
     expect(shared).toContain("index: false");
     expect(room).toContain("index: false");
     expect(workflow).toContain("index: false");
-    expect(room).toContain("MonitoringRoomDisplay");
-    expect(workflow).toContain("ProductDemonstration");
+    expect(room).toContain("redirect(\"/demonstration#monitoring\")");
+    expect(workflow).toContain("redirect(\"/demonstration#incident\")");
   });
 });

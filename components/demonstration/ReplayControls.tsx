@@ -38,14 +38,14 @@ export function ReplayControls({
           type="button"
           className="btn btn-primary"
           disabled={replayState.isTerminal}
-          onClick={() => (isPlaying ? session.pause() : session.play())}
+          onClick={() => (isPlaying ? session._testOnlyPause() : session._testOnlyPlay())}
         >
           {isPlaying ? "Pause" : "Play"}
         </button>
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => session.restart()}
+          onClick={() => session._testOnlyRestart()}
         >
           Restart
         </button>
@@ -56,7 +56,7 @@ export function ReplayControls({
             className="min-h-11 border border-slate-300 bg-white px-3"
             value={rate}
             onChange={(event) =>
-              session.setRate(Number(event.currentTarget.value) as ReplayRate)
+              session._testOnlySetRate(Number(event.currentTarget.value) as ReplayRate)
             }
           >
             {REPLAY_RATES.map((availableRate) => (
@@ -78,7 +78,7 @@ export function ReplayControls({
           max={session.durationMs}
           step={1_000}
           value={replayState.offsetMs}
-          onChange={(event) => session.seek(Number(event.currentTarget.value))}
+          onChange={(event) => session._testOnlySeek(Number(event.currentTarget.value))}
         />
       </label>
       <div aria-live="polite" className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-700">
@@ -95,7 +95,7 @@ export function ReplayControls({
           type="button"
           className="btn btn-secondary"
           disabled={replayState.offsetMs === 0}
-          onClick={() => session.seekToMarker("prev")}
+          onClick={() => session._testOnlySeekToMarker("prev")}
         >
           ← Previous scenario marker
         </button>
@@ -103,7 +103,7 @@ export function ReplayControls({
           type="button"
           className="btn btn-secondary"
           disabled={replayState.isTerminal || replayState.offsetMs >= session.durationMs}
-          onClick={() => session.seekToMarker("next")}
+          onClick={() => session._testOnlySeekToMarker("next")}
         >
           Next scenario marker →
         </button>

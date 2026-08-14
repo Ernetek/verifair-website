@@ -14,6 +14,8 @@ export function PolicyReadinessBanner() {
           <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-700">
             Review your monitoring, response and reporting arrangements before
             Australia moves to workplace exposure limits for airborne contaminants.
+            Indicative particulate monitoring supports operational visibility; it
+            does not replace occupational hygiene or exposure assessment.
           </p>
         </div>
 

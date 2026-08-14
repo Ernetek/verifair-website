@@ -17,7 +17,6 @@ import {
   type ReplayRate,
 } from "@/lib/replay/playback-controller";
 import {
-  createInitialIncidentState,
   reduceIncident,
   reduceIncidentEvent,
   type IncidentEvent,
@@ -42,9 +41,9 @@ export interface DemonstrationMarker {
 
 export const MEANINGFUL_SCENARIO_MARKERS: readonly DemonstrationMarker[] = [
   { offsetMs: 0, label: "Start monitoring", description: "Normal baseline operating conditions" },
-  { offsetMs: 120_000, label: "Alert opened", description: "Elevated particulate readings detected at General Entry Door" },
+  { offsetMs: 120_000, label: "Alert opened", description: "Fictional configured operational trigger reached at the monitored boundary" },
   { offsetMs: 240_000, label: "Investigation", description: "Response owner assigned and site investigation started" },
-  { offsetMs: 360_000, label: "Verification", description: "Control measures inspected and verification completed" },
+  { offsetMs: 360_000, label: "Verification", description: "Recorded actions and subsequent conditions reviewed" },
   { offsetMs: 480_000, label: "Closure", description: "Incident closed with evidence retained for audit" },
 ] as const;
 
@@ -58,12 +57,18 @@ export interface DemonstrationSessionSnapshot {
 
 type Listener = (snapshot: DemonstrationSessionSnapshot) => void;
 
+export interface DemoEvidenceAsset {
+  readonly evidenceId: string;
+  readonly name: string;
+  readonly previewUrl: string;
+}
+
 const INITIAL_SCENARIO_EVENTS: readonly IncidentEvent[] = [
   {
     type: "INCIDENT_OPENED",
     incidentId: "INC-0042",
     monitorId: "MON-004",
-    triggerCondition: "Action condition detected (PM2.5 > 25 Âµg/mÂ³)",
+    triggerCondition: "Fictional configured operational trigger reached in the public demonstration",
     timestampMs: 120_000,
     sequence: 1,
   },
@@ -73,17 +78,57 @@ export class DemonstrationSession {
   readonly #playbackController: ReplayPlaybackController;
   readonly #listeners = new Set<Listener>();
   #userEvents: IncidentEvent[] = [];
+  readonly #evidenceAssets = new Map<string, DemoEvidenceAsset>();
   #snapshot: DemonstrationSessionSnapshot;
+  readonly #autoPlay: boolean;
+  #demoTimer: ReturnType<typeof setInterval> | null = null;
 
-  constructor(controller?: ReplayPlaybackController) {
+  constructor(controller?: ReplayPlaybackController, autoPlay: boolean = true) {
     this.#playbackController =
       controller ?? new ReplayPlaybackController(publicDemonstrationScenario);
+    this.#autoPlay = autoPlay;
 
     this.#snapshot = this.#computeSnapshot();
     this.#playbackController.subscribe(this.#onPlaybackChange);
+
+    // Auto-play deterministic scenario internally
+    if (this.#autoPlay) {
+      // Delay start to allow React hydration
+      setTimeout(() => {
+        this.#playbackController.play();
+      }, 100);
+    }
   }
 
   getSnapshot = (): DemonstrationSessionSnapshot => this.#snapshot;
+
+  start(): void {
+    if (this.#snapshot.replayState.isTerminal) return;
+    this.#playbackController.play();
+    if (this.#demoTimer === null && typeof window !== "undefined") {
+      this.#demoTimer = setInterval(() => {
+        const nextOffset = this.#snapshot.replayState.offsetMs + 30_000;
+        if (nextOffset >= this.#playbackController.durationMs) {
+          this.#playbackController.seek(this.#playbackController.durationMs);
+          this.#clearDemoTimer();
+          return;
+        }
+        this.#playbackController.seek(nextOffset);
+      }, 3_000);
+    }
+    this.#updateSnapshot();
+  }
+
+  pause(): void {
+    this.#playbackController.pause();
+    this.#clearDemoTimer();
+    this.#updateSnapshot();
+  }
+
+  setRate(rate: ReplayRate): void {
+    this.#playbackController.setRate(rate);
+    this.#updateSnapshot();
+  }
 
   subscribe = (listener: Listener): (() => void) => {
     this.#listeners.add(listener);
@@ -92,38 +137,52 @@ export class DemonstrationSession {
     };
   };
 
-  play(): void {
+  registerEvidenceAsset(asset: DemoEvidenceAsset): void {
+    this.#evidenceAssets.set(asset.evidenceId, asset);
+  }
+
+  getEvidenceAsset(evidenceId: string): DemoEvidenceAsset | undefined {
+    return this.#evidenceAssets.get(evidenceId);
+  }
+
+  /** @internal For testing only */
+  _testOnlyPlay(): void {
     this.#playbackController.play();
   }
 
-  pause(): void {
+  /** @internal For testing only */
+  _testOnlyPause(): void {
     this.#playbackController.pause();
   }
 
-  restart(): void {
+  /** @internal For testing only */
+  _testOnlyRestart(): void {
     this.#userEvents = [];
     this.#playbackController.restart();
     this.#updateSnapshot();
   }
 
-  seek(offsetMs: number): void {
+  /** @internal For testing only */
+  _testOnlySeek(offsetMs: number): void {
     this.#playbackController.seek(offsetMs);
   }
 
-  setRate(rate: ReplayRate): void {
+  /** @internal For testing only */
+  _testOnlySetRate(rate: ReplayRate): void {
     this.#playbackController.setRate(rate);
   }
 
-  seekToMarker(direction: "prev" | "next"): void {
+  /** @internal For testing only */
+  _testOnlySeekToMarker(direction: "prev" | "next"): void {
     const currentOffset = this.#snapshot.replayState.offsetMs;
     if (direction === "next") {
       const nextMarker = MEANINGFUL_SCENARIO_MARKERS.find(
         (m) => m.offsetMs > currentOffset + 1_000,
       );
       if (nextMarker) {
-        this.seek(nextMarker.offsetMs);
+        this.#playbackController.seek(nextMarker.offsetMs);
       } else {
-        this.seek(this.#playbackController.durationMs);
+        this.#playbackController.seek(this.#playbackController.durationMs);
       }
     } else {
       const prevMarkers = MEANINGFUL_SCENARIO_MARKERS.filter(
@@ -131,11 +190,12 @@ export class DemonstrationSession {
       );
       if (prevMarkers.length > 0) {
         const prevMarker = prevMarkers[prevMarkers.length - 1];
-        this.seek(prevMarker.offsetMs);
+        this.#playbackController.seek(prevMarker.offsetMs);
       } else {
-        this.seek(0);
+        this.#playbackController.seek(0);
       }
     }
+    this.#updateSnapshot();
   }
 
   dispatchIncidentEvent(
@@ -217,6 +277,21 @@ export class DemonstrationSession {
   get durationMs(): number {
     return this.#playbackController.durationMs;
   }
+
+  get currentOffsetMs(): number {
+    return this.#snapshot.replayState.offsetMs;
+  }
+
+  get isTerminal(): boolean {
+    return this.#snapshot.replayState.isTerminal;
+  }
+
+  #clearDemoTimer(): void {
+    if (this.#demoTimer !== null) {
+      clearInterval(this.#demoTimer);
+      this.#demoTimer = null;
+    }
+  }
 }
 
 // Global shared session singleton for unified view state across routes
@@ -224,7 +299,7 @@ let sharedSessionInstance: DemonstrationSession | null = null;
 
 export function getSharedDemonstrationSession(): DemonstrationSession {
   if (!sharedSessionInstance) {
-    sharedSessionInstance = new DemonstrationSession();
+    sharedSessionInstance = new DemonstrationSession(undefined, false);
   }
   return sharedSessionInstance;
 }

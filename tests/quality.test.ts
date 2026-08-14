@@ -13,10 +13,11 @@ function source(relative: string) {
 }
 
 describe("site quality requirements", () => {
-  it("uses monitoring, workflow and reporting homepage anchors", () => {
+  it("uses the approved primary navigation anchors", () => {
     expect(primaryNav.some((item) => item.href === "/#monitoring")).toBe(true);
     expect(primaryNav.some((item) => item.href === "/#workflow")).toBe(true);
-    expect(primaryNav.some((item) => item.href === "/#reportpreview")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/#industries")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/about")).toBe(true);
     expect(source("components/home/PlatformOverview.tsx")).toContain('id="platform"');
   });
 

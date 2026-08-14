@@ -9,8 +9,9 @@ describe("homepage composition", () => {
     expect(source).toContain('canonical: "/"');
   });
 
-  it("uses demonstration overview section on homepage", () => {
-    expect(source).toContain("<DemonstrationOverview />");
+  it("uses the canonical demonstration on the homepage", () => {
+    expect(source).toContain("<UnifiedDemonstration />");
+    expect(source).not.toContain("<DemonstrationOverview />");
     expect(source).not.toContain("<PlatformOverviewSection />");
     expect(source).not.toContain("<CoordinatedSolutionSection />");
     expect(source).not.toContain("<ReportingProof />");

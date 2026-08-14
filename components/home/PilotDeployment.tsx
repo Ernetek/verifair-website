@@ -1,30 +1,35 @@
 import Link from "next/link";
 
-const pilotSteps = [
+const deploymentSteps = [
   {
     number: "01",
-    title: "Project discussion",
-    body: "Discuss the work, operating environment, project stage and the monitoring questions the team needs to answer.",
+    title: "Review project requirements",
+    body: "Review the work, operating environment, project stage and the monitoring questions the team needs to answer.",
   },
   {
     number: "02",
-    title: "Site and operational-context review",
-    body: "Review work activities, sensitive areas, access constraints, likely monitoring locations and available connectivity.",
+    title: "Define sites and zones",
+    body: "Define the sites, work areas, occupied interfaces and monitoring zones that require an operational view.",
   },
   {
     number: "03",
-    title: "Monitoring approach",
-    body: "Define proposed monitoring points, alert responsibilities, dashboard needs and reporting requirements.",
+    title: "Configure monitoring locations and operational triggers",
+    body: "Configure monitoring locations, alert responsibilities, operational triggers and reporting requirements for the project.",
   },
   {
     number: "04",
-    title: "Demonstration or pilot deployment",
-    body: "Use a carefully scoped demonstration or pilot to assess the proposed workflow in the intended operating context.",
+    title: "Deploy Dustlight monitors and VerifAir Edge",
+    body: "Deploy the monitoring equipment, Edge infrastructure and supporting connectivity across the defined sites and zones.",
   },
   {
     number: "05",
-    title: "Review and refinement",
-    body: "Review the monitoring information, operational feedback and technical limitations before refining the deployment approach.",
+    title: "Verify communications and system health",
+    body: "Verify communications, gateway health, monitor state and current observations before operational use.",
+  },
+  {
+    number: "06",
+    title: "Begin operational monitoring",
+    body: "Begin monitoring conditions, configured triggers, response activity and the evidence record for the project.",
   },
 ];
 
@@ -38,31 +43,31 @@ export function PilotDeploymentSection() {
         <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-              Launch-stage deployment
+              DEPLOYMENT
             </p>
             <h2
               id="pilot-deployment-heading"
               className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl"
             >
-              Designed for structured pilot deployment
+              Designed for practical project deployment.
             </h2>
             <div className="mt-5 h-0.5 w-12 bg-blue-600" />
             <p className="mt-5 text-base leading-7 text-slate-600 sm:text-lg">
-              VerifAir is entering the market through carefully scoped project
-              deployments. Each proposed site is reviewed for work activities,
-              sensitive areas, monitoring locations, connectivity, alert
-              responsibilities and reporting requirements before installation.
+              VerifAir deployments are configured around the project, its sites and
+              zones, operational triggers, communications path and system-health
+              requirements. A pilot deployment may be available as an engagement
+              option where a team wants to assess the approach in context.
             </p>
             <Link
               href="/contact"
               className="mt-7 inline-flex min-h-12 items-center font-bold text-blue-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
             >
-              Discuss a pilot project →
+              Discuss your deployment →
             </Link>
           </div>
 
           <ol className="border-y border-slate-200">
-            {pilotSteps.map((step) => (
+            {deploymentSteps.map((step) => (
               <li
                 key={step.number}
                 className="grid gap-3 border-b border-slate-200 py-6 last:border-b-0 sm:grid-cols-[4rem_0.55fr_1fr] sm:items-start sm:gap-6"

@@ -5,7 +5,10 @@ import { FAQSection } from "@/components/home/FAQ";
 import { HeroSection } from "@/components/home/Hero";
 import { IndustriesSection } from "@/components/home/Industries";
 import { PilotDeploymentSection } from "@/components/home/PilotDeployment";
-import { DemonstrationOverview } from "@/components/demonstration/DemonstrationOverview";
+import {
+  ArchitectureStorySection,
+} from "@/components/demonstration/DemonstrationOverview";
+import { UnifiedDemonstration } from "@/components/demonstration/UnifiedDemonstration";
 import { ProblemSection } from "@/components/home/Problem";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 
@@ -20,9 +23,10 @@ export default function HomePage() {
     <>
       <HeroSection />
       <ProblemSection />
-      <DemonstrationOverview />
-      <IndustriesSection />
+      <ArchitectureStorySection />
+      <UnifiedDemonstration />
       <PilotDeploymentSection />
+      <IndustriesSection />
       <FAQSection />
       <FinalCTA />
       <PageDisclaimer />

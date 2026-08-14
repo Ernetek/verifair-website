@@ -12,12 +12,11 @@ export const siteConfig = {
 };
 
 export const primaryNav = [
-  { label: "Monitoring", href: "/#monitoring" },
-  { label: "Workflow", href: "/#workflow" },
-  { label: "Reporting", href: "/#reportpreview" },
-  { label: "Industries", href: "/#industries" },
+  { label: "Product", href: "/#monitoring" },
+  { label: "How It Works", href: "/#workflow" },
+  { label: "Solutions", href: "/#industries" },
   { label: "Resources", href: "/resources" },
-  { label: "Contact", href: "/contact" }
+  { label: "About", href: "/about" }
 ];
 
 export const footerGroups = [

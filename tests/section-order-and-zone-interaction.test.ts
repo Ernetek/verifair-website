@@ -10,9 +10,10 @@ describe("homepage section order and platform interaction", () => {
     const expected = [
       "<HeroSection />",
       "<ProblemSection />",
-      "<DemonstrationOverview />",
-      "<IndustriesSection />",
+      "<ArchitectureStorySection />",
+      "<UnifiedDemonstration />",
       "<PilotDeploymentSection />",
+      "<IndustriesSection />",
       "<FAQSection />",
       "<FinalCTA />",
       "<PageDisclaimer />",

@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+
 import { footerGroups, siteConfig } from "@/lib/site";
 
 export function Footer() {
@@ -11,11 +13,23 @@ export function Footer() {
             <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
               Dustlight measures particulate conditions. VerifAir coordinates monitoring data, alerts, reporting and operational visibility for dust-sensitive environments.
             </p>
+            <div className="mt-6 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+              <Image
+                src="/assets/verifair_erne_tech_logo.webp"
+                alt="VerifAir by ERNE Tech"
+                width={480}
+                height={160}
+                className="h-12 w-auto object-contain sm:h-14"
+              />
+            </div>
+            <p className="mt-3 text-sm text-slate-400">
+              Powered by Dustlight. Engineered by ERNE Tech
+            </p>
             <Link
               href="/contact"
               className="btn mt-7 min-h-12 !bg-white px-6 !text-slate-950 shadow-sm hover:!bg-slate-100 hover:!text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
             >
-              Discuss a pilot project
+              Discuss Your Project
             </Link>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

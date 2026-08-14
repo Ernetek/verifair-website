@@ -19,9 +19,22 @@ export interface ReplayPlaybackScheduler {
 }
 
 const browserScheduler: ReplayPlaybackScheduler = {
-  now: () => performance.now(),
-  requestFrame: (callback) => requestAnimationFrame(callback),
-  cancelFrame: (handle) => cancelAnimationFrame(handle),
+  now: () => (typeof performance !== "undefined" ? performance.now() : Date.now()),
+  requestFrame: (callback) => {
+    if (typeof globalThis.requestAnimationFrame === "function") {
+      return globalThis.requestAnimationFrame(callback);
+    }
+    return Number(
+      globalThis.setTimeout(() => callback(Date.now()), 16),
+    );
+  },
+  cancelFrame: (handle) => {
+    if (typeof globalThis.cancelAnimationFrame === "function") {
+      globalThis.cancelAnimationFrame(handle);
+      return;
+    }
+    globalThis.clearTimeout(handle);
+  },
 };
 
 type Listener = (snapshot: ReplayPlaybackSnapshot) => void;

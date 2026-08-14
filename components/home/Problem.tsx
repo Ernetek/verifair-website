@@ -2,21 +2,21 @@ import Image from "next/image";
 
 import { Reveal } from "./Reveal";
 
-const observations = [
+const problemCards = [
   {
     number: "01",
-    title: "Conditions can change between inspections.",
-    body: "Cutting, drilling, demolition, cleanup, access changes and temporary controls can create short-duration changes that a scheduled inspection may miss.",
+    title: "YOU CAN'T RELY ON WHAT YOU CAN SEE",
+    body: "Respirable particulate can be invisible to the human eye. Conditions can change without an obvious visual warning, making continuous monitoring important where construction interfaces with occupied areas.",
   },
   {
     number: "02",
-    title: "Hazards require material-specific controls.",
-    body: "Respirable crystalline silica and asbestos fibres require competent assessment, appropriate controls and specialist methods that match the material and work activity.",
+    title: "CONSTRUCTION AND OCCUPANCY SHARE THE RISK ENVIRONMENT",
+    body: "Construction and refurbishment can generate airborne particulate while people continue working, receiving care, learning or moving nearby. Managing the interface between the work zone and surrounding occupied areas requires visibility beyond the immediate workface.",
   },
   {
     number: "03",
-    title: "The response needs a shared record.",
-    body: "Location, timing, readings, notifications and practical actions should be reviewed together so teams can understand what happened next.",
+    title: "THE EVENT DOESN'T END WHEN THE READING FALLS",
+    body: "When conditions require attention, teams need more than an alert. They need a record of what was observed, who was notified, what action was taken, how the event progressed and how it was resolved.",
   },
 ];
 
@@ -24,29 +24,29 @@ export function ProblemSection() {
   return (
     <section
       id="problem"
-      className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24"
+      className="border-b border-slate-200 bg-white py-12 sm:py-14 lg:py-16"
     >
       <div className="container grid gap-9 lg:grid-cols-[1.02fr_0.98fr] lg:gap-x-14 lg:gap-y-8 lg:items-start">
-        <Reveal className="lg:col-start-1 lg:row-start-1">
+        <Reveal className="lg:col-start-2 lg:row-start-1">
           <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-            The operational site challenge
+            THE OPERATIONAL GAP
           </p>
 
           <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
-            You can’t respond to what you can’t see.
+            Construction keeps moving. Occupied environments stay operational.
           </h2>
         </Reveal>
 
-        <Reveal delay={0.08} className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <Reveal delay={0.08} className="lg:col-start-1 lg:row-span-2 lg:row-start-1">
           <figure>
-            <div className="overflow-hidden border border-slate-200 bg-slate-50">
+            <div className="h-64 overflow-hidden border border-slate-200 bg-slate-50 sm:h-72 lg:h-[25rem]">
               <Image
                 src="/assets/problem-active-dust.webp"
                 alt="Active dusty work beside a dust-sensitive occupied environment"
                 width={1150}
                 height={1200}
                 quality={92}
-                className="h-auto w-full object-cover"
+                className="size-full object-cover"
               />
             </div>
             <figcaption className="mt-3 text-sm leading-6 text-slate-500">
@@ -57,37 +57,32 @@ export function ProblemSection() {
           </figure>
         </Reveal>
 
-        <Reveal className="lg:col-start-1 lg:row-start-2">
+        <Reveal className="lg:col-start-2 lg:row-start-2">
           <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Active work can change particulate conditions between inspections and
-            before there is an obvious visual warning. Some activities can
-            generate hazardous respirable dust, including respirable crystalline
-            silica, while disturbance of asbestos-containing material can release
-            asbestos fibres. Teams need timely visibility, material-specific risk
-            controls and a clear record of what happened next.
+            When building or refurbishing in or near occupied areas, project teams
+            need a shared operational view of changing particulate conditions,
+            faster response coordination and a clear record of what happened next.
           </p>
-
-          <ol className="mt-9 border-y border-slate-200">
-            {observations.map((item) => (
-              <li
-                key={item.number}
-                className="grid gap-3 border-b border-slate-200 py-6 last:border-b-0 sm:grid-cols-[3.25rem_1fr]"
-              >
-                <span className="font-mono text-sm font-bold text-blue-600">
-                  {item.number}
-                </span>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-950">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-base leading-7 text-slate-600">
-                    {item.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
         </Reveal>
+
+        <div className="grid gap-4 lg:col-span-2 lg:grid-cols-3">
+          {problemCards.map((item) => (
+            <article
+              key={item.number}
+              className="border border-slate-200 bg-slate-50 p-6 shadow-sm"
+            >
+              <span className="font-mono text-sm font-bold text-blue-600">
+                {item.number}
+              </span>
+              <h3 className="mt-5 text-lg font-black leading-tight tracking-tight text-slate-950">
+                {item.title}
+              </h3>
+              <p className="mt-4 text-base leading-7 text-slate-600">
+                {item.body}
+              </p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

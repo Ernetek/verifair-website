@@ -13,8 +13,6 @@ import {
 import { ReplayControls } from "@/components/demonstration/ReplayControls";
 import { CANONICAL_WORKFLOW_PHASES } from "@/components/demonstration/ProductDemonstration";
 
-type MetricName = "PM1" | "PM2.5" | "PM10";
-
 function observationValue(
   state: ReturnType<DemonstrationSession["getSnapshot"]>["replayState"],
   monitorId: string,

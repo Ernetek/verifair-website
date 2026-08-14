@@ -27,6 +27,8 @@ export interface CanonicalEvidence {
   readonly name: string;
   readonly category: string;
   readonly details?: string;
+  readonly actor?: string;
+  readonly context?: string;
   readonly timestampMs: number;
 }
 
@@ -57,6 +59,7 @@ export type IncidentEvent =
       readonly type: "ASSIGNED";
       readonly incidentId: string;
       readonly assignee: string;
+      readonly priority?: "Normal" | "High" | "Urgent";
       readonly timestampMs: number;
       readonly sequence: number;
     }
@@ -84,12 +87,34 @@ export type IncidentEvent =
       readonly sequence: number;
     }
   | {
+      readonly type: "INVESTIGATION_UPDATED";
+      readonly incidentId: string;
+      readonly status: string;
+      readonly notes: string;
+      readonly observedConditions: string;
+      readonly actionTaken: string;
+      readonly actor: string;
+      readonly timestampMs: number;
+      readonly sequence: number;
+    }
+  | {
+      readonly type: "RESPONSE_RECORDED";
+      readonly incidentId: string;
+      readonly responseType: string;
+      readonly details: string;
+      readonly performedBy: string;
+      readonly timestampMs: number;
+      readonly sequence: number;
+    }
+  | {
       readonly type: "EVIDENCE_ATTACHED";
       readonly incidentId: string;
       readonly evidenceId: string;
       readonly name: string;
       readonly category: string;
       readonly details?: string;
+      readonly actor?: string;
+      readonly context?: string;
       readonly timestampMs: number;
       readonly sequence: number;
     }
@@ -98,6 +123,8 @@ export type IncidentEvent =
       readonly incidentId: string;
       readonly escalatedBy: string;
       readonly reason: string;
+      readonly target?: string;
+      readonly details?: string;
       readonly timestampMs: number;
       readonly sequence: number;
     }
@@ -105,6 +132,7 @@ export type IncidentEvent =
       readonly type: "VERIFICATION_STARTED";
       readonly incidentId: string;
       readonly verifier: string;
+      readonly requestedBy?: string;
       readonly timestampMs: number;
       readonly sequence: number;
     }
@@ -135,11 +163,31 @@ export interface IncidentState {
   readonly acknowledged: boolean;
   readonly acknowledgedBy?: string;
   readonly assignedTo?: string;
+  readonly priority?: "Normal" | "High" | "Urgent";
+  readonly openedAtMs?: number;
+  readonly closedAtMs?: number;
   readonly investigationStarted: boolean;
+  readonly investigationStatus?: string;
+  readonly investigationNotes: readonly {
+    readonly actor: string;
+    readonly status: string;
+    readonly notes: string;
+    readonly observedConditions: string;
+    readonly actionTaken: string;
+    readonly timestampMs: number;
+  }[];
   readonly isEscalated: boolean;
   readonly escalationReason?: string;
+  readonly escalationTarget?: string;
+  readonly escalationDetails?: string;
   readonly progressStatus: string;
   readonly responseNotes: readonly { author: string; note: string; timestampMs: number }[];
+  readonly responses: readonly {
+    readonly responseType: string;
+    readonly details: string;
+    readonly performedBy: string;
+    readonly timestampMs: number;
+  }[];
   readonly verificationStarted: boolean;
   readonly verificationRecord?: VerificationRecord;
   readonly closed: boolean;
@@ -167,10 +215,12 @@ export function createInitialIncidentState(
     triggerCondition,
     opened: false,
     acknowledged: false,
+    investigationNotes: [],
     investigationStarted: false,
     isEscalated: false,
     progressStatus: "Unopened",
     responseNotes: [],
+    responses: [],
     verificationStarted: false,
     closed: false,
     phase: "Alert",
@@ -246,6 +296,7 @@ export function reduceIncidentEvent(
         monitorId: event.monitorId,
         triggerCondition: event.triggerCondition,
         opened: true,
+        openedAtMs: event.timestampMs,
         progressStatus: "Alert opened",
         phase: "Alert",
         events: updatedEvents,
@@ -280,6 +331,7 @@ export function reduceIncidentEvent(
       const nextState: IncidentState = {
         ...state,
         assignedTo: event.assignee,
+        priority: event.priority ?? state.priority,
         progressStatus: `Assigned to ${event.assignee}`,
         phase: "Assign",
         events: updatedEvents,
@@ -320,6 +372,50 @@ export function reduceIncidentEvent(
       return { ok: true, value: nextState };
     }
 
+    case "INVESTIGATION_UPDATED": {
+      if (state.phase !== "Investigate") {
+        return { ok: false, error: "Cannot update investigation outside investigation phase." };
+      }
+      const nextState: IncidentState = {
+        ...state,
+        investigationStatus: event.status,
+        investigationNotes: [
+          ...state.investigationNotes,
+          {
+            actor: event.actor,
+            status: event.status,
+            notes: event.notes,
+            observedConditions: event.observedConditions,
+            actionTaken: event.actionTaken,
+            timestampMs: event.timestampMs,
+          },
+        ],
+        progressStatus: event.status,
+        events: updatedEvents,
+      };
+      return { ok: true, value: nextState };
+    }
+
+    case "RESPONSE_RECORDED": {
+      if (state.phase !== "Investigate" && state.phase !== "Verify") {
+        return { ok: false, error: "Cannot record a response outside an active investigation." };
+      }
+      const nextState: IncidentState = {
+        ...state,
+        responses: [
+          ...state.responses,
+          {
+            responseType: event.responseType,
+            details: event.details,
+            performedBy: event.performedBy,
+            timestampMs: event.timestampMs,
+          },
+        ],
+        events: updatedEvents,
+      };
+      return { ok: true, value: nextState };
+    }
+
     case "PROGRESS_UPDATED": {
       if (state.phase !== "Investigate") {
         return { ok: false, error: "Cannot update progress outside investigation phase." };
@@ -339,6 +435,8 @@ export function reduceIncidentEvent(
         name: event.name,
         category: event.category,
         details: event.details,
+        actor: event.actor,
+        context: event.context,
         timestampMs: event.timestampMs,
       };
       const nextState: IncidentState = {
@@ -358,6 +456,8 @@ export function reduceIncidentEvent(
         ...state,
         isEscalated: true,
         escalationReason: event.reason,
+        escalationTarget: event.target,
+        escalationDetails: event.details,
         events: updatedEvents,
       };
       return { ok: true, value: nextState };
@@ -430,6 +530,7 @@ export function reduceIncidentEvent(
       const nextState: IncidentState = {
         ...state,
         closed: true,
+        closedAtMs: event.timestampMs,
         closureCategory: event.category,
         closureDetails: event.details,
         closedBy: event.closedBy,
@@ -466,4 +567,47 @@ export function reduceIncident(
     }
   }
   return current;
+}
+
+export interface IncidentTimelineRow {
+  readonly timestampMs: number;
+  readonly stage: string;
+  readonly actor: string;
+  readonly action: string;
+  readonly details: string;
+}
+
+export function selectIncidentTimeline(
+  state: IncidentState,
+): readonly IncidentTimelineRow[] {
+  return state.events.map((event) => {
+    switch (event.type) {
+      case "INCIDENT_OPENED":
+        return { timestampMs: event.timestampMs, stage: "Alert", actor: "VerifAir", action: "Incident opened", details: event.triggerCondition };
+      case "ACKNOWLEDGED":
+        return { timestampMs: event.timestampMs, stage: "Acknowledge", actor: event.acknowledgedBy, action: "Alert acknowledged", details: "Operator confirmed receipt." };
+      case "ASSIGNED":
+        return { timestampMs: event.timestampMs, stage: "Assign", actor: event.assignee, action: `Assigned to ${event.assignee}`, details: event.priority ? `Priority: ${event.priority}` : "Incident assignment" };
+      case "INVESTIGATION_STARTED":
+        return { timestampMs: event.timestampMs, stage: "Investigate", actor: event.startedBy, action: "Investigation started", details: "Site investigation opened." };
+      case "INVESTIGATION_UPDATED":
+        return { timestampMs: event.timestampMs, stage: "Investigate", actor: event.actor, action: "Investigation updated", details: `${event.status}. ${event.notes}` };
+      case "RESPONSE_RECORDED":
+        return { timestampMs: event.timestampMs, stage: "Investigate", actor: event.performedBy, action: event.responseType, details: event.details };
+      case "RESPONSE_NOTE_ADDED":
+        return { timestampMs: event.timestampMs, stage: "Investigate", actor: event.author, action: "Response note added", details: event.note };
+      case "PROGRESS_UPDATED":
+        return { timestampMs: event.timestampMs, stage: "Investigate", actor: "Operator", action: "Progress updated", details: event.details ? `${event.status}. ${event.details}` : event.status };
+      case "ESCALATED":
+        return { timestampMs: event.timestampMs, stage: "Investigate", actor: event.escalatedBy, action: "Incident escalated", details: `${event.reason}${event.target ? ` to ${event.target}` : ""}${event.details ? `. ${event.details}` : ""}` };
+      case "EVIDENCE_ATTACHED":
+        return { timestampMs: event.timestampMs, stage: "Evidence", actor: event.actor ?? "Operator", action: "Evidence attached", details: `${event.name}${event.context ? `. ${event.context}` : ""}` };
+      case "VERIFICATION_STARTED":
+        return { timestampMs: event.timestampMs, stage: "Verify", actor: event.requestedBy ?? "Operator", action: "Verification requested", details: `Verification assigned to ${event.verifier}.` };
+      case "VERIFICATION_COMPLETED":
+        return { timestampMs: event.timestampMs, stage: "Verify", actor: event.verifier, action: "Verification completed", details: `${event.outcome}. ${event.notes}` };
+      case "INCIDENT_CLOSED":
+        return { timestampMs: event.timestampMs, stage: "Close", actor: event.closedBy, action: "Incident closed", details: `${event.category}. ${event.details}` };
+    }
+  });
 }

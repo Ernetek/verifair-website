@@ -19,11 +19,14 @@ describe("ReplayControls", () => {
     expect(source).toContain("Next scenario marker");
   });
 
-  it("emits session intent without owning demonstration facts", () => {
-    expect(source).toContain("session.play()");
-    expect(source).toContain("session.pause()");
-    expect(source).toContain("session.restart()");
-    expect(source).toContain("session.seek(");
+  it("keeps internal test-only replay hooks without exposing public replay controls", () => {
+    expect(source).toContain("_testOnlyPlay");
+    expect(source).toContain("_testOnlyPause");
+    expect(source).toContain("_testOnlyRestart");
+    expect(source).toContain("_testOnlySeek");
+    expect(source).not.toContain("session.play()");
+    expect(source).not.toContain("session.pause()");
+    expect(source).not.toContain("session.restart()");
     expect(source).not.toMatch(/PM1|PM2\.5|PM4|PM10|threshold/i);
   });
 });

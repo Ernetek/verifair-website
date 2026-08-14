@@ -27,13 +27,18 @@ describe("launch-stage positioning", () => {
     expect(source).toContain('permanentRedirect("/applications")');
   });
 
-  it("discloses startup status and structured pilot deployment", () => {
+  it("describes practical project deployment and optional pilot engagement", () => {
     const content = read("lib/content.ts");
     const pilot = read("components/home/PilotDeployment.tsx");
 
     expect(content).toContain("Erne Tech is an Australian startup developing VerifAir");
-    expect(pilot).toContain("Designed for structured pilot deployment");
-    expect(pilot).toContain("Demonstration or pilot deployment");
+    expect(pilot).toContain("DEPLOYMENT");
+    expect(pilot).toContain("Designed for practical project deployment.");
+    expect(pilot).toContain("Review project requirements");
+    expect(pilot).toContain("Define sites and zones");
+    expect(pilot).toContain("Deploy Dustlight monitors and VerifAir Edge");
+    expect(pilot).toContain("Begin operational monitoring");
+    expect(pilot).toMatch(/pilot deployment may be available as an engagement\s+option/);
   });
 
   it("uses neutral demonstration labels", () => {

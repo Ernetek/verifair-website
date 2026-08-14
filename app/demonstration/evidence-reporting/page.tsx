@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-import { ReportingPage } from "@/components/reporting/ReportingPage";
-
-export const metadata: Metadata = {
-  title: "Evidence Reporting Demonstration",
-  description: "Explore simulated VerifAir monitoring evidence, response records and reporting outputs.",
-  alternates: { canonical: "/demonstration/evidence-reporting" },
+export const metadata = {
+  title: "Redirected: Evidence Reporting",
   robots: { index: false, follow: true },
 };
 
 export default function EvidenceReportingDemonstrationPage() {
-  return <ReportingPage />;
+  redirect("/demonstration#evidence");
 }
+

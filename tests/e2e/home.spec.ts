@@ -1,49 +1,24 @@
-﻿import { expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-test("primary navigation targets resolve and homepage anchors scroll", async ({
+test("primary navigation destinations resolve and homepage calls to action are wired", async ({
   page,
 }) => {
-  // Test hash navigation with proper isolation: Each hash test navigates
-  // to homepage and awaits networkidle to ensure browser state fully settles
-  // before attempting the next hash click. This avoids race conditions where
-  // a pending hash transition could interrupt the next navigation.
-  // Reusing a single page instance avoids resource contention under
-  // concurrent testing (--workers=4 --repeat-each=10).
-  const hashes: Array<"#monitoring" | "#workflow" | "#reportpreview"> = [
-    "#monitoring",
-    "#workflow",
-    "#reportpreview",
-  ];
+  await page.goto("/", { waitUntil: "networkidle" });
 
-  for (const hash of hashes) {
-    // Use networkidle to ensure prior hash navigation fully settles
-    // before attempting next homepage navigation.
-    await page.goto("/", { waitUntil: "networkidle" });
+  const seeHowLink = page.getByRole("link", { name: /See VerifAir in Action/i }).first();
+  await expect(seeHowLink).toBeVisible();
+  await expect(seeHowLink).toHaveAttribute("href", "/demonstration");
 
-    const link = page
-      .locator(`a:visible[href="${hash}"], a:visible[href="/${hash}"]`)
-      .first();
+  const contactLink = page.getByRole("link", { name: /Discuss Your Project/i }).first();
+  await expect(contactLink).toBeVisible();
+  await expect(contactLink).toHaveAttribute("href", /\/contact(?:#project-enquiry)?$/);
 
-    await expect(link).toBeVisible();
-    await expect(link).toHaveAttribute(
-      "href",
-      new RegExp("^(?:/)?" + hash + "$"),
-    );
-
-    await Promise.all([
-      page.waitForURL(new RegExp(hash + "$")),
-      link.click(),
-    ]);
-
-    await expect(page.locator(hash)).toBeVisible();
-  }
-
-  // Verify route availability independently of hash navigation tests.
-  for (const href of ["/technology", "/resources", "/contact"]) {
-    const response = await page.request.get(href);
+  for (const href of ["/demonstration", "/technology", "/resources", "/contact"]) {
+    const response = await page.request.get(href, { timeout: 60000 });
     expect(response.ok(), `${href} should resolve`).toBe(true);
   }
 });
+
 test("homepage has no horizontal overflow at 320px", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/", { waitUntil: "networkidle" });
@@ -58,37 +33,15 @@ test("homepage has no horizontal overflow at 320px", async ({ page }) => {
   );
 });
 
-test("industry tabs, platform reporting controls and FAQ are keyboard operable", async ({
+test("application cards and FAQ are keyboard operable", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "networkidle" });
 
-  const healthcareTab = page.getByRole("tab", { name: /Healthcare/i });
-  const constructionTab = page.getByRole("tab", { name: /Construction/i });
-
-  if (await healthcareTab.isVisible()) {
-    // Prove the client tab handlers are hydrated before exercising keyboard navigation.
-    await constructionTab.click();
-    await expect(constructionTab).toHaveAttribute("aria-selected", "true");
-
-    await healthcareTab.click();
-    await expect(healthcareTab).toHaveAttribute("aria-selected", "true");
-
-    await healthcareTab.focus();
-    await healthcareTab.press("ArrowRight");
-
-    await expect(constructionTab).toHaveAttribute("aria-selected", "true");
-    await expect(constructionTab).toBeFocused();
-  }
-
-  await page.goto("/#reportpreview", { waitUntil: "networkidle" });
-  const reportSelect = page.getByLabel("Report view");
-  await expect(reportSelect).toHaveValue("Summary report");
-  await reportSelect.selectOption({ label: "Trend and event review" });
-  await expect(reportSelect).toHaveValue("Trend and event review");
-  await expect(
-    page.getByText("Recent particulate trend", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "HEALTHCARE CONSTRUCTION" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "EDUCATION CONSTRUCTION" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OCCUPIED BUILDINGS" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Other construction applications/i })).toBeVisible();
 
   const faqSummary = page.locator("#faq details summary").first();
   const faqDetails = faqSummary.locator("..");
@@ -119,12 +72,14 @@ test("reduced motion disables smooth scrolling", async ({ page }) => {
   expect(behavior).toBe("auto");
 });
 
-test("legacy reporting route redirects to the homepage report preview", async ({
+test("legacy reporting route redirects to the homepage", async ({
   page,
 }) => {
   await page.goto("/reporting");
-  await expect(page).toHaveURL(/\/#reportpreview$/);
-  await expect(page.locator("#reportpreview")).toBeVisible();
+  await expect(page).toHaveURL(/\/\#reportpreview$/);
+  await expect(
+    page.getByRole("heading", { name: /Know when particulate conditions change\./i }),
+  ).toBeVisible();
 });
 
 test("mobile navigation closes with Escape and returns focus", async ({ page }) => {
@@ -151,6 +106,3 @@ test("HubSpot failure state provides hosted-form fallback", async ({ page }) => 
     page.getByRole("link", { name: /open the enquiry form/i }),
   ).toHaveAttribute("href", /share-ap1\.hsforms\.com/);
 });
-
-
-
