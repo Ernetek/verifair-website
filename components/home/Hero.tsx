@@ -12,31 +12,31 @@ export function HeroSection() {
         fill
         priority
         sizes="100vw"
-        className="absolute inset-0 -z-20 size-full object-cover object-center"
+        className="absolute inset-0 -z-20 size-full object-cover object-[64%_center] lg:object-center"
       />
 
       {/* Keep the source image at full opacity. This overlay is confined to the
           left reading area so the right 35% remains unobstructed. */}
       <div
-        className="absolute inset-y-0 left-0 -z-10 hidden w-[65%] bg-gradient-to-r from-slate-950/65 via-slate-950/35 to-transparent lg:block"
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent lg:inset-y-0 lg:left-0 lg:right-auto lg:w-[65%] lg:bg-gradient-to-r lg:from-slate-950/65 lg:via-slate-950/35 lg:to-transparent"
         aria-hidden="true"
       />
 
-      <div className="container relative z-10 grid min-h-[42rem] items-end pt-56 sm:min-h-[44rem] sm:pt-64 lg:min-h-[46rem] lg:grid-cols-[65%_35%] lg:items-center lg:py-20 lg:pt-20">
-        <Reveal className="max-w-3xl bg-slate-950/75 p-6 sm:p-8 lg:bg-transparent lg:p-0 lg:pr-16 xl:pr-24">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-blue-300">
+      <div className="container relative z-10 grid min-h-[42rem] items-end pt-48 sm:min-h-[44rem] sm:pt-56 lg:min-h-[46rem] lg:grid-cols-[65%_35%] lg:items-center lg:py-20 lg:pt-20">
+        <Reveal className="max-w-3xl p-0 pb-10 sm:p-8 sm:pb-10 lg:bg-transparent lg:p-0 lg:pr-16 xl:pr-24">
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-blue-300 drop-shadow-[0_2px_4px_rgba(2,6,23,0.9)]">
             OPERATIONAL PARTICULATE VISIBILITY &amp; CONTROL
           </p>
 
-          <h1 className="mt-5 text-5xl font-black leading-[0.98] tracking-tight text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 text-5xl font-black leading-[0.98] tracking-tight text-white drop-shadow-[0_3px_5px_rgba(2,6,23,0.95)] sm:text-6xl lg:text-7xl">
             Know when particulate conditions change.
           </h1>
 
-          <h2 className="mt-3 text-2xl font-bold tracking-[0.08em] text-slate-100 sm:text-3xl lg:text-4xl">
+          <h2 className="mt-3 text-2xl font-bold tracking-[0.08em] text-slate-100 drop-shadow-[0_2px_4px_rgba(2,6,23,0.95)] sm:text-3xl lg:text-4xl">
             ASSESS. ACTION. DOCUMENT.
           </h2>
 
-          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg">
+          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-100 drop-shadow-[0_2px_4px_rgba(2,6,23,0.95)] sm:text-lg">
             VerifAir connects distributed Dustlight particulate monitors through resilient,
             independent Edge infrastructure—providing centralised real-time visibility across
             sites and zones, operational alerts, coordinated action and long-term evidence reporting.
