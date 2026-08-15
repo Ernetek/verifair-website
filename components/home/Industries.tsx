@@ -5,7 +5,7 @@ const applications = [
   {
     title: "HEALTHCARE CONSTRUCTION",
     href: "/healthcare",
-    image: "/assets/industry-healthcare-environment.webp",
+    image: "/assets/healthcare_constructiom.webp",
     imageAlt: "Construction worker near an occupied healthcare environment",
     imagePosition: "55% center",
     copy: "Construction and refurbishment inside or adjacent to operating healthcare facilities.",

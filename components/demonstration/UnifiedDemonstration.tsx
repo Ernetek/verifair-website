@@ -25,7 +25,6 @@ import Image from "next/image";
 import {
   selectLatestObservation,
 } from "@/lib/replay/selectors";
-import { publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import {
   DemonstrationSession,
   getSharedDemonstrationSession,
@@ -35,7 +34,9 @@ import {
   type WorkflowPhase,
 } from "@/lib/demonstration/incident-domain";
 
-const DEMONSTRATION_START_MS = Date.parse(publicDemonstrationScenario.startTimestamp);
+const AEST_TIME_ZONE = "Australia/Sydney";
+// Anchor the demo timeline to the moment the page loaded so displayed times track real AEST time.
+const DEMONSTRATION_START_MS = Date.now();
 const DEMONSTRATION_OPERATOR = "Operator";
 const customerWorkflowStages = [
   "ALERT",
@@ -48,8 +49,21 @@ const customerWorkflowStages = [
   "RESOLVE",
 ] as const;
 
+function formatAEST(date: Date, options?: Intl.DateTimeFormatOptions): string {
+  const formatOptions = { ...options };
+  const hasTimeStyle = Boolean(formatOptions.timeStyle);
+  delete formatOptions.dateStyle;
+  delete formatOptions.timeStyle;
+  return date.toLocaleString(undefined, {
+    timeZone: AEST_TIME_ZONE,
+    timeZoneName: "short",
+    ...(hasTimeStyle ? { hour: "numeric", minute: "2-digit", second: "2-digit" } : {}),
+    ...formatOptions,
+  });
+}
+
 function formatDemoTimestamp(offsetMs: number, options?: Intl.DateTimeFormatOptions): string {
-  return new Date(DEMONSTRATION_START_MS + offsetMs).toLocaleString(undefined, options);
+  return formatAEST(new Date(DEMONSTRATION_START_MS + offsetMs), options);
 }
 
 // ============================================================
@@ -105,6 +119,14 @@ function LiveMonitoringSection({
     session.getSnapshot,
   );
 
+  // Ticks independently of the demo/replay state so the hub always looks live, even before the demo starts.
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNowMs(Date.now()), 1_000);
+    return () => window.clearInterval(id);
+  }, []);
+  const liveTimeLabel = formatAEST(new Date(nowMs), { timeStyle: "medium" });
+
   const monitors: readonly MonitorStatus[] = useMemo(() => {
     return [
       {
@@ -119,7 +141,7 @@ function LiveMonitoringSection({
         status: incidentState.opened ? "action" : determineMonitorStatus(
           observationValue(replayState, "WORK_ZONE_A", "PM2_5")
         ),
-        readingTimestamp: new Date(replayState.timestamp).toLocaleTimeString(),
+        readingTimestamp: liveTimeLabel,
       },
       {
         id: "OCCUPIED_INTERFACE",
@@ -133,7 +155,7 @@ function LiveMonitoringSection({
         status: determineMonitorStatus(
           observationValue(replayState, "OCCUPIED_INTERFACE", "PM2_5")
         ),
-        readingTimestamp: new Date(replayState.timestamp).toLocaleTimeString(),
+        readingTimestamp: liveTimeLabel,
       },
       {
         id: "SHARED_CORRIDOR",
@@ -147,7 +169,7 @@ function LiveMonitoringSection({
         status: determineMonitorStatus(
           observationValue(replayState, "SHARED_CORRIDOR", "PM2_5")
         ),
-        readingTimestamp: new Date(replayState.timestamp).toLocaleTimeString(),
+        readingTimestamp: liveTimeLabel,
       },
       {
         id: "EXTERNAL_BOUNDARY",
@@ -161,10 +183,10 @@ function LiveMonitoringSection({
         status: determineMonitorStatus(
           observationValue(replayState, "EXTERNAL_BOUNDARY", "PM2_5")
         ),
-        readingTimestamp: new Date(replayState.timestamp).toLocaleTimeString(),
+        readingTimestamp: liveTimeLabel,
       },
     ];
-  }, [replayState, incidentState.opened]);
+  }, [replayState, incidentState.opened, liveTimeLabel]);
 
   return (
     <section
@@ -181,9 +203,12 @@ function LiveMonitoringSection({
               Monitoring Overview
             </div>
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-emerald-300/40 bg-emerald-500/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
-            Live
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 rounded-full border border-emerald-300/40 bg-emerald-500/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+              Live
+            </div>
+            <span className="font-mono text-xs font-bold text-sky-100">{liveTimeLabel}</span>
           </div>
         </div>
 
@@ -191,30 +216,9 @@ function LiveMonitoringSection({
           <strong className="font-black text-slate-900">Demonstration labels:</strong> PM2.5 values are configured operational triggers for demonstration purposes. They are not WEL values, regulatory limits, universal safety thresholds, or compliance criteria.
         </div>
 
-        <div className="flex min-h-[640px] bg-[#edf2f7]">
-          <aside className="flex w-20 flex-col items-center justify-start gap-4 border-r border-slate-300 bg-[#dfe5eb] py-6">
-            {[
-              "◫",
-              "↗",
-              "▤",
-              "◔",
-              "⚑",
-            ].map((icon, index) => (
-              <div
-                key={icon + index}
-                className={`flex h-12 w-12 items-center justify-center rounded-xl border text-lg ${
-                  index === 0
-                    ? "border-sky-500 bg-sky-100 text-sky-700 shadow-inner"
-                    : "border-slate-300 bg-white/60 text-slate-500"
-                }`}
-              >
-                {icon}
-              </div>
-            ))}
-          </aside>
-
-          <div className="flex-1 p-4 sm:p-5">
-            <div className="grid gap-4 sm:grid-cols-2">
+        <div className="min-h-[640px] bg-[#edf2f7]">
+          <div className="p-4 sm:p-5">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {monitors.map((monitor) => (
                 <div
                   key={monitor.id}
@@ -316,7 +320,7 @@ function LiveMonitoringSection({
               <h2 id="system-health-title" className="sr-only">System health</h2>
               <div className="grid gap-3 border-t border-slate-200 pt-3 text-[11px] text-slate-500 sm:grid-cols-3 sm:items-center sm:justify-items-center">
                 <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Gateway health: Healthy</span>
-                <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Last observation: {new Date(replayState.timestamp).toLocaleTimeString()}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Last observation: {liveTimeLabel}</span>
                 <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />Communications: Connected · Monitors: 4/4 online</span>
               </div>
             </section>
@@ -356,7 +360,7 @@ interface WorkflowFormState {
 const workflowGuidance: Record<string, { label: string; message: string }> = {
   Alert: {
     label: "Acknowledge",
-    message: "Confirm that you have received the alert, then continue to the assignment step.",
+    message: "Click Acknowledge, assign to me and start work to take ownership of the incident and begin the investigation in one step.",
   },
   Acknowledge: {
     label: "Acknowledge and assign",
@@ -375,8 +379,8 @@ const workflowGuidance: Record<string, { label: string; message: string }> = {
     message: "Select a verifier and outcome, add any notes, then complete verification.",
   },
   Close: {
-    label: "Resolve",
-    message: "Select the closer and closure category, add a summary, then close the incident.",
+    label: "Resolve and close",
+    message: "Verification is sufficient to close. Select the closer and resolution category, add a summary, then resolve the incident.",
   },
 };
 
@@ -416,33 +420,6 @@ function IncidentWorkspaceSection({
   const [photoEvidence, setPhotoEvidence] = useState<
     { name: string; dataUrl: string } | null
   >(null);
-  const workspaceRef = useRef<HTMLDivElement>(null);
-  const autoScrollTimerRef = useRef<number | null>(null);
-
-  const cancelPendingIncidentScroll = () => {
-    if (autoScrollTimerRef.current !== null) {
-      window.clearTimeout(autoScrollTimerRef.current);
-      autoScrollTimerRef.current = null;
-    }
-  };
-
-  // Bring the newly opened ticket into view after React commits the state transition.
-  useEffect(() => {
-    if (incidentState.opened && workspaceRef.current) {
-      cancelPendingIncidentScroll();
-      autoScrollTimerRef.current = window.setTimeout(() => {
-        autoScrollTimerRef.current = null;
-        if (workspaceRef.current?.contains(document.activeElement)) return;
-        requestAnimationFrame(() => {
-          workspaceRef.current?.scrollIntoView({
-            behavior: "auto",
-            block: "start",
-          });
-        });
-      }, 1800);
-      return cancelPendingIncidentScroll;
-    }
-  }, [incidentState.opened]);
 
   const attachEvidence = (name: string, previewUrl: string) => {
     const evidenceId = `EVD-${name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
@@ -459,17 +436,11 @@ function IncidentWorkspaceSection({
     });
   };
 
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result !== "string") return;
-      const dataUrl = reader.result;
-      attachEvidence(file.name, dataUrl);
-    };
-    reader.readAsDataURL(file);
+  const handleDemoImageAttach = () => {
+    attachEvidence(
+      "VerifAir site investigation reference",
+      "/assets/workflow-site-investigation.webp",
+    );
   };
 
   const handleAcknowledgeAndAssign = () => {
@@ -482,12 +453,9 @@ function IncidentWorkspaceSection({
       assignee: DEMONSTRATION_OPERATOR,
       priority: formState.priority || "Normal",
     });
-  };
-
-  const handleStartInvestigation = () => {
     session.dispatchIncidentEvent({
       type: "INVESTIGATION_STARTED",
-      startedBy: formState.assignedTo || DEMONSTRATION_OPERATOR,
+      startedBy: DEMONSTRATION_OPERATOR,
     });
   };
 
@@ -564,7 +532,8 @@ function IncidentWorkspaceSection({
 
   if (!incidentState.opened) {
     return (
-      <section className="border-b border-slate-200 bg-white px-5 py-8 sm:px-8">
+      <section id="incident" className="border-b border-slate-200 bg-white px-5 py-8 sm:px-8">
+        <span id="workflow" className="sr-only" aria-hidden="true" />
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-black uppercase tracking-wider text-blue-700">
             Step 2 · Incident Workspace
@@ -582,12 +551,10 @@ function IncidentWorkspaceSection({
 
   return (
     <section
-      ref={workspaceRef}
       id="incident"
-      onPointerDown={cancelPendingIncidentScroll}
-      onFocusCapture={cancelPendingIncidentScroll}
       className="border-b border-slate-200 bg-white px-5 py-8 sm:px-8"
     >
+      <span id="workflow" className="sr-only" aria-hidden="true" />
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-wider text-blue-700">
@@ -707,10 +674,10 @@ function IncidentWorkspaceSection({
             <div className="mb-4">
               <p className="text-sm font-black text-red-900 uppercase">⚠ Action Required</p>
               <h3 className="mt-2 text-lg font-bold text-slate-900">
-                Acknowledge and assign to me
+                Acknowledge, assign to me and start work
               </h3>
               <p className="mt-1 text-sm text-slate-700">
-                An action condition has been detected. Confirm receipt and begin response procedures.
+                An action condition has been detected. Confirm receipt, take ownership and begin the investigation.
               </p>
             </div>
             <div className="space-y-3">
@@ -737,7 +704,7 @@ function IncidentWorkspaceSection({
                 className="inline-block bg-red-600 text-white px-4 py-2 font-black text-sm hover:bg-red-700"
                 onClick={handleAcknowledgeAndAssign}
               >
-                Acknowledge and assign to me
+                Acknowledge, assign to me and start work
               </button>
             </div>
           </div>
@@ -752,22 +719,6 @@ function IncidentWorkspaceSection({
         {incidentState.assignedTo && (
           <div className="mb-4 p-3 border border-emerald-300 bg-emerald-50 text-sm text-emerald-900">
             ✓ Assigned to {incidentState.assignedTo}
-          </div>
-        )}
-
-        {/* Investigation Phase */}
-        {incidentState.assignedTo && incidentState.phase === "Assign" && !incidentState.investigationStarted && (
-          <div className="mb-6 max-w-3xl border-2 border-blue-300 bg-blue-50 p-6 shadow-[0_0_0_4px_rgba(96,165,250,0.16)]">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">
-              Start investigation
-            </h3>
-            <button
-              type="button"
-              className="inline-block bg-blue-600 text-white px-4 py-2 font-black text-sm hover:bg-blue-700"
-              onClick={handleStartInvestigation}
-            >
-              Begin site investigation
-            </button>
           </div>
         )}
 
@@ -895,27 +846,23 @@ function IncidentWorkspaceSection({
               </button>
             </div>
 
-            {/* Photo Evidence Upload */}
+            {/* Website-hosted demonstration evidence */}
             <div className="mt-6 pt-6 border-t border-slate-200">
               <p className="text-xs font-bold text-slate-700 uppercase mb-3">
-                Photo evidence (optional)
+                Demonstration image evidence (optional)
               </p>
-              <label className="inline-flex min-h-10 cursor-pointer items-center justify-center bg-sky-700 px-4 font-black text-white text-sm hover:bg-sky-800">
-                Upload image(s)
-                <input
-                  type="file"
-                  aria-label="Upload image(s)"
-                  accept="image/jpeg,image/png,image/webp"
-                  multiple
-                  className="sr-only"
-                  onChange={handlePhotoUpload}
-                />
-              </label>
+              <button
+                type="button"
+                className="inline-flex min-h-10 items-center justify-center bg-sky-700 px-4 font-black text-white text-sm hover:bg-sky-800"
+                onClick={handleDemoImageAttach}
+              >
+                Upload image
+              </button>
               {photoEvidence && (
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <Image
                     src={photoEvidence.dataUrl}
-                    alt="Uploaded evidence"
+                    alt="VerifAir site investigation demonstration"
                     width={100}
                     height={75}
                     unoptimized
@@ -1143,23 +1090,19 @@ function IncidentWorkspaceSection({
               </label>
             </div>
 
-            {/* Photo Evidence Upload */}
+            {/* Website-hosted demonstration evidence */}
             {!photoEvidence && (
               <div className="pt-4 border-t border-slate-200">
                 <p className="text-xs font-bold text-slate-700 uppercase mb-3">
-                  Photo evidence (optional)
+                  Demonstration image evidence (optional)
                 </p>
-                <label className="inline-flex min-h-10 cursor-pointer items-center justify-center bg-slate-900 px-4 font-black text-white text-sm">
-                  Upload image(s)
-                  <input
-                    type="file"
-                    aria-label="Upload image(s)"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    className="sr-only"
-                    onChange={handlePhotoUpload}
-                  />
-                </label>
+                <button
+                  type="button"
+                  className="inline-flex min-h-10 items-center justify-center bg-slate-900 px-4 font-black text-white text-sm"
+                  onClick={handleDemoImageAttach}
+                >
+                  Upload image
+                </button>
               </div>
             )}
 
@@ -1186,9 +1129,15 @@ function IncidentWorkspaceSection({
         {/* Closure Phase */}
         {incidentState.phase === "Close" && incidentState.verificationRecord?.outcome === "sufficient_to_close" && !incidentState.closed && (
           <div className="mb-6 max-w-3xl border-2 border-emerald-400 bg-emerald-50 p-6 shadow-[0_0_0_4px_rgba(52,211,153,0.16)] space-y-4">
-            <h3 className="text-lg font-bold text-slate-900">
-              Close this incident
-            </h3>
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-emerald-800">Resolution required</p>
+              <h3 className="mt-2 text-xl font-black text-slate-950">
+                Resolve and close this incident
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-slate-700">
+                Verification is complete and the incident is ready for its final resolution record. Confirm who resolved it, select the outcome category, and record the closing summary.
+              </p>
+            </div>
             <div>
               <label className="block">
                 <span className="text-xs font-bold text-slate-700 uppercase">
@@ -1255,7 +1204,7 @@ function IncidentWorkspaceSection({
               disabled={!formState.closureCategory || !formState.closureBy}
               onClick={handleCloseIncident}
             >
-              Close incident
+              Resolve incident
             </button>
           </div>
         )}
@@ -1332,6 +1281,7 @@ function EvidenceAndReportingSection({
       id="evidence"
       className="border-b border-slate-200 bg-slate-50 px-5 py-8 sm:px-8"
     >
+      <span id="reportpreview" className="sr-only" aria-hidden="true" />
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-wider text-sky-700">
@@ -1368,7 +1318,7 @@ function EvidenceAndReportingSection({
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-600 uppercase">Report generated</p>
-                  <p className="mt-1 text-sm text-slate-900">{new Date().toLocaleString()}</p>
+                  <p className="mt-1 text-sm text-slate-900">{formatAEST(new Date())}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-600 uppercase">Opened</p>
@@ -1531,14 +1481,44 @@ export function UnifiedDemonstration({
   const session = sessionProp ?? getSharedDemonstrationSession();
   const [hydrated, setHydrated] = useState(false);
   const [demoStarted, setDemoStarted] = useState(false);
+  const workspaceScrollTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (workspaceScrollTimerRef.current !== null) {
+        window.clearTimeout(workspaceScrollTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleStartDemo = () => {
     session.start();
     setDemoStarted(true);
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById("monitoring")?.scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+
+    if (workspaceScrollTimerRef.current !== null) {
+      window.clearTimeout(workspaceScrollTimerRef.current);
+    }
+    // Hold on the monitoring screen for 5s so the status colour change is visible,
+    // then move to the acknowledge-alert workspace.
+    workspaceScrollTimerRef.current = window.setTimeout(() => {
+      workspaceScrollTimerRef.current = null;
+      const workspace = document.getElementById("incident");
+      if (workspace?.contains(document.activeElement)) return;
+      workspace?.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    }, 5_000);
   };
 
   if (!hydrated) {

@@ -60,9 +60,8 @@ test("operator can work the incident manually from acknowledgement through closu
   await expect(page.getByText("Scenario position", { exact: true })).toHaveCount(0);
 
   await page.getByLabel("Priority").selectOption("High");
-  await page.getByRole("button", { name: "Acknowledge and assign to me" }).click();
+  await page.getByRole("button", { name: "Acknowledge, assign to me and start work" }).click();
 
-  await page.getByRole("button", { name: "Begin site investigation" }).click();
   await page.getByLabel("Investigation status").selectOption("Controls being checked");
   await page.getByLabel("Investigation notes").fill("Entry door inspected.");
   await page.getByLabel("Observed conditions").fill("Dust visible near the entry interface.");
@@ -78,7 +77,7 @@ test("operator can work the incident manually from acknowledgement through closu
   await page.getByLabel("Closure category").selectOption("Controls adjusted");
   await page.getByLabel("Closed by").selectOption("Maria Chen");
   await page.getByLabel("Closure details").fill("Operational response recorded and review completed.");
-  await page.getByRole("button", { name: "Close incident" }).click();
+  await page.getByRole("button", { name: "Resolve incident" }).click();
 
   await expect(page.getByText("GENERATED REPORT", { exact: true })).toBeVisible();
   await expect(page.getByText("CLOSED", { exact: true }).last()).toBeVisible();

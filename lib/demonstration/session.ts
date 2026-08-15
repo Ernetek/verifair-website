@@ -81,7 +81,7 @@ export class DemonstrationSession {
   readonly #evidenceAssets = new Map<string, DemoEvidenceAsset>();
   #snapshot: DemonstrationSessionSnapshot;
   readonly #autoPlay: boolean;
-  #demoTimer: ReturnType<typeof setInterval> | null = null;
+  #demoTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(controller?: ReplayPlaybackController, autoPlay: boolean = true) {
     this.#playbackController =
@@ -106,15 +106,23 @@ export class DemonstrationSession {
     if (this.#snapshot.replayState.isTerminal) return;
     this.#playbackController.play();
     if (this.#demoTimer === null && typeof window !== "undefined") {
-      this.#demoTimer = setInterval(() => {
-        const nextOffset = this.#snapshot.replayState.offsetMs + 30_000;
+      // Fast-forward to the alert trigger within ~3s, then settle into a steady cadence.
+      const alertOffsetMs = MEANINGFUL_SCENARIO_MARKERS[1]?.offsetMs ?? 120_000;
+      const tick = () => {
+        const currentOffset = this.#snapshot.replayState.offsetMs;
+        const isBeforeAlert = currentOffset < alertOffsetMs;
+        const step = isBeforeAlert ? 50_000 : 30_000;
+        const delay = isBeforeAlert ? 900 : 3_000;
+        const nextOffset = currentOffset + step;
         if (nextOffset >= this.#playbackController.durationMs) {
           this.#playbackController.seek(this.#playbackController.durationMs);
           this.#clearDemoTimer();
           return;
         }
         this.#playbackController.seek(nextOffset);
-      }, 3_000);
+        this.#demoTimer = setTimeout(tick, delay);
+      };
+      this.#demoTimer = setTimeout(tick, 900);
     }
     this.#updateSnapshot();
   }
@@ -288,7 +296,7 @@ export class DemonstrationSession {
 
   #clearDemoTimer(): void {
     if (this.#demoTimer !== null) {
-      clearInterval(this.#demoTimer);
+      clearTimeout(this.#demoTimer);
       this.#demoTimer = null;
     }
   }

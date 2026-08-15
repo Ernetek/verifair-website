@@ -48,27 +48,32 @@ const architectureLayers = [
     title: "DUSTLIGHT MONITORS",
     Icon: SignalIcon,
     iconTone: "text-slate-700",
+    description: "Particulate sensing across configured sites and zones.",
   },
   {
     title: "VERIFAIR EDGE",
     connector: "↓ Bluetooth technology",
     Icon: CpuChipIcon,
     iconTone: "text-cyan-600",
+    description: "Receives nearby monitor readings over Bluetooth and prepares them for onward transmission.",
   },
   {
     title: "INDEPENDENT CELLULAR COMMUNICATIONS",
     Icon: ArrowPathIcon,
     iconTone: "text-emerald-600",
+    description: "Provides a separate cellular route for operational telemetry without relying on the facility LAN or Wi-Fi.",
   },
   {
     title: "VERIFAIR PLATFORM",
     Icon: CloudIcon,
     iconTone: "text-sky-600",
+    description: "Centralises readings, alerts, device health, workflow records and reporting for authorised project users.",
   },
   {
     title: "CONTROL CENTRE",
     Icon: ComputerDesktopIcon,
     iconTone: "text-indigo-600",
+    description: "Gives operators one view to assess conditions, coordinate response, investigate events and record outcomes.",
   },
 ] as const;
 
@@ -163,13 +168,13 @@ function ArchitectureStorySection() {
           <div className="relative pl-12 sm:pl-16">
             <div className="absolute bottom-5 left-[1.15rem] top-5 w-px bg-blue-200 sm:left-[1.65rem]" aria-hidden="true" />
             {architectureLayers.map((layer, index) => (
-              <div key={layer.title} className="relative grid gap-3 border-b border-slate-200 py-3 last:border-b-0 sm:grid-cols-[15rem_1fr] sm:items-center sm:gap-8 sm:py-3.5">
+              <div key={layer.title} className="relative grid gap-3 border-b border-slate-200 py-6 last:border-b-0 sm:grid-cols-[15rem_1fr] sm:items-center sm:gap-8 sm:py-7">
                 <div className="absolute -left-12 flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-white sm:-left-16 sm:h-12 sm:w-12">
                   <layer.Icon className={`h-5 w-5 ${layer.iconTone} sm:h-6 sm:w-6`} aria-hidden="true" />
                 </div>
                 <h3 className="text-sm font-black tracking-[0.08em] text-slate-950 sm:text-base">{layer.title}</h3>
                 <p className="text-xs leading-5 text-slate-600 sm:text-sm">
-                  {index === 0 ? "Particulate sensing across configured sites and zones." : "Operational data path."}
+                  {layer.description}
                 </p>
                 {index < architectureLayers.length - 1 ? (
                   <span className="absolute -bottom-2 left-[-2.9rem] z-10 bg-white px-1 text-xs font-bold text-blue-400 sm:left-[-3.4rem]" aria-hidden="true">
@@ -255,7 +260,7 @@ export function CapabilitySection() {
       <div className="container">
         <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">BUILT FOR REAL PROJECTS</p>
         <h2 id="capability-heading" className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-          Designed to deploy, move and keep operating.
+          Operational capabilities for changing projects.
         </h2>
         <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-0 border-y border-slate-200 lg:grid-cols-4">
           {capabilityItems.map(({ title, body, Icon }, index) => (

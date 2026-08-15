@@ -1,5 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  BellAlertIcon,
+  EyeIcon,
+  MapPinIcon,
+} from "@heroicons/react/24/outline";
 
 import type { MarketingPage } from "@/lib/content";
 
@@ -11,6 +16,14 @@ const zoneLabels: Record<string, [string, string, string]> = {
   schools: ["Construction zone", "Learning space", "Arrival route"],
   "commercial-buildings": ["Refurbishment floor", "Occupied tenancy", "Shared services"],
 };
+
+const zoneDescriptions = [
+  "Where work is changing conditions",
+  "Where people, access or operations meet the work",
+  "Where teams need a clear, recorded view",
+];
+
+const zoneIcons = [MapPinIcon, EyeIcon, BellAlertIcon];
 
 export function PageHero({ page }: { page: MarketingPage }) {
   return (
@@ -50,14 +63,34 @@ export function ContentSections({ page }: { page: MarketingPage }) {
             <p className="text-sm font-bold uppercase tracking-wide text-blue-600">Monitoring-zone diagram</p>
             <h2 className="mt-4 text-3xl font-bold text-slate-950">{page.title} project context</h2>
           </div>
-          <div className="border border-slate-300 bg-white p-6">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-              <div className="border border-slate-300 p-5 text-center font-bold">{zones[0]}</div>
-              <div className="h-px w-12 bg-blue-600" />
-              <div className="border border-slate-300 p-5 text-center font-bold">{zones[1]}</div>
+          <div className="relative overflow-hidden border border-slate-300 bg-slate-950 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.16)] sm:p-7">
+            <div className="absolute inset-x-0 top-0 h-1 bg-blue-400" />
+            <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/15 pb-4">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-200">A connected project view</p>
+              <span className="rounded-full border border-emerald-300/30 bg-emerald-400/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-200">3 zones</span>
             </div>
-            <div className="mx-auto h-10 w-px bg-blue-600" />
-            <div className="mx-auto max-w-xs bg-blue-600 p-4 text-center font-bold text-white">{zones[2]}</div>
+            <div className="grid gap-3 md:grid-cols-3 md:gap-0">
+              {zones.map((zone, index) => {
+                const Icon = zoneIcons[index];
+                return (
+                  <div key={zone} className="relative flex gap-4 border border-white/15 bg-white/[0.06] p-4 md:mx-2 md:min-h-44 md:flex-col md:justify-between md:gap-5 first:md:ml-0 last:md:mr-0">
+                    {index < zones.length - 1 ? <span className="absolute -bottom-4 left-1/2 z-10 h-4 w-px bg-blue-300 md:bottom-auto md:left-auto md:right-[-1px] md:top-1/2 md:h-px md:w-2" aria-hidden="true" /> : null}
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="flex size-10 shrink-0 items-center justify-center border border-blue-300/40 bg-blue-400/10 text-blue-200"><Icon className="size-5" aria-hidden="true" /></span>
+                      <span className="font-mono text-xs text-slate-400">0{index + 1}</span>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-white">{zone}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-300">{zoneDescriptions[index]}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-5 flex items-center gap-3 border-t border-white/15 pt-4 text-xs font-bold uppercase tracking-[0.15em] text-slate-300">
+              <span className="size-2 rounded-full bg-emerald-400" aria-hidden="true" />
+              Assess conditions · Act on change · Record the response
+            </div>
           </div>
         </div>
       </section>

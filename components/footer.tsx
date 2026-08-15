@@ -14,7 +14,7 @@ export function Footer() {
               alt="VerifAir by ERNE Tech"
               width={480}
               height={160}
-              className="h-auto w-full max-w-[11.2rem] bg-slate-950 object-contain"
+              className="h-auto !w-[13.44rem] !max-w-[13.44rem] bg-slate-950 object-contain"
             />
             <p className="mt-3 text-sm text-slate-400">
               Powered by Dustlight sensing technology

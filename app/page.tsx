@@ -25,8 +25,8 @@ export default function HomePage() {
       <HeroSection />
       <ProblemSection />
       <ArchitectureStorySection />
-      <CapabilitySection />
       <UnifiedDemonstration />
+      <CapabilitySection />
       <PilotDeploymentSection />
       <IndustriesSection />
       <FAQSection />

@@ -164,20 +164,20 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Healthcare",
     description: "Hospital construction dust monitoring for occupied clinical environments, refurbishment projects and infection-control visibility.",
     eyebrow: "Healthcare construction",
-    heading: "Visibility for construction beside occupied clinical areas.",
+    heading: "Make clinical interfaces easier to see, respond to and explain.",
     intro:
-      "VerifAir supports hospital infrastructure, infection prevention, facility and contractor teams with real-time airborne particle visibility across construction zones and sensitive areas.",
+      "VerifAir gives hospital infrastructure, infection prevention, facilities and contractor teams a shared view of changing particulate conditions around live clinical environments, with practical workflows and retained evidence.",
     image: "/assets/industry-healthcare-environment.webp",
     sections: [
       {
-        title: "Monitor sensitive boundaries",
-        body: "Place Dustlight devices around construction-zone boundaries, corridors, wards and occupied areas to create a shared view of conditions.",
-        points: ["Refurbishment and live works", "Maternity, surgical and clinical adjacencies", "Multi-zone status", "Escalation procedures"]
+        title: "Assess the clinical interface",
+        body: "Use selected monitoring zones around refurbishment work, access routes and occupied clinical areas to understand where conditions are changing.",
+        points: ["Multi-zone monitoring", "Clinical and contractor visibility", "Edge-connected deployment options", "Site-specific trigger configuration"]
       },
       {
-        title: "Support infection-control processes",
-        body: "VerifAir provides additional visibility that can complement existing infection-control and construction management procedures.",
-        points: ["Elevated particle alerts", "Historical condition records", "Incident review support", "Does not replace clinical infection-control advice"]
+        title: "Act and record with discipline",
+        body: "Alerts, incident workflows and generated evidence reports help teams coordinate a response while keeping professional clinical and infection-control judgement in control.",
+        points: ["Elevated-condition alerts", "Acknowledgement and assignment", "Response notes and review history", "Does not replace clinical infection-control advice"]
       }
     ]
   },
@@ -186,20 +186,20 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Construction",
     description: "Real-time construction dust monitoring for main contractors, WHS teams, environmental managers and project leaders.",
     eyebrow: "Construction",
-    heading: "Real-time visibility across active construction work.",
+    heading: "Turn changing site conditions into an operational response.",
     intro:
-      "VerifAir gives site teams real-time PM1 and PM2.5 visibility across selected work fronts, boundaries and occupied interfaces, with automated connectivity, alerting and reporting.",
+      "VerifAir helps main contractors, WHS teams, environmental managers and project leaders assess selected work fronts, act when configured conditions change and retain a clear record of what happened.",
     image: "/assets/industry-construction-environment.webp",
     sections: [
       {
-        title: "Operational visibility",
-        body: "Site leaders can see current readings, zones with elevated conditions, sensor connectivity and recent alert history.",
-        points: ["PM1 and PM2.5 visibility", "Work-front and boundary monitoring", "Dust complaint context", "Incident review records"]
+        title: "Assess the work front",
+        body: "Bring current zone status, PM1 and PM2.5 readings, connectivity and recent alert context into one practical monitoring view.",
+        points: ["Work-front and boundary monitoring", "Multi-zone status", "VerifAir Edge connectivity", "Dust complaint context"]
       },
       {
-        title: "Support response workflows",
-        body: "Configured alerts help teams escalate, investigate and document responses when particulate levels rise.",
-        points: ["Threshold-based notifications", "Configured escalation paths", "Historical reporting", "Complements WHS and environmental controls"]
+        title: "Act, then retain the record",
+        body: "Configured alerts open a focused response workflow so teams can acknowledge, assign, investigate and document actions when conditions change.",
+        points: ["Threshold-based notifications", "Configured escalation paths", "Generated evidence reports", "Complements WHS and environmental controls"]
       }
     ]
   },
@@ -208,20 +208,20 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Infrastructure",
     description: "Dust monitoring and reporting support for infrastructure projects, public works and civil construction environments.",
     eyebrow: "Infrastructure",
-    heading: "Continuous visibility across changing infrastructure work fronts.",
+    heading: "Coordinate environmental visibility across moving work fronts.",
     intro:
-      "VerifAir can provide shared particulate visibility across selected work fronts, compounds and sensitive receptors, subject to the approved monitoring and connectivity design.",
+      "VerifAir supports infrastructure and civil project teams with a shared view across selected work fronts, compounds and public interfaces, subject to the approved monitoring and connectivity design.",
     image: "/assets/industry-infrastructure-environment.webp",
     sections: [
       {
-        title: "Multi-site and multi-zone coverage",
-        body: "Coordinate Dustlight devices across work fronts, compounds, occupied interfaces and sensitive receptors.",
-        points: ["Transport and civil works", "Public interfaces", "Project-specific dashboards", "Authorised remote access subject to the deployed service and connection"]
+        title: "Assess a distributed project",
+        body: "Organise monitoring around the locations where linear works, public access and project operations meet, with project-specific dashboards and connectivity context.",
+        points: ["Transport and civil works", "Public interfaces", "Multi-zone project views", "Authorised remote access subject to the deployed service and connection"]
       },
       {
-        title: "Evidence for review",
-        body: "Historical trends and alert records support stakeholder briefings, audits and post-event analysis.",
-        points: ["Trend analysis", "Exportable reports", "Alert chronology", "Due-diligence support"]
+        title: "Act with context and record outcomes",
+        body: "Alert chronology, response notes and generated reports help project teams explain changing conditions to stakeholders and review events after the fact.",
+        points: ["Trend analysis", "Response workflows", "Alert chronology", "Due-diligence support"]
       }
     ]
   },
@@ -230,19 +230,19 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Government",
     description: "Environmental monitoring visibility for government projects, procurement teams and public-sector construction programs.",
     eyebrow: "Government",
-    heading: "Real-time monitoring evidence for public-sector projects.",
+    heading: "Give public projects a clearer evidence trail.",
     intro:
-      "VerifAir provides government project teams with continuous, remotely accessible monitoring records, alert history and project-specific dashboards.",
+      "VerifAir helps government project teams assess environmental conditions, coordinate practical responses and retain project-specific records without overstating what monitoring alone can prove.",
     image: "/assets/industry-government-environment.webp",
     sections: [
       {
-        title: "Procurement-ready framing",
-        body: "The platform separates monitoring capability, reporting, support and future integrations for easier stakeholder evaluation.",
-        points: ["Managed installation", "Australian support", "Cloudflare hosting pathway", "Security and accessibility documentation"]
+        title: "Assess a public interface",
+        body: "A project-specific monitoring design can make changing conditions, connectivity and zone status easier for delivery and oversight teams to review.",
+        points: ["Managed installation", "Australian support", "VerifAir Edge and communications", "Security and accessibility documentation"]
       },
       {
-        title: "Responsible compliance language",
-        body: "VerifAir contributes evidence and reporting without claiming to make a project compliant by itself.",
+        title: "Act transparently and record decisions",
+        body: "Configured alerts, incident records and generated reports support review and communication while keeping regulatory interpretation with the appropriate experts.",
         points: ["Supports compliance programs", "Assists environmental management", "Supports audits", complianceNote]
       }
     ]
@@ -252,19 +252,19 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Schools",
     description: "Airborne particle monitoring support for schools and education sites adjacent to construction activity.",
     eyebrow: "Schools",
-    heading: "Real-time monitoring around occupied learning environments.",
+    heading: "Help school projects respond around occupied learning spaces.",
     intro:
-      "VerifAir helps education authorities and project teams maintain real-time visibility around classrooms, access routes and construction boundaries without relying on workers to carry or pair a device.",
+      "VerifAir helps education authorities and project teams assess conditions around classrooms, arrival routes and construction boundaries, then coordinate and record responses without relying on workers to carry or pair a device.",
     image: "/assets/industry-education-environment.webp",
     sections: [
       {
-        title: "Monitor occupied interfaces",
-        body: "Use multi-zone monitoring around classrooms, play areas, temporary paths and construction boundaries.",
-        points: ["Boundary monitoring", "Elevated condition alerts", "Stakeholder reporting support", "Historical records"]
+        title: "Assess the school interface",
+        body: "Use multi-zone monitoring around classrooms, play areas, temporary paths and construction boundaries to establish a shared operational picture.",
+        points: ["Boundary monitoring", "Elevated-condition alerts", "Edge-connected deployment options", "Historical records"]
       },
       {
-        title: "Communicate with confidence",
-        body: "Clear monitoring records help teams respond to questions with evidence rather than guesswork.",
+        title: "Act and communicate clearly",
+        body: "Acknowledge, assign and document responses, then use trend summaries and evidence reports to support conversations with school communities and project stakeholders.",
         points: ["Current status", "Trend summaries", "Incident review", "Operational response notes"]
       }
     ]
@@ -274,19 +274,19 @@ export const pageContent: Record<string, MarketingPage> = {
     title: "Commercial Buildings",
     description: "Particulate monitoring for occupied commercial buildings, refurbishments, tenancies and facility teams.",
     eyebrow: "Commercial buildings",
-    heading: "Continuous monitoring for occupied commercial environments.",
+    heading: "Keep occupied building works visible and accountable.",
     intro:
-      "VerifAir can give facility and project teams a shared view of PM1, PM2.5 and PM10 conditions across selected occupied floors, work zones and access points.",
+      "VerifAir gives facility, tenancy and project teams a shared view of selected occupied floors, work zones and access points so they can assess change, coordinate action and retain evidence.",
     image: "/assets/industry-commercial-environment.webp",
     sections: [
       {
-        title: "Protect continuity",
-        body: "Understand current conditions across work zones, occupied floors and shared access points.",
+        title: "Assess occupied interfaces",
+        body: "Understand current PM1, PM2.5 and PM10 conditions across work zones, occupied floors and shared access points.",
         points: ["Tenant-facing works", "After-hours construction", "Dust migration visibility", "Customer-branded dashboards configured for site and project requirements"]
       },
       {
-        title: "Document conditions",
-        body: "Monitoring records support transparent communication and post-event review.",
+        title: "Coordinate action and record conditions",
+        body: "Alerts, response notes, zone-level trends and generated reports support transparent communication and post-event review.",
         points: ["Daily summaries", "Alert records", "Zone-level trends", "Project reporting packs"]
       }
     ]
