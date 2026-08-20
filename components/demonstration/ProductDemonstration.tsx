@@ -14,6 +14,10 @@ import {
 import { DEMONSTRATION_METRICS } from "@/lib/replay/demonstration-scenario";
 import type { WorkflowPhase } from "@/lib/demonstration/incident-domain";
 import { ReplayControls } from "@/components/demonstration/ReplayControls";
+import {
+  DEMO_DISCLOSURE,
+  DEMO_DISCLOSURE_WITH_CONTEXT,
+} from "@/lib/product-model";
 
 export const CANONICAL_WORKFLOW_PHASES: readonly WorkflowPhase[] = [
   "Alert",
@@ -361,13 +365,13 @@ export function ProductDemonstration({
             ))}
           </div>
           <p className="mt-3 text-[10px] text-slate-500">
-            Simulated demonstration data • Location identified from alert context
+            {DEMO_DISCLOSURE} Location identified from alert context.
           </p>
         </div>
       </section>
 
       <footer className="border-t border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-500">
-        Simulated demonstration - watch how evidence is recorded from alert through closure
+        {DEMO_DISCLOSURE} {DEMO_DISCLOSURE_WITH_CONTEXT}
       </footer>
     </div>
   );

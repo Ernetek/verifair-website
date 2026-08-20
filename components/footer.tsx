@@ -22,7 +22,7 @@ export function Footer() {
               Engineered by ERNE Tech
             </p>
             <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
-              Dustlight measures particulate conditions. VerifAir coordinates monitoring data, alerts, reporting and operational visibility for dust-sensitive environments.
+              Dustlight provides particulate sensing and device status. VerifAir Edge provides local collection and secure transport; the VerifAir Platform coordinates operational states, alerts, workflow, records and reporting.
             </p>
             <Link
               href="/contact"

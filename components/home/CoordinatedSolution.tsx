@@ -1,13 +1,7 @@
 import { SharedDashboardPage } from "@/components/demonstration/ClinicalDashboards";
+import { PRODUCT_FRAMEWORK } from "@/lib/product-model";
 
-const stages = [
-  "Detect",
-  "Transmit",
-  "Evaluate",
-  "Notify",
-  "Respond",
-  "Review and close",
-] as const;
+const stages = PRODUCT_FRAMEWORK;
 
 const outcomes = [
   ["Earlier awareness", "See changing conditions closer to when they occur."],
@@ -39,20 +33,21 @@ export function CoordinatedSolutionSection() {
 
         <div className="mt-10">
           <p className="sr-only" id="verifair-workflow-label">
-            VerifAir event workflow from detection through review and closure
+            VerifAir product framework: Assess, Act and Record
           </p>
           <ol
             className="workflow-motion"
             aria-labelledby="verifair-workflow-label"
           >
             {stages.map((stage, index) => (
-              <li key={stage} className="workflow-motion__item">
+              <li key={stage.id} className="workflow-motion__item">
                 <div className="workflow-motion__node" aria-hidden="true">
                   <span>{String(index + 1).padStart(2, "0")}</span>
                 </div>
 
                 <div className="workflow-motion__copy">
-                  <p className="workflow-motion__title">{stage}</p>
+                  <p className="workflow-motion__title">{stage.title}</p>
+                  <p>{stage.description}</p>
                 </div>
 
                 {index < stages.length - 1 ? (

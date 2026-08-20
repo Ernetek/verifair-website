@@ -3,29 +3,11 @@ import Link from "next/link";
 
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
 import { PARTICULATE_UNIT, SUPPORTED_PARTICULATE_METRICS } from "@/lib/metrics";
+import { TECHNOLOGY_RESPONSIBILITIES } from "@/lib/product-model";
 
-const architecture = [
-  [
-    "Dustlight monitoring",
-    "Dustlight is designed as a personal real-time dust monitor. Under a validated VerifAir project design, approved devices may also be used at selected monitoring locations where the application, mounting, maintenance and interpretation have been assessed for that purpose.",
-  ],
-  [
-    "Site connectivity",
-    "Configured site components transfer available readings into the project environment. The connection method is selected for the site and agreed scope.",
-  ],
-  [
-    "Continuity handling",
-    "The project design considers power, connection interruptions, system state and data recovery requirements. Final behaviour must be verified for the deployed configuration.",
-  ],
-  [
-    "VerifAir platform",
-    "Authorised users can review current readings, trends, selected locations and system state through the configured project dashboard.",
-  ],
-  [
-    "Events and reporting",
-    "Project-specific settings support notifications, response records, event review and reporting workflows.",
-  ],
-] as const;
+const architecture = TECHNOLOGY_RESPONSIBILITIES.map(
+  ({ technology, responsibilities }) => [technology, responsibilities] as const,
+);
 
 export function TechnologyPage() {
   return (
@@ -146,7 +128,7 @@ export function TechnologyPage() {
           </div>
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link href="/contact" className="inline-flex min-h-12 items-center justify-center bg-blue-600 px-6 font-bold text-white hover:bg-blue-700">
+            <Link href="/contact" className="cta-primary inline-flex min-h-12 items-center justify-center px-6 font-bold">
               Discuss the project technology approach
             </Link>
             <Link href="/#reportpreview" className="inline-flex min-h-12 items-center justify-center border border-slate-300 px-6 font-bold text-slate-900 hover:bg-slate-50">

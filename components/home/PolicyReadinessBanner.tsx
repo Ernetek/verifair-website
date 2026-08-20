@@ -21,7 +21,7 @@ export function PolicyReadinessBanner() {
 
         <Link
           href="/resources/december-2026-workplace-exposure-limits"
-          className="inline-flex min-h-10 items-center justify-center bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
+          className="cta-primary inline-flex min-h-10 items-center justify-center px-4 text-sm font-bold focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
         >
           Read the guide →
         </Link>

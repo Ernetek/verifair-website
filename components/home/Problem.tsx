@@ -5,18 +5,18 @@ import { Reveal } from "./Reveal";
 const problemCards = [
   {
     number: "01",
-    title: "CONDITIONS AREN'T ALWAYS VISIBLE",
-    body: "Respirable particulate can be invisible to the human eye. Conditions can change without an obvious visual warning.",
+    title: "NOT ALWAYS VISIBLE",
+    body: "Particulate conditions can change without an obvious visual indication.",
   },
   {
     number: "02",
-    title: "WORK AND OCCUPANCY COEXIST",
-    body: "Construction and refurbishment can generate airborne particulate while people continue working, receiving care, learning or moving nearby.",
+    title: "MULTIPLE LOCATIONS",
+    body: "Conditions may differ between work areas, boundaries and nearby occupied environments.",
   },
   {
     number: "03",
-    title: "THE EVENT NEEDS A RECORD",
-    body: "When conditions require attention, teams need a record of what was observed, who was notified, what action was taken and how the event was resolved.",
+    title: "SHARED RESPONSE",
+    body: "Project teams need a shared view to recognise changing conditions and coordinate what happens next.",
   },
 ];
 
@@ -33,7 +33,7 @@ export function ProblemSection() {
           </p>
 
           <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
-            Construction keeps moving. Occupied environments stay operational.
+            Changing particulate conditions aren&apos;t always obvious.
           </h2>
         </Reveal>
 
@@ -59,9 +59,8 @@ export function ProblemSection() {
 
         <Reveal className="lg:col-start-2 lg:row-start-2">
           <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            When building or refurbishing in or near occupied areas, project teams
-            need a shared operational view of changing particulate conditions,
-            faster response coordination and a clear record of what happened next.
+            Project teams need a shared operational view of changing particulate conditions across every monitoring location, so
+            everyone can recognise what is happening and coordinate what happens next.
           </p>
         </Reveal>
 
@@ -87,4 +86,3 @@ export function ProblemSection() {
     </section>
   );
 }
-

@@ -78,7 +78,7 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "multi-zone-monitoring-checklist",
-    image: "/assets/platform-dashboard.webp",
+    image: "/assets/monitoring_room.webp",
     updated: "2026-08-05",
     readingMinutes: 5,
     category: "Project checklist",
@@ -195,7 +195,7 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "evidence-ready-reporting-checklist",
-    image: "/assets/reports.webp",
+    image: "/assets/reports-evidence-review.webp",
     updated: "2026-08-05",
     readingMinutes: 5,
     category: "Reporting guidance",
@@ -271,7 +271,7 @@ export const verifAirResources: VerifAirResource[] = [
     summary:
       "How Dustlight gives individual workers immediate real-time particle awareness through a wearable traffic-light display.",
     intro:
-      "Dustlight is a capable personal particulate monitor designed to be worn by a worker. Its clear green, amber and red traffic-light display and audible alerts make changing conditions immediately understandable at the point of work.",
+      "Dustlight is a capable personal particulate monitor designed to be worn by a worker. Its clear GREEN, YELLOW and RED device status and audible alerts make changing conditions immediately understandable at the point of work.",
     sections: [
       {
         title: "A strong personal monitoring tool",
@@ -281,7 +281,7 @@ export const verifAirResources: VerifAirResource[] = [
         ],
         points: [
           "Wearable and portable",
-          "Green, amber and red traffic-light status",
+          "GREEN, YELLOW and RED device status",
           "Audible alerting",
           "Bluetooth connection to a mobile phone",
           "Local and cloud-supported data workflows",
@@ -326,7 +326,7 @@ export const verifAirResources: VerifAirResource[] = [
   },
   {
     slug: "december-2026-workplace-exposure-limits",
-    image: "/assets/reports.webp",
+    image: "/assets/reports-evidence-review.webp",
     updated: "2026-08-05",
     readingMinutes: 5,
     category: "Policy readiness",

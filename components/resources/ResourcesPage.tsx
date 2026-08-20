@@ -58,7 +58,7 @@ export function ResourcesPage() {
               <a
                 href="/downloads/verifair-system-overview.pdf"
                 download
-                className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 font-bold text-white hover:bg-blue-700"
+                className="cta-primary inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl px-5 font-bold"
               >
                 <ArrowDownTrayIcon className="size-5" aria-hidden="true" />
                 Download flyer

@@ -1,13 +1,14 @@
 import type { Observation, ScenarioDefinition } from "@/lib/replay/domain";
 import { validateScenario } from "@/lib/replay/validation";
+import { PARTICULATE_METRICS } from "@/lib/metrics";
 
 const START_TIMESTAMP = "2026-08-13T02:00:00.000Z";
 
 export const DEMONSTRATION_METRICS = [
-  { id: "PM1", label: "PM1" },
-  { id: "PM2_5", label: "PM2.5" },
-  { id: "RESPIRABLE_DUST", label: "Respirable dust" },
-  { id: "PM10", label: "PM10" },
+  PARTICULATE_METRICS[1],
+  PARTICULATE_METRICS[2],
+  PARTICULATE_METRICS[0],
+  PARTICULATE_METRICS[3],
 ] as const;
 
 const monitors = [
@@ -69,7 +70,7 @@ const definition: ScenarioDefinition = {
   metadata: {
     dataLabel: "SIMULATED_DEMONSTRATION_DATA",
     provenance:
-      "Frozen fictional dataset approved by Niall on 13 August 2026 for the public VerifAir product demonstration. Metric fields reflect the verified Dustlight BLE payload; values are not device measurements.",
+      "Frozen fictional dataset approved by Niall on 13 August 2026 for the public VerifAir product demonstration. Respirable Dust is separately simulated and is not calculated from PM1, PM2.5 or PM10. Values are not device measurements.",
     reviewStatus: "APPROVED_PUBLIC_DEMONSTRATION",
     displayTimezone: "Australia/Sydney",
   },

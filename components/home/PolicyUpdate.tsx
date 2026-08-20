@@ -28,7 +28,7 @@ export function PolicyUpdateSection() {
               href="https://www.safeworkaustralia.gov.au/safety-topic/managing-health-and-safety/workplace-exposure-limits-airborne-contaminants"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 font-bold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
+              className="cta-primary inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 font-bold focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
             >
               View official guidance
               <ArrowTopRightOnSquareIcon className="size-5" aria-hidden="true" />

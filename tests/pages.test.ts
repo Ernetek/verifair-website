@@ -9,14 +9,15 @@ describe("VerifAir public page configuration", () => {
 
     expect(primaryNav.map((item) => item.label)).toEqual([
       "Product",
+      "Industries",
       "How It Works",
-      "Solutions",
       "Resources",
       "About",
+      "Contact",
     ]);
-    expect(routes).toContain("/#monitoring");
-    expect(routes).toContain("/#workflow");
-    expect(routes).toContain("/#industries");
+    expect(routes).toContain("/monitoring");
+    expect(routes).toContain("/how-it-works");
+    expect(routes).toContain("/solutions");
     expect(routes).toContain("/resources");
     expect(routes).toContain("/about");
   });
@@ -31,9 +32,6 @@ describe("VerifAir public page configuration", () => {
   it("links reporting to the homepage preview from the footer", () => {
     const links = footerGroups.flatMap((group) => group.links);
 
-    expect(links).toContainEqual({
-      label: "Reporting",
-      href: "/#reportpreview",
-    });
+    expect(links).toContainEqual({ label: "Reporting", href: "/#reportpreview" });
   });
 });

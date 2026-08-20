@@ -10,13 +10,12 @@ describe("homepage section order and platform interaction", () => {
     const expected = [
       "<HeroSection />",
       "<ProblemSection />",
-      "<ArchitectureStorySection />",
-      "<UnifiedDemonstration />",
+      "<OperationalArchitectureSection />",
+      "<HomepageInteractiveDemo />",
       "<PilotDeploymentSection />",
       "<IndustriesSection />",
       "<FAQSection />",
       "<FinalCTA />",
-      "<PageDisclaimer />",
     ];
     let previousIndex = -1;
     for (const section of expected) {
@@ -40,5 +39,16 @@ describe("homepage section order and platform interaction", () => {
     expect(source).toContain("/demonstration/monitoring-room");
     expect(source).toContain("/demonstration/workflow");
     expect(source).toContain("/demonstration/evidence-reporting");
+  });
+
+  it("keeps a concise homepage architecture path and the detailed How It Works treatment", () => {
+    const home = read("app/page.tsx");
+    const howItWorks = read("app/how-it-works/page.tsx");
+
+    expect(home).toContain("<OperationalArchitectureSection />");
+    expect(howItWorks).toContain("<ArchitectureStorySection />");
+    expect(howItWorks).toContain("From monitoring plan to retained evidence.");
+    expect(howItWorks).toContain("What VerifAir automates.");
+    expect(howItWorks).toContain("What accountable people decide.");
   });
 });

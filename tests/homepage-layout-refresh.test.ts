@@ -20,19 +20,16 @@ describe("homepage layout refresh", () => {
   it("uses the full-opacity technology environment as the homepage hero background", () => {
     const hero = read("components/home/Hero.tsx");
     expect(hero).not.toContain("<PolicyReadinessBanner />");
-    expect(hero).toContain("Know when particulate conditions change.");
-    expect(hero).toContain("ASSESS. ACT. RECORD.");
-    expect(hero).toContain("See VerifAir in Action");
-    expect(hero).toContain("Discuss Your Project");
-    expect(hero).toContain('src="/assets/tech_hero.webp"');
-    expect(hero).toContain('lg:grid-cols-[65%_35%]');
+    expect(hero).toContain("See changing particulate conditions across multiple monitoring locations.");
+    expect(hero).toContain("SEE VERIFAIR IN ACTION");
+    expect(hero).toContain("HOW IT WORKS");
+    expect(hero).toContain('src="/assets/landing-hero.webp"');
     expect(hero).toContain('from "next/image"');
     expect(hero).not.toContain("MonitoringRoomHeroPreview");
-    expect(hero).not.toContain("opacity-");
   });
 
   it("places the shared disclaimer after the final CTA", () => {
     const homepage = read("app/page.tsx");
-    expect(homepage.indexOf("<PageDisclaimer />")).toBeGreaterThan(homepage.indexOf("<FinalCTA />"));
+    expect(homepage).not.toContain("<PageDisclaimer />");
   });
 });

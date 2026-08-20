@@ -5,9 +5,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ProductDemonstrationPreview } from "@/components/demonstration/ProductDemonstration";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
+import {
+  DEMO_DISCLOSURE,
+  DEMO_DISCLOSURE_WITH_CONTEXT,
+  type VerifAirOperationalState,
+} from "@/lib/product-model";
 
 type OverviewPanel = "monitoring" | "workflow" | "reporting";
-type ZoneState = "normal" | "review" | "action";
+type ZoneState = VerifAirOperationalState;
 type WorkStatus =
   | "New"
   | "Acknowledged"
@@ -62,7 +67,7 @@ const zones = [
   {
     id: "zone-1",
     name: "Level 1 - Construction Site Entry Door",
-    state: "review" as const,
+    state: "ATTENTION" as const,
     pm1: 11,
     pm25: 18,
     pm10: 27,
@@ -70,7 +75,7 @@ const zones = [
   {
     id: "zone-2",
     name: "Level 1 - Construction Site Exit Door",
-    state: "normal" as const,
+    state: "NORMAL" as const,
     pm1: 4,
     pm25: 7,
     pm10: 12,
@@ -78,7 +83,7 @@ const zones = [
   {
     id: "zone-3",
     name: "Level 1 - Shared Corridor",
-    state: "normal" as const,
+    state: "NORMAL" as const,
     pm1: 3,
     pm25: 5,
     pm10: 9,
@@ -86,7 +91,7 @@ const zones = [
   {
     id: "zone-4",
     name: "Level 1 - General Entry Door",
-    state: "action" as const,
+    state: "ACTION" as const,
     pm1: 17,
     pm25: 29,
     pm10: 36,
@@ -133,9 +138,9 @@ const reportRows = [
 ] as const;
 
 const stateStyles: Record<ZoneState, string> = {
-  normal: "border-emerald-300 bg-emerald-50 text-emerald-900",
-  review: "border-amber-300 bg-amber-50 text-amber-950",
-  action: "border-red-300 bg-red-50 text-red-900",
+  NORMAL: "border-emerald-300 bg-emerald-50 text-emerald-900",
+  ATTENTION: "border-amber-300 bg-amber-50 text-amber-950",
+  ACTION: "border-red-300 bg-red-50 text-red-900",
 };
 
 function useReducedMotion() {
@@ -166,7 +171,7 @@ function SystemAutomationStrip({ state }: { state: ZoneState }) {
           </span>
         ))}
         <span className={`ml-auto inline-flex min-h-8 items-center border px-2.5 ${stateStyles[state]}`}>
-          {state === "normal" ? "No alert opened" : state === "review" ? "Review condition" : "Action alert opened"}
+          {state === "NORMAL" ? "No alert opened" : state === "ATTENTION" ? "Attention state" : "Action alert opened"}
         </span>
       </div>
     </div>
@@ -175,13 +180,13 @@ function SystemAutomationStrip({ state }: { state: ZoneState }) {
 
 function WorkflowTrend({ state }: { state: ZoneState }) {
   const pm25 =
-    state === "action"
+    state === "ACTION"
       ? "M35 148 C105 142 160 126 220 130 C285 134 340 105 400 110 C455 115 500 72 555 76 C585 79 608 76 625 77"
-      : state === "review"
+      : state === "ATTENTION"
         ? "M35 158 C105 153 160 144 220 147 C285 151 340 136 400 139 C455 143 510 130 565 133 C590 135 610 133 625 134"
         : "M35 169 C105 166 160 158 220 161 C285 164 340 154 400 157 C455 160 510 153 565 155 C590 157 610 155 625 156";
   const pm10 =
-    state === "action"
+    state === "ACTION"
       ? "M35 139 C105 131 160 113 220 120 C285 126 340 92 400 99 C455 105 500 62 555 68 C585 72 608 68 625 69"
       : "M35 151 C105 145 160 135 220 139 C285 143 340 126 400 131 C455 136 510 120 565 124 C590 126 610 124 625 125";
 
@@ -189,22 +194,22 @@ function WorkflowTrend({ state }: { state: ZoneState }) {
     <div className="overflow-hidden border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Recent particulate trend</p>
-        <p className="text-[0.68rem] font-semibold text-slate-500">Demonstration settings</p>
+        <p className="text-[0.68rem] font-semibold text-slate-500">Project configuration</p>
       </div>
       <svg
         viewBox="0 0 650 205"
         className="mt-2 w-full"
         role="img"
-        aria-label="Demonstration PM1, PM2.5 and PM10 trend with horizontal warning and action settings"
+        aria-label="Demonstration PM1, PM2.5 and PM10 trend with horizontal attention and action operational triggers"
       >
         {[40, 80, 120, 160, 190].map((y) => (
           <line key={y} x1="35" y1={y} x2="625" y2={y} stroke="#e2e8f0" />
         ))}
         <line x1="35" y1="130" x2="625" y2="130" stroke="#d97706" strokeWidth="2" strokeDasharray="7 7" />
         <line x1="35" y1="86" x2="625" y2="86" stroke="#dc2626" strokeWidth="2" strokeDasharray="7 7" />
-        <text x="470" y="121" fill="#92400e" fontSize="10" fontWeight="700">Warning setting</text>
+        <text x="470" y="121" fill="#92400e" fontSize="10" fontWeight="700">Attention trigger</text>
         <text x="482" y="77" fill="#991b1b" fontSize="10" fontWeight="700">Action setting</text>
-        {state === "action" ? (
+        {state === "ACTION" ? (
           <g>
             <rect x="474" y="39" width="106" height="47" fill="#fee2e2" fillOpacity="0.65" />
             <text x="484" y="32" fill="#991b1b" fontSize="9" fontWeight="700">10 min sustained</text>
@@ -218,7 +223,7 @@ function WorkflowTrend({ state }: { state: ZoneState }) {
         <span className="text-sky-700">PM1</span>
         <span className="text-emerald-700">PM2.5</span>
         <span className="text-violet-700">PM10</span>
-        <span className="text-amber-700">Warning setting</span>
+        <span className="text-amber-700">Attention trigger</span>
         <span className="text-red-700">Action setting</span>
       </div>
     </div>
@@ -268,7 +273,7 @@ function WorkflowDashboardDemo() {
   }, [zoneIndex]);
 
   const stage = useMemo(() => {
-    if (zone.state === "normal") return -1;
+    if (zone.state === "NORMAL") return -1;
     if (status === "Resolved") return 4;
     if (status === "Awaiting verification" || status === "Ready to close") return 3;
     if (status === "In progress") return 2;
@@ -306,7 +311,7 @@ function WorkflowDashboardDemo() {
           <div>
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Zone status</p>
             <span className={`mt-2 inline-flex border px-2.5 py-1 text-xs font-black uppercase tracking-wide ${stateStyles[zone.state]}`}>
-              {zone.state === "normal" ? "Normal" : zone.state === "review" ? "Review" : "Action"}
+              {zone.state}
             </span>
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
@@ -324,7 +329,7 @@ function WorkflowDashboardDemo() {
           <WorkflowTrend state={zone.state} />
         </div>
 
-        {zone.state === "normal" ? (
+        {zone.state === "NORMAL" ? (
           <div className="mt-5 border-l-4 border-emerald-600 bg-emerald-50 px-4 py-4">
             <p className="font-bold text-emerald-950">Automated evaluation complete. No human response workflow opened.</p>
             <p className="mt-2 text-sm leading-6 text-slate-700">The green demonstration zone remains visible in monitoring and reporting without creating unnecessary response tasks.</p>
@@ -377,7 +382,7 @@ function WorkflowDashboardDemo() {
                     disabled={!assignee || status === "Resolved"}
                     className="inline-flex min-h-11 items-center justify-center bg-blue-600 px-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    {zone.state === "review" ? "Start review" : "Start work"}
+                    {zone.state === "ATTENTION" ? "Start review" : "Start work"}
                   </button>
                   <button
                     type="button"
@@ -449,15 +454,15 @@ function WorkflowDashboardDemo() {
                   ? `Resolved by ${assignee || "assigned user"}. Closure reason recorded.`
                   : assignee
                     ? `${status}. Owner: ${assignee}${escalated ? ". Escalation recorded." : "."}`
-                    : zone.state === "review"
-                      ? "Review condition opened. No task has been assigned yet."
+                    : zone.state === "ATTENTION"
+                      ? "Attention state opened. No task has been assigned yet."
                       : "Action alert opened. Awaiting assignment."}
               </p>
             </div>
           </div>
         )}
 
-        <p className="mt-4 text-xs leading-5 text-slate-500">Demonstration data and example project settings only. Detected, transferred and evaluated are automated system events; the human workflow begins only when a review or action alert is opened.</p>
+        <p className="mt-4 text-xs leading-5 text-slate-500">{DEMO_DISCLOSURE} {DEMO_DISCLOSURE_WITH_CONTEXT}</p>
       </div>
     </div>
   );
@@ -465,7 +470,7 @@ function WorkflowDashboardDemo() {
 
 function SmallReportTrend({ zoneIndex }: { zoneIndex: number }) {
   const tone = zones[zoneIndex].state;
-  const pm25 = tone === "action" ? "M30 100 C95 96 135 78 190 82 C240 86 285 54 335 59 C390 65 430 34 485 41 C520 45 548 42 570 44" : "M30 105 C95 101 135 92 190 95 C240 98 285 86 335 89 C390 92 430 80 485 84 C520 87 548 84 570 85";
+  const pm25 = tone === "ACTION" ? "M30 100 C95 96 135 78 190 82 C240 86 285 54 335 59 C390 65 430 34 485 41 C520 45 548 42 570 44" : "M30 105 C95 101 135 92 190 95 C240 98 285 86 335 89 C390 92 430 80 485 84 C520 87 548 84 570 85";
   return (
     <svg viewBox="0 0 600 145" className="w-full" role="img" aria-label="Compact demonstration PM trend">
       {[30, 65, 100, 130].map((y) => <line key={y} x1="30" y1={y} x2="570" y2={y} stroke="#e2e8f0" />)}
@@ -565,7 +570,7 @@ function ProjectPeriodReport({ dateRange }: { dateRange: DateRange }) {
     ["Project", "Demonstration Project"],
     ["Report period", dateRange],
     ["Monitoring locations", "4 configured locations"],
-    ["Metrics", "PM1, PM2.5 and PM10"],
+    ["Metrics", "Respirable Dust, PM1, PM2.5 and PM10"],
     ["Warnings", "7 demonstration warnings"],
     ["Actions", "1 demonstration action"],
     ["Recorded downtime", "3 minutes"],
@@ -648,7 +653,7 @@ function ReportingDashboardDemo() {
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Selected report</p>
             <h4 className="mt-1 text-xl font-bold text-slate-950">{view}</h4>
           </div>
-          <span className="border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-black uppercase tracking-wide text-blue-800">Demonstration data</span>
+          <span className="border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-black uppercase tracking-wide text-blue-800">{DEMO_DISCLOSURE}</span>
         </div>
 
         {view === "Summary report" ? <SummaryReport dateRange={dateRange} zoneIndex={zoneIndex} /> : null}
@@ -656,8 +661,8 @@ function ReportingDashboardDemo() {
         {view === "Project-period report" ? <ProjectPeriodReport dateRange={dateRange} /> : null}
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
-          <p className="text-xs leading-5 text-slate-500">Summary data is fictional demonstration output. Warning, action and downtime values are not customer results.</p>
-          <Link href="/downloads/verifair-demonstration-report.pdf" className="inline-flex min-h-11 items-center justify-center bg-blue-600 px-4 text-sm font-bold text-white hover:bg-blue-700">Export demonstration PDF</Link>
+          <p className="text-xs leading-5 text-slate-500">{DEMO_DISCLOSURE_WITH_CONTEXT}</p>
+          <Link href="/downloads/verifair-demonstration-report.pdf" className="cta-primary inline-flex min-h-11 items-center justify-center px-4 text-sm font-bold">Export demonstration PDF</Link>
         </div>
       </div>
     </div>

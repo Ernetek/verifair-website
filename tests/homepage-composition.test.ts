@@ -10,12 +10,13 @@ describe("homepage composition", () => {
   });
 
   it("uses the canonical demonstration on the homepage", () => {
-    expect(source).toContain("<UnifiedDemonstration />");
+    expect(source).toContain("<HomepageInteractiveDemo />");
+    expect(source).not.toContain("<ArchitectureStorySection />");
     expect(source).not.toContain("<DemonstrationOverview />");
     expect(source).not.toContain("<PlatformOverviewSection />");
     expect(source).not.toContain("<CoordinatedSolutionSection />");
     expect(source).not.toContain("<ReportingProof />");
     expect(source).toContain("<PilotDeploymentSection />");
-    expect(source).toContain("<PageDisclaimer />");
+    expect(source).not.toContain("<PageDisclaimer />");
   });
 });

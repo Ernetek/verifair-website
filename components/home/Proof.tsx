@@ -18,7 +18,7 @@ export function ProofSection() {
             <div className="mt-5 h-0.5 w-12 bg-blue-500" />
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
               VerifAir is being developed as an edge-first monitoring platform
-              that combines Dustlight particulate data, local buffering,
+              that combines Dustlight particulate data, Edge computing,
               coordinated alerts, dashboards and reporting for dust-sensitive
               projects.
             </p>
@@ -28,7 +28,7 @@ export function ProofSection() {
             <figure>
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-slate-900">
                 <Image
-                  src="/assets/platform-dashboard.webp"
+                  src="/assets/monitoring_room.webp"
                   alt="Contractor team reviewing a VerifAir demonstration dashboard in a monitoring room"
                   fill
                   sizes="(min-width: 1024px) 55vw, 100vw"

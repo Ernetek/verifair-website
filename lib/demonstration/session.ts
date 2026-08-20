@@ -83,7 +83,7 @@ export class DemonstrationSession {
   readonly #autoPlay: boolean;
   #demoTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(controller?: ReplayPlaybackController, autoPlay: boolean = true) {
+  constructor(controller?: ReplayPlaybackController, autoPlay: boolean = false) {
     this.#playbackController =
       controller ?? new ReplayPlaybackController(publicDemonstrationScenario);
     this.#autoPlay = autoPlay;
@@ -104,7 +104,7 @@ export class DemonstrationSession {
 
   start(): void {
     if (this.#snapshot.replayState.isTerminal) return;
-    this.#playbackController.play();
+    this.play();
     if (this.#demoTimer === null && typeof window !== "undefined") {
       // Fast-forward to the alert trigger within ~3s, then settle into a steady cadence.
       const alertOffsetMs = MEANINGFUL_SCENARIO_MARKERS[1]?.offsetMs ?? 120_000;
@@ -127,12 +127,6 @@ export class DemonstrationSession {
     this.#updateSnapshot();
   }
 
-  pause(): void {
-    this.#playbackController.pause();
-    this.#clearDemoTimer();
-    this.#updateSnapshot();
-  }
-
   setRate(rate: ReplayRate): void {
     this.#playbackController.setRate(rate);
     this.#updateSnapshot();
@@ -145,6 +139,46 @@ export class DemonstrationSession {
     };
   };
 
+  play(): void {
+    this.#playbackController.play();
+  }
+
+  pause(): void {
+    this.#playbackController.pause();
+    this.#clearDemoTimer();
+    this.#updateSnapshot();
+  }
+
+  restart(): void {
+    this.#userEvents = [];
+    this.#playbackController.restart();
+    this.#updateSnapshot();
+  }
+
+  seek(offsetMs: number): void {
+    this.#playbackController.seek(offsetMs);
+  }
+
+  seekToMarker(direction: "prev" | "next"): void {
+    const currentOffset = this.#snapshot.replayState.offsetMs;
+    if (direction === "next") {
+      const nextMarker = MEANINGFUL_SCENARIO_MARKERS.find(
+        (m) => m.offsetMs > currentOffset + 1_000,
+      );
+      this.seek(nextMarker?.offsetMs ?? this.#playbackController.durationMs);
+      return;
+    }
+
+    const previousMarkers = MEANINGFUL_SCENARIO_MARKERS.filter(
+      (m) => m.offsetMs < currentOffset - 1_000,
+    );
+    this.seek(
+      previousMarkers.length > 0
+        ? previousMarkers[previousMarkers.length - 1].offsetMs
+        : 0,
+    );
+  }
+
   registerEvidenceAsset(asset: DemoEvidenceAsset): void {
     this.#evidenceAssets.set(asset.evidenceId, asset);
   }
@@ -155,24 +189,22 @@ export class DemonstrationSession {
 
   /** @internal For testing only */
   _testOnlyPlay(): void {
-    this.#playbackController.play();
+    this.play();
   }
 
   /** @internal For testing only */
   _testOnlyPause(): void {
-    this.#playbackController.pause();
+    this.pause();
   }
 
   /** @internal For testing only */
   _testOnlyRestart(): void {
-    this.#userEvents = [];
-    this.#playbackController.restart();
-    this.#updateSnapshot();
+    this.restart();
   }
 
   /** @internal For testing only */
   _testOnlySeek(offsetMs: number): void {
-    this.#playbackController.seek(offsetMs);
+    this.seek(offsetMs);
   }
 
   /** @internal For testing only */
@@ -182,28 +214,7 @@ export class DemonstrationSession {
 
   /** @internal For testing only */
   _testOnlySeekToMarker(direction: "prev" | "next"): void {
-    const currentOffset = this.#snapshot.replayState.offsetMs;
-    if (direction === "next") {
-      const nextMarker = MEANINGFUL_SCENARIO_MARKERS.find(
-        (m) => m.offsetMs > currentOffset + 1_000,
-      );
-      if (nextMarker) {
-        this.#playbackController.seek(nextMarker.offsetMs);
-      } else {
-        this.#playbackController.seek(this.#playbackController.durationMs);
-      }
-    } else {
-      const prevMarkers = MEANINGFUL_SCENARIO_MARKERS.filter(
-        (m) => m.offsetMs < currentOffset - 1_000,
-      );
-      if (prevMarkers.length > 0) {
-        const prevMarker = prevMarkers[prevMarkers.length - 1];
-        this.#playbackController.seek(prevMarker.offsetMs);
-      } else {
-        this.#playbackController.seek(0);
-      }
-    }
-    this.#updateSnapshot();
+    this.seekToMarker(direction);
   }
 
   dispatchIncidentEvent(

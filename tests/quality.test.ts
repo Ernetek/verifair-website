@@ -13,10 +13,11 @@ function source(relative: string) {
 }
 
 describe("site quality requirements", () => {
-  it("uses the approved primary navigation anchors", () => {
-    expect(primaryNav.some((item) => item.href === "/#monitoring")).toBe(true);
-    expect(primaryNav.some((item) => item.href === "/#workflow")).toBe(true);
-    expect(primaryNav.some((item) => item.href === "/#industries")).toBe(true);
+  it("uses dedicated primary navigation routes", () => {
+    expect(primaryNav.some((item) => item.label === "Product")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/monitoring")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/how-it-works")).toBe(true);
+    expect(primaryNav.some((item) => item.href === "/solutions")).toBe(true);
     expect(primaryNav.some((item) => item.href === "/about")).toBe(true);
     expect(source("components/home/PlatformOverview.tsx")).toContain('id="platform"');
   });
@@ -35,7 +36,12 @@ describe("site quality requirements", () => {
   });
 
   it("uses approved particulate metrics and concentration units", () => {
-    expect(SUPPORTED_PARTICULATE_METRICS).toEqual(["PM1", "PM2.5", "PM10"]);
+    expect(SUPPORTED_PARTICULATE_METRICS).toEqual([
+      "Respirable Dust",
+      "PM1",
+      "PM2.5",
+      "PM10",
+    ]);
     expect(PARTICULATE_UNIT).toBe("\u00b5g/m\u00b3");
 
     const files = [

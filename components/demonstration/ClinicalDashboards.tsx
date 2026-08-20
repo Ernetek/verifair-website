@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { PARTICULATE_UNIT } from "@/lib/metrics";
+import {
+  DEMO_DISCLOSURE,
+  DEMO_DISCLOSURE_WITH_CONTEXT,
+} from "@/lib/product-model";
+import {
+  classifyDemonstrationMetric,
+  type DemonstrationMetricId,
+} from "@/lib/demonstration/metric-status";
 import { publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import { selectLatestObservation } from "@/lib/replay/selectors";
 import {
@@ -75,25 +83,26 @@ export function SharedDashboard({
         {monitors.map((m) => {
           const isSelected = m.id === selectedMonitorId;
           const pm25 = observationValue(replayState, m.id, "PM2_5") ?? 0;
-          const statusTone =
-            pm25 >= 25 ? "border-red-600 bg-red-50 text-red-900" : pm25 >= 15 ? "border-amber-500 bg-amber-50 text-amber-900" : "border-emerald-600 bg-emerald-50 text-emerald-900";
+          const status = classifyDemonstrationMetric("PM2_5", pm25);
+          const statusTone = status.lightClassName;
 
           return (
             <button
               key={m.id}
               type="button"
               onClick={() => setSelectedMonitorId(m.id)}
-              className={`border-l-4 p-4 text-left shadow-sm transition-all ${statusTone} ${
+              className={`min-h-11 border-l-4 p-4 text-left shadow-sm transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 ${statusTone} ${
                 isSelected ? "ring-2 ring-blue-600" : ""
               }`}
             >
               <p className="text-xs font-black uppercase tracking-wide opacity-75">
                 {m.name}
               </p>
-              <h3 className="mt-1 text-base font-black truncate">{m.name}</h3>
+              <h3 className="mt-1 text-base font-black">{m.name}</h3>
               <p className="mt-2 text-2xl font-black">
                 {pm25} <span className="text-xs font-bold">{PARTICULATE_UNIT}</span>
               </p>
+              <p className="mt-1 text-xs font-black uppercase">{status.label}</p>
             </button>
           );
         })}
@@ -111,7 +120,7 @@ export function SharedDashboard({
               </p>
             </div>
             <span className="text-xs font-bold text-slate-600">
-              Simulated demonstration data
+              {DEMO_DISCLOSURE}
             </span>
           </div>
 
@@ -183,82 +192,46 @@ export function SharedDashboard({
   );
 }
 
-export function MonitoringRoomDisplay({
-  session: sessionProp,
-}: {
-  readonly session?: DemonstrationSession;
-}) {
+export function MonitoringRoomDisplay({ session: sessionProp }: { readonly session?: DemonstrationSession }) {
   const session = sessionProp ?? getSharedDemonstrationSession();
-  const snapshot = useSyncExternalStore(
-    session.subscribe,
-    session.getSnapshot,
-    session.getSnapshot,
-  );
+  const snapshot = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
   const { replayState, incidentState } = snapshot;
-  const monitors = publicDemonstrationScenario.monitors;
-  
-  // Force re-render every second to animate PM level updates
-  const [, setUpdateTrigger] = useState(0);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setUpdateTrigger(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
-    <div className="bg-slate-950 p-6 text-white shadow-2xl">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
-        <div>
-          <p className="text-xs font-black uppercase tracking-widest text-sky-400">
-            Centralised Site-wide Monitoring Hub
-          </p>
-          <h2 className="text-3xl font-black">Live Environmental Status</h2>
+    <div className="bg-slate-950 p-3 text-white shadow-2xl sm:p-6">
+      <div className="flex items-start justify-between gap-2 border-b border-slate-800 pb-3 sm:items-center sm:gap-4 sm:pb-4">
+        <div className="min-w-0">
+          <p className="text-[10px] font-black uppercase tracking-wider text-sky-400 sm:text-xs sm:tracking-widest">Centralised Site-wide Monitoring Hub</p>
+          <h2 className="text-xl font-black sm:text-3xl">Live Environmental Status</h2>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-2 text-xs font-bold text-emerald-400">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            LIVE MONITORING
-          </span>
-          <span className="text-xs text-slate-400 font-mono">
-            Updated every second
-          </span>
+        <div className="shrink-0 text-right">
+          <span className="block text-[10px] font-bold text-emerald-400 sm:text-xs">● LIVE MONITORING</span>
         </div>
       </div>
-
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {monitors.map((m) => {
-          const pm25 = observationValue(replayState, m.id, "PM2_5") ?? 0;
-          const pm1 = observationValue(replayState, m.id, "PM1") ?? 0;
-          const pm10 = observationValue(replayState, m.id, "PM10") ?? 0;
-          
-          const tone =
-            pm25 >= 25
-              ? "border-red-500 bg-red-950/40 text-red-200"
-              : pm25 >= 15
-              ? "border-amber-500 bg-amber-950/40 text-amber-200"
-              : "border-emerald-500 bg-emerald-950/40 text-emerald-200";
-
-          return (
-            <div key={m.id} className={`border p-4 shadow ${tone}`}>
-              <p className="text-xs font-black uppercase text-slate-400">
-                {m.name}
-              </p>
-              <h3 className="mt-1 text-lg font-black truncate">{m.name}</h3>
-              <p className="mt-3 text-4xl font-black">
-                {pm25} <span className="text-sm font-bold">µg/m³</span>
-              </p>
-              <div className="mt-3 pt-3 border-t border-slate-700 flex gap-3 text-xs">
-                <span>PM1: <strong>{pm1}</strong></span>
-                <span>PM10: <strong>{pm10}</strong></span>
-              </div>
+      <p className="mt-3 text-[10px] leading-4 text-slate-300 sm:text-xs">{DEMO_DISCLOSURE} {DEMO_DISCLOSURE_WITH_CONTEXT}</p>
+      <div data-testid="monitoring-room-sensor-grid" className="mt-4 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-4 lg:grid-cols-4">
+        {publicDemonstrationScenario.monitors.map((monitor) => {
+          const metrics: readonly [DemonstrationMetricId, string, number][] = [
+            ["PM2_5", "PM2.5", observationValue(replayState, monitor.id, "PM2_5") ?? 0],
+            ["PM1", "PM1", observationValue(replayState, monitor.id, "PM1") ?? 0],
+            ["RESPIRABLE_DUST", "Respirable dust", observationValue(replayState, monitor.id, "RESPIRABLE_DUST") ?? 0],
+            ["PM10", "PM10", observationValue(replayState, monitor.id, "PM10") ?? 0],
+          ];
+          return <article key={monitor.id} className="min-w-0 border border-slate-700 bg-slate-900 p-2 shadow sm:p-4">
+            <h3 className="min-h-8 break-words text-xs font-black leading-4 sm:text-lg sm:leading-6">{monitor.name}</h3>
+            <div className="mt-2 grid grid-cols-2 gap-1.5 sm:gap-2">
+              {metrics.map(([id, label, value], index) => {
+                const status = classifyDemonstrationMetric(id, value);
+                return <div key={id} className={`${status.panelClassName} min-w-0 p-2 ${index === 0 ? "col-span-2" : ""}`}>
+                  <div className="flex flex-wrap items-baseline justify-between gap-1"><span className="text-[10px] font-black uppercase sm:text-xs">{label}</span><strong className="text-[9px] sm:text-[10px]">{status.label}</strong></div>
+                  <p className={`${index === 0 ? "text-2xl sm:text-4xl" : "text-base sm:text-xl"} font-black leading-tight`}>{value} <span className="text-[9px] font-bold sm:text-xs">{PARTICULATE_UNIT}</span></p>
+                </div>;
+              })}
             </div>
-          );
+          </article>;
         })}
       </div>
-
-      <div className="mt-6 border-t border-slate-800 pt-4 flex flex-wrap items-center justify-between text-xs text-slate-400">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 pt-3 text-xs text-slate-400 sm:mt-6 sm:pt-4">
         <span>Current Phase: <strong className="text-sky-300">{incidentState.phase}</strong></span>
         <span>Progress: <strong className="text-white">{incidentState.progressStatus}</strong></span>
       </div>
@@ -280,16 +253,6 @@ export function MonitoringRoomHeroPreview({
   const { replayState, incidentState } = snapshot;
   const monitors = publicDemonstrationScenario.monitors;
   
-  // Force re-render every second to animate PM level updates
-  const [, setUpdateTrigger] = useState(0);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setUpdateTrigger(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="border border-slate-800 bg-slate-950 p-4 text-white rounded">
       <div className="flex items-center justify-between text-xs border-b border-slate-800 pb-2">
@@ -303,16 +266,15 @@ export function MonitoringRoomHeroPreview({
       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
         {monitors.slice(0, 4).map((m) => {
           const pm25 = observationValue(replayState, m.id, "PM2_5") ?? 0;
-          const isAction = pm25 >= 25;
+          const status = classifyDemonstrationMetric("PM2_5", pm25);
           return (
             <div
               key={m.id}
-              className={`p-2 border ${
-                isAction ? "border-red-500 bg-red-950/50" : "border-slate-800 bg-slate-900"
-              }`}
+              className={`border p-2 ${status.panelClassName}`}
             >
-              <p className="font-bold truncate">{m.name}</p>
-              <p className="text-lg font-black">{pm25} µg/m³</p>
+              <p className="break-words font-bold">{m.name}</p>
+              <p className="text-lg font-black">{pm25} {PARTICULATE_UNIT}</p>
+              <p className="text-[10px] font-black uppercase">{status.label}</p>
             </div>
           );
         })}
@@ -388,6 +350,3 @@ export function DashboardDemonstrationSection() {
     </section>
   );
 }
-
-
-

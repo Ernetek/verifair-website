@@ -26,9 +26,9 @@ const workflow = [
   {
     number: "03",
     title: "Edge and cloud processing",
-    text: "Local buffering and edge-first processing help maintain monitoring continuity during connectivity interruptions.",
+    text: "Data retained during connection interruptions and Edge computing help maintain monitoring continuity.",
     image: "/assets/Edge.webp",
-    imageAlt: "Diagram representing edge-first processing and local buffering",
+    imageAlt: "Diagram representing Edge computing and data retained during connection interruptions",
   },
   {
     number: "04",

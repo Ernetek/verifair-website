@@ -18,17 +18,23 @@ describe("approved public demonstration scenario", () => {
     );
   });
 
-  it("contains the four verified Dustlight payload fields without inventing PM4", () => {
+  it("contains four separate demo measurements without inventing PM4", () => {
     expect(DEMONSTRATION_METRICS.map(({ label }) => label)).toEqual([
       "PM1",
       "PM2.5",
-      "Respirable dust",
+      "Respirable Dust",
       "PM10",
     ]);
     expect(
       new Set(publicDemonstrationScenario.observations.map(({ metricId }) => metricId)),
     ).toEqual(new Set(["PM1", "PM2_5", "RESPIRABLE_DUST", "PM10"]));
     expect(JSON.stringify(publicDemonstrationScenario)).not.toMatch(/PM4(?:\.0)?/i);
+    expect(publicDemonstrationScenario.metadata.provenance).toContain(
+      "Respirable Dust is separately simulated",
+    );
+    expect(publicDemonstrationScenario.metadata.provenance).toContain(
+      "is not calculated from PM1, PM2.5 or PM10",
+    );
   });
 
   it("freezes all 80 approved readings with exact start and terminal values", () => {

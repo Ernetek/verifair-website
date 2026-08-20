@@ -17,7 +17,7 @@ const outcomes = [
   {
     icon: BellAlertIcon,
     title: "Coordinated alerts",
-    text: "Notify responsible teams when configured thresholds or conditions are reached.",
+    text: "Notify responsible teams when a configured operational trigger is reached.",
   },
   {
     icon: ChartBarSquareIcon,

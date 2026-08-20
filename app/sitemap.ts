@@ -15,8 +15,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     ...genericRoutes,
     "technology",
+    "how-it-works",
     "demonstration",
     "resources",
+    "monitoring",
     "faq",
     "privacy",
     "terms",
@@ -32,6 +34,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         : PAGE_UPDATED,
     ),
     changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : ["technology", "resources"].includes(route) ? 0.8 : 0.7,
+    priority: route === "" ? 1 : ["technology", "monitoring", "resources"].includes(route) ? 0.8 : 0.7,
   }));
 }

@@ -5,13 +5,9 @@ import { FAQSection } from "@/components/home/FAQ";
 import { HeroSection } from "@/components/home/Hero";
 import { IndustriesSection } from "@/components/home/Industries";
 import { PilotDeploymentSection } from "@/components/home/PilotDeployment";
-import {
-  ArchitectureStorySection,
-  CapabilitySection,
-} from "@/components/demonstration/DemonstrationOverview";
-import { UnifiedDemonstration } from "@/components/demonstration/UnifiedDemonstration";
+import { HomepageInteractiveDemo } from "@/components/home/HomepageInteractiveDemo";
 import { ProblemSection } from "@/components/home/Problem";
-import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
+import { OperationalArchitectureSection } from "@/components/home/OperationalArchitecture";
 
 export const metadata: Metadata = {
   alternates: {
@@ -24,14 +20,12 @@ export default function HomePage() {
     <>
       <HeroSection />
       <ProblemSection />
-      <ArchitectureStorySection />
-      <UnifiedDemonstration />
-      <CapabilitySection />
+      <OperationalArchitectureSection />
+      <HomepageInteractiveDemo />
       <PilotDeploymentSection />
       <IndustriesSection />
       <FAQSection />
       <FinalCTA />
-      <PageDisclaimer />
     </>
   );
 }

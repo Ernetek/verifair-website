@@ -13,7 +13,16 @@ test("primary navigation destinations resolve and homepage calls to action are w
   await expect(contactLink).toBeVisible();
   await expect(contactLink).toHaveAttribute("href", /\/contact(?:#project-enquiry)?$/);
 
-  for (const href of ["/demonstration", "/technology", "/resources", "/contact"]) {
+  for (const href of [
+    "/product",
+    "/how-it-works",
+    "/solutions",
+    "/resources",
+    "/about",
+    "/demonstration",
+    "/technology",
+    "/contact",
+  ]) {
     const response = await page.request.get(href, { timeout: 60000 });
     expect(response.ok(), `${href} should resolve`).toBe(true);
   }
@@ -33,15 +42,17 @@ test("homepage has no horizontal overflow at 320px", async ({ page }) => {
   );
 });
 
-test("application cards and FAQ are keyboard operable", async ({
+test("industry cards and FAQ are keyboard operable", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "networkidle" });
 
-  await expect(page.getByRole("heading", { name: "HEALTHCARE CONSTRUCTION" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "EDUCATION CONSTRUCTION" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "OCCUPIED BUILDINGS" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Other construction applications/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Healthcare", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Construction", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Infrastructure", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Government", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Schools", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Commercial Buildings", exact: true })).toBeVisible();
 
   const faqSummary = page.locator("#faq details summary").first();
   const faqDetails = faqSummary.locator("..");
@@ -72,13 +83,13 @@ test("reduced motion disables smooth scrolling", async ({ page }) => {
   expect(behavior).toBe("auto");
 });
 
-test("legacy reporting route redirects to the homepage", async ({
+test("reporting is a standalone page with the connected record heading", async ({
   page,
 }) => {
   await page.goto("/reporting");
-  await expect(page).toHaveURL(/\/\#reportpreview$/);
+  await expect(page).toHaveURL(/\/reporting$/);
   await expect(
-    page.getByRole("heading", { name: /Know when particulate conditions change\./i }),
+    page.getByRole("heading", { name: /Turn operational activity into a connected record\./i }),
   ).toBeVisible();
 });
 
@@ -87,7 +98,10 @@ test("mobile navigation closes with Escape and returns focus", async ({ page }) 
   await page.goto("/");
 
   const trigger = page.getByRole("button", { name: /Open navigation/i });
+  await expect(trigger).toBeVisible({ timeout: 10000 });
+  await expect(trigger).toBeEnabled();
   await trigger.click();
+  await expect(page.locator("#mobile-navigation")).toBeAttached({ timeout: 10000 });
   await expect(page.locator("#mobile-navigation")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator("#mobile-navigation")).toBeHidden();

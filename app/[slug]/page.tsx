@@ -241,6 +241,22 @@ export default async function SlugPage({
           <ResourceList />
         ) : null}
 
+        {slug === "construction" || slug === "healthcare" ? (
+          <section className="border-b border-slate-200 bg-blue-50 py-10">
+            <div className="container flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+              <p className="max-w-2xl text-sm leading-6 text-slate-700">
+                <strong className="font-black text-slate-950">Preparing for 1 December 2026?</strong> Australia is moving to workplace
+                exposure limits for airborne contaminants. Review readiness questions for monitoring, records and specialist assessment.
+              </p>
+              <Link
+                href="/resources/december-2026-workplace-exposure-limits"
+                className="cta-primary inline-flex min-h-11 shrink-0 items-center justify-center px-5 text-sm font-bold"
+              >
+                Read the WEL readiness guide →
+              </Link>
+            </div>
+          </section>
+        ) : null}
 
         <FinalCTA />
         <PageDisclaimer />

@@ -14,6 +14,11 @@ import {
   WrenchScrewdriverIcon
 } from "@heroicons/react/24/outline";
 
+import {
+  PRODUCT_FRAMEWORK,
+  TECHNOLOGY_RESPONSIBILITIES,
+} from "@/lib/product-model";
+
 export type MarketingPage = {
   slug: string;
   title: string;
@@ -31,8 +36,8 @@ export type MarketingPage = {
 };
 
 export const benefits = [
-  { title: "24/7 Monitoring", body: "Keep watch across active zones, adjacent occupied areas and sensitive boundaries.", icon: SignalIcon },
-  { title: "Real-time Alerts", body: "Notify the right people when configured particulate thresholds are exceeded.", icon: BellAlertIcon },
+  { title: "Continuous monitoring", body: "Keep watch across active zones, adjacent occupied areas and sensitive boundaries during the configured monitoring period.", icon: SignalIcon },
+  { title: "Real-time Alerts", body: "Notify the right people when a configured operational trigger is reached.", icon: BellAlertIcon },
   { title: "Historical Reporting", body: "Retain monitoring records that support reviews, audits and project reporting.", icon: DocumentChartBarIcon },
   { title: "Operational Visibility", body: "Understand what is happening across a project before delayed reports arrive.", icon: ChartBarSquareIcon },
   { title: "Enterprise Scalability", body: "Coordinate multiple Dustlight devices across projects, facilities and organisations.", icon: ServerStackIcon },
@@ -84,12 +89,77 @@ const complianceNote =
   "VerifAir supports monitoring, reporting and environmental management programs. It does not replace occupational hygiene advice, statutory exposure assessment, clinical infection-control procedures or professional judgement.";
 
 export const pageContent: Record<string, MarketingPage> = {
+  product: {
+    slug: "product",
+    title: "Product",
+    description:
+      "Explore the VerifAir product: multi-zone particulate monitoring, operational alerts, response workflow and evidence reporting.",
+    eyebrow: "VerifAir product",
+    heading: "One product for monitoring, response and operational records.",
+    intro:
+      "VerifAir brings selected particulate readings, configured operational triggers, incident workflow and reporting into one shared view for project and facility teams.",
+    image: "/assets/dust-monitoring-display-hub.webp",
+    sections: PRODUCT_FRAMEWORK.map(({ title, description }) => ({
+      title,
+      body: description,
+      points:
+        title === "ASSESS"
+          ? [
+              "Respirable Dust, PM1, PM2.5 and PM10 visibility",
+              "Dustlight device status",
+              "VerifAir system health",
+              "Authorised multi-zone access",
+            ]
+          : title === "ACT"
+            ? [
+                "Project-configured VerifAir operational states",
+                "Alert acknowledgement and ownership",
+                "Investigation notes",
+                "Escalation and response workflow",
+              ]
+            : [
+                "Connected event chronology",
+                "Evidence attachments",
+                "Response history",
+                "Generated reporting outputs",
+                complianceNote,
+              ],
+    }))
+  },
+  solutions: {
+    slug: "solutions",
+    title: "Solutions",
+    description:
+      "Explore VerifAir solutions for healthcare, construction, infrastructure, government, education and occupied commercial environments.",
+    eyebrow: "VerifAir solutions",
+    heading: "Operational visibility for dust-sensitive projects and occupied places.",
+    intro:
+      "VerifAir is configured around the sites, monitoring zones, operational responsibilities and reporting needs of each project rather than applying one universal monitoring plan.",
+    image: "/assets/industry-construction-environment.webp",
+    sections: [
+      {
+        title: "Sensitive occupied environments",
+        body: "Support teams working beside hospitals, schools, tenants and public interfaces where changing particulate conditions need a visible, coordinated response.",
+        points: ["Healthcare refurbishments", "Schools and education sites", "Occupied commercial buildings", "Public-facing project boundaries"]
+      },
+      {
+        title: "Complex construction and infrastructure",
+        body: "Organise selected work fronts, compounds, access routes and boundary locations into a shared monitoring and response view.",
+        points: ["Main construction projects", "Civil and transport works", "Government programs", "Distributed project zones"]
+      },
+      {
+        title: "Configured for the operating context",
+        body: "Deployment begins with project requirements, monitoring locations, communications, responsible users and approved operational triggers.",
+        points: ["Site and zone design", "Connectivity planning", "Project-specific triggers", "Response ownership", "Reporting requirements", complianceNote]
+      }
+    ]
+  },
   platform: {
     slug: "platform",
     title: "Platform",
     description: "See how VerifAir turns Dustlight particulate monitoring into site-wide environmental intelligence.",
     eyebrow: "Environmental intelligence platform",
-    heading: "Dustlight measures the environment. VerifAir manages it.",
+    heading: "Dustlight senses particulate conditions. VerifAir connects the operational response.",
     intro:
       "VerifAir coordinates multiple Dustlight devices, gateways, alerts and reporting workflows so teams can see conditions across projects, facilities and organisations in real time.",
     image: "/assets/verifair-og.png",
@@ -97,12 +167,12 @@ export const pageContent: Record<string, MarketingPage> = {
       {
         title: "Unified site-wide visibility",
         body: "Individual Dustlight devices are valuable at the point of monitoring. VerifAir extends that value by combining device telemetry into a shared operating view.",
-        points: ["Multi-zone readings", "Sensor health and connectivity", "Site-wide status indicators", "Authorised cloud access"]
+        points: ["Multi-zone readings", "VerifAir system health and connectivity", "Project-configured operational states", "Authorised platform access"]
       },
       {
         title: "Decision support for active environments",
-        body: "Teams can review current conditions, understand trends and respond when configured thresholds are exceeded.",
-        points: ["Current PM1 and PM2.5 readings", "Escalation-ready alerts", "Historical trends", "Operational activity log"]
+        body: "Teams can review current conditions, understand trends and respond when a configured operational trigger is reached.",
+        points: ["Respirable Dust, PM1, PM2.5 and PM10 readings", "Escalation-ready alerts", "Historical trends", "Operational activity log"]
       },
       {
         title: "Built for future expansion",
@@ -120,23 +190,33 @@ export const pageContent: Record<string, MarketingPage> = {
     intro:
       "VerifAir is built around Dustlight particulate monitoring technology and an edge-first telemetry bridge that helps teams keep local awareness even when connectivity is imperfect.",
     image: "/assets/tech_hero.webp",
-    sections: [
-      {
-        title: "Dustlight particulate monitoring",
-        body: "Dustlight is designed as a personal real-time dust monitor that provides PM1, PM2.5 and PM10 readings with a clear local status display and audible alerts.",
-        points: ["Laser-based photometric measurement", "Clear green, amber and red traffic-light alerts with audible warning", "Indicative measurement for early awareness", "Maintenance intervals required for ongoing measurement quality"]
-      },
-      {
-        title: "Gateway and edge processing",
-        body: "VerifAir is intended to complement approved Dustlight use with configured site connectivity and project-level visibility. The final connection, continuity and maintenance approach is validated for the proposed deployment.",
-        points: ["Configured telemetry transfer", "Project-specific continuity planning", "Shared dashboard visibility", "System-state and maintenance considerations"]
-      },
-      {
-        title: "Secure cloud and reporting",
-        body: "Configured cloud services can make the project dashboard available to authorised users, subject to the deployed connection, service availability, access controls and project requirements.",
-        points: ["Encrypted transport", "Cloudflare-hosted public site", "Future customer portal on app.verifair.com.au", complianceNote]
-      }
-    ]
+    sections: TECHNOLOGY_RESPONSIBILITIES.map(
+      ({ technology, responsibilities }) => ({
+        title: technology,
+        body: responsibilities,
+        points:
+          technology === "Dustlight"
+            ? [
+                "Particulate sensing",
+                "GREEN, YELLOW and RED device status",
+                "Dustlight is supplied technology; VerifAir does not manufacture it",
+              ]
+            : technology === "VerifAir Edge"
+              ? [
+                  "Local BLE collection",
+                  "Secure transport",
+                  "Data retained during connection interruptions",
+                  "HEALTHY, DEGRADED, STALE and OFFLINE system health",
+                ]
+              : [
+                  "Centralised monitoring",
+                  "NORMAL, ATTENTION and ACTION operational states",
+                  "Alerts and workflow",
+                  "Connected records and reporting",
+                  complianceNote,
+                ],
+      }),
+    )
   },
   industries: {
     slug: "industries",
@@ -193,13 +273,13 @@ export const pageContent: Record<string, MarketingPage> = {
     sections: [
       {
         title: "Assess the work front",
-        body: "Bring current zone status, PM1 and PM2.5 readings, connectivity and recent alert context into one practical monitoring view.",
+        body: "Bring current operational state, Respirable Dust, PM1, PM2.5 and PM10 readings, system health and recent alert context into one practical monitoring view.",
         points: ["Work-front and boundary monitoring", "Multi-zone status", "VerifAir Edge connectivity", "Dust complaint context"]
       },
       {
         title: "Act, then retain the record",
         body: "Configured alerts open a focused response workflow so teams can acknowledge, assign, investigate and document actions when conditions change.",
-        points: ["Threshold-based notifications", "Configured escalation paths", "Generated evidence reports", "Complements WHS and environmental controls"]
+        points: ["Configured operational-trigger notifications", "Configured escalation paths", "Generated evidence reports", "Complements WHS and environmental controls"]
       }
     ]
   },
@@ -281,7 +361,7 @@ export const pageContent: Record<string, MarketingPage> = {
     sections: [
       {
         title: "Assess occupied interfaces",
-        body: "Understand current PM1, PM2.5 and PM10 conditions across work zones, occupied floors and shared access points.",
+        body: "Understand current Respirable Dust, PM1, PM2.5 and PM10 conditions across work zones, occupied floors and shared access points.",
         points: ["Tenant-facing works", "After-hours construction", "Dust migration visibility", "Customer-branded dashboards configured for site and project requirements"]
       },
       {
@@ -308,7 +388,7 @@ export const pageContent: Record<string, MarketingPage> = {
       {
         title: "Alert context",
         body: "Pair elevated readings with time, zone, sensor and response notes to support clearer decisions.",
-        points: ["Alert chronology", "Escalation records", "Sensor health context", "Configured threshold history"]
+        points: ["Alert chronology", "Escalation records", "System-health context", "Configured operational-trigger history"]
       },
       {
         title: "Compliance support, not compliance guarantee",
@@ -413,58 +493,43 @@ export const pageContent: Record<string, MarketingPage> = {
 
 export const faqs = [
   {
-    question: "How does VerifAir work?",
+    question: "What does VerifAir monitor?",
     answer:
-      "Dustlight monitors collect particulate observations at configured locations. VerifAir Edge transfers that information through the approved communications path to VerifAir Cloud, where authorised users can assess conditions, coordinate response and retain the operational record.",
+      "VerifAir presents Respirable Dust as a separately captured channel alongside PM1, PM2.5 and PM10 readings from Dustlight monitors at configured monitoring locations across a project.",
   },
   {
-    question: "Does VerifAir require the facility's Wi-Fi or network?",
+    question: "How many monitoring locations can a project use?",
     answer:
-      "VerifAir's monitoring telemetry is designed to use an independent communications path and does not require connection to the facility's operational LAN or Wi-Fi. Customer cybersecurity and vendor review may still apply.",
+      "A project can use as many monitoring locations as its monitoring objectives require. A single project with several monitoring locations is a complete VerifAir use case, and visibility can scale up to a wider portfolio when needed.",
   },
   {
-    question: "What happens if cellular connectivity is interrupted?",
+    question: "How are project attention and action levels configured?",
     answer:
-      "Continuity behaviour depends on the approved project design. Where configured and validated, VerifAir Edge can buffer observations locally and recover communications so the record can be reconciled after an interruption.",
+      "Attention and action levels are configured for each project based on its monitoring objectives and context. VerifAir compares monitored particulate readings against these configured levels to determine the operational state.",
   },
   {
-    question: "Can VerifAir monitor multiple zones?",
+    question: "What happens when a configured project level is reached?",
     answer:
-      "Yes. VerifAir coordinates monitoring points across selected work zones, boundaries, occupied interfaces and other project locations in one operational view.",
+      "The relevant users are alerted so they can acknowledge, assign ownership, investigate, record actions, escalate where required and verify and resolve the event through a coordinated response workflow.",
   },
   {
-    question: "Can VerifAir support multiple sites?",
+    question: "Does VerifAir require the customer's local network?",
     answer:
-      "Yes. The platform is designed to present multiple sites and zones to authorised users, subject to the approved monitoring, connectivity and deployment design.",
+      "No. VerifAir's monitoring telemetry is designed to use an independent communications path and does not require connection to the facility's operational LAN or Wi-Fi.",
   },
   {
-    question: "Can monitoring zones move as construction progresses?",
+    question: "Can authorised users view VerifAir remotely?",
     answer:
-      "Yes. Monitoring deployments can be reviewed and reconfigured as project stages, work fronts and occupied interfaces change. Relocation, commissioning and connectivity checks should be managed through the project deployment process.",
+      "Yes. Authorised users can access the Control Centre and Wallboard views from any authorised browser, subject to the approved connectivity and access design for the project.",
   },
   {
-    question: "What happens when a configured condition requires attention?",
+    question: "What records and reports are retained?",
     answer:
-      "The configured condition is surfaced to the responsible users, who can acknowledge the alert, assign ownership, assess the situation, record actions, escalate where required, verify the response and resolve the event.",
+      "VerifAir brings together readings, alerts, acknowledgements, actions, comments and incident history into a connected operational record that can support reporting. Retention periods are determined by the approved project and service configuration.",
   },
   {
-    question: "What reports and records does VerifAir create?",
+    question: "How is VerifAir different from a standalone particulate monitor?",
     answer:
-      "VerifAir brings together observations, alerts, acknowledgements, assignments, actions, comments, escalation history, verification and incident records to support evidence and reporting.",
-  },
-  {
-    question: "How long are completed records retained?",
-    answer:
-      "Retention is determined by the approved project and service configuration. The applicable retention period should be confirmed during deployment and reflected in the relevant project or service documentation.",
-  },
-  {
-    question: "Does VerifAir determine workplace exposure or regulatory compliance?",
-    answer:
-      "No. VerifAir provides project-level particulate monitoring and operational records. It does not independently determine personal exposure, workplace exposure compliance or regulatory compliance, and does not replace occupational hygiene advice, specialist sampling or competent professional assessment.",
-  },
-  {
-    question: "How is VerifAir deployed?",
-    answer:
-      "Deployment covers project requirements, sites and zones, monitoring locations and operational triggers, Dustlight monitors, VerifAir Edge, communications and system-health verification before operational monitoring begins.",
+      "A standalone monitor gives local, point-in-time readings. VerifAir connects Dustlight monitors across a project into one shared operational view, with configured alerts, workflow and a connected record - this can support compliance activities but does not itself determine exposure or regulatory compliance.",
   },
 ];

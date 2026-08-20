@@ -1,4 +1,4 @@
-﻿import { expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test("unified demonstration shows the end-to-end workflow in one page", async ({
   page,
@@ -12,13 +12,10 @@ test("unified demonstration shows the end-to-end workflow in one page", async ({
   await page.getByRole("button", { name: "Start demo" }).click();
 
   await expect(
-    page.getByText("Monitoring Overview", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Operational incident management", { exact: true }),
+    page.getByRole("heading", { name: "Operational response workflow" }),
   ).toBeVisible({ timeout: 25000 });
   await expect(
-    page.getByText("Evidence pack and operational record", { exact: true }),
+    page.getByRole("heading", { name: "Connected operational history and generated report" }),
   ).toBeVisible();
   await expect(page.getByText("GENERATED REPORT", { exact: true })).toBeVisible();
 });
@@ -33,13 +30,27 @@ test("demonstration page renders the single-page operational flow instead of leg
   await page.getByRole("button", { name: "Start demo" }).click();
 
   await expect(
-    page.getByText("Monitoring Overview", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Operational incident management", { exact: true }),
+    page.getByRole("heading", { name: "Operational response workflow" }),
   ).toBeVisible({ timeout: 25000 });
   await expect(
-    page.getByText("Evidence pack and operational record", { exact: true }),
+    page.getByRole("heading", { name: "Connected operational history and generated report" }),
+  ).toBeVisible();
+});
+
+test("monitoring readings update live and show traffic-light labels", async ({ page }) => {
+  await page.goto("/demonstration", { waitUntil: "networkidle" });
+
+  const respirableReading = page.getByTestId("WORK_ZONE_A-RESPIRABLE_DUST-reading");
+  const initialReading = await respirableReading.textContent();
+
+  await page.getByRole("button", { name: "Start demo" }).click();
+  await expect(respirableReading).not.toHaveText(initialReading ?? "", { timeout: 5000 });
+
+  for (const label of ["PM1", "PM2.5", "Respirable Dust", "PM10"]) {
+    await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
+  }
+  await expect(
+    page.getByText(/NORMAL|ATTENTION|ACTION/, { exact: true }).first(),
   ).toBeVisible();
 });
 
@@ -55,7 +66,7 @@ test("generated record output remains available in the unified demo", async ({ p
 test("operator can work the incident manually from acknowledgement through closure", async ({ page }) => {
   await page.goto("/demonstration", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Start demo" }).click();
-  await expect(page.getByRole("heading", { name: "Operational incident management" })).toBeVisible({ timeout: 25000 });
+  await expect(page.getByRole("heading", { name: "Operational response workflow" })).toBeVisible({ timeout: 25000 });
   await expect(page.getByText("INC-0042", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Scenario position", { exact: true })).toHaveCount(0);
 
@@ -89,12 +100,15 @@ test("operator can work the incident manually from acknowledgement through closu
 test("product demonstration has no horizontal overflow on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/demonstration", { waitUntil: "networkidle" });
+  const sensorGrid = page.getByTestId("control-centre-monitor-grid");
+  await expect(sensorGrid).toBeVisible();
+  const columnCount = await sensorGrid.evaluate((element) =>
+    getComputedStyle(element).gridTemplateColumns.split(" ").filter(Boolean).length,
+  );
+  expect(columnCount).toBe(1);
   const dimensions = await page.evaluate(() => ({
     documentWidth: document.documentElement.scrollWidth,
     viewportWidth: document.documentElement.clientWidth,
   }));
   expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.viewportWidth + 1);
 });
-
-
-

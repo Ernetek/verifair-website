@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { PARTICULATE_UNIT } from "@/lib/metrics";
+import { DEMO_DISCLOSURE } from "@/lib/product-model";
 
 const reportTypes = [
   {
@@ -24,9 +25,9 @@ const reportTypes = [
 ] as const;
 
 const snapshotZones = [
-  ["Work Zone A", "PM2.5", "18", "Review"],
-  ["Occupied Interface", "PM2.5", "7", "Normal"],
-  ["External Boundary", "PM10", "21", "Normal"],
+  ["Work Zone A", "PM2.5", "18", "ATTENTION"],
+  ["Occupied Interface", "Respirable Dust", "6", "NORMAL"],
+  ["External Boundary", "PM10", "21", "NORMAL"],
 ] as const;
 
 function OperationalSnapshot() {
@@ -50,7 +51,7 @@ function OperationalSnapshot() {
             <p className="mt-1 text-sm text-slate-500">{metric}</p>
             <span
               className={`mt-4 inline-flex px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${
-                status === "Review"
+                status === "ATTENTION"
                   ? "bg-amber-100 text-amber-900"
                   : "bg-emerald-100 text-emerald-900"
               }`}
@@ -64,7 +65,7 @@ function OperationalSnapshot() {
       <dl className="mt-6 grid gap-5 sm:grid-cols-3">
         <div>
           <dt className="text-xs uppercase tracking-wide text-slate-500">
-            System state
+            System health
           </dt>
           <dd className="mt-2 font-bold">3 locations online</dd>
         </div>
@@ -164,7 +165,7 @@ function ProjectPeriodReport() {
     ["Project", "Demonstration Project"],
     ["Reporting period", "Neutral demonstration period"],
     ["Monitoring locations", "3 configured locations"],
-    ["Metrics", "PM1, PM2.5 and PM10"],
+    ["Metrics", "Respirable Dust, PM1, PM2.5 and PM10"],
     ["Data availability", "Illustrative system status summary"],
     ["Recorded events", "1 reviewed demonstration event"],
     ["Review notes", "3 time-stamped response entries"],
@@ -227,7 +228,7 @@ export function ReportingProof() {
         </h2>
         <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
           Explore three distinct demonstration views using neutral project
-          labels, example settings and fictional data.
+          labels and example settings. {DEMO_DISCLOSURE}
         </p>
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[0.3fr_0.7fr]">
@@ -287,7 +288,7 @@ export function ReportingProof() {
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-300 pb-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
-                  Demonstration data
+                  {DEMO_DISCLOSURE}
                 </p>
                 <h3 className="mt-2 text-2xl font-bold text-slate-950">
                   {reportTypes[active].title}
@@ -304,7 +305,7 @@ export function ReportingProof() {
         <div className="mt-10 flex flex-wrap gap-4">
           <Link
             href="/contact"
-            className="inline-flex min-h-12 items-center justify-center bg-blue-600 px-6 font-bold text-white hover:bg-blue-700"
+            className="cta-primary inline-flex min-h-12 items-center justify-center px-6 font-bold"
           >
             Request a reporting walkthrough
           </Link>

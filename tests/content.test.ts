@@ -15,18 +15,16 @@ describe("public page content", () => {
 
   it("prioritises the core VerifAir proposition and operational journey", () => {
     const hero = readFile("components/home/Hero.tsx");
-    expect(hero).toContain("Know when particulate conditions change.");
-    expect(hero).toContain("OPERATIONAL PARTICULATE VISIBILITY &amp; RESPONSE");
-    expect(hero).toContain("ASSESS. ACT. RECORD.");
-    expect(hero).toContain("See VerifAir in Action");
-    expect(hero).toContain("Discuss Your Project");
-    expect(hero).toContain("distributed Dustlight particulate monitors");
+    expect(hero).toContain("See changing particulate conditions across multiple monitoring locations.");
+    expect(hero).toContain("SEE VERIFAIR IN ACTION");
+    expect(hero).toContain("HOW IT WORKS");
+    expect(hero).toContain("VerifAir connects distributed Dustlight particulate monitors across project zones and sites");
   });
 
   it("labels demonstration triggers as configured operational triggers and keeps causation out of the wording", () => {
     const demo = readFile("components/demonstration/UnifiedDemonstration.tsx");
     expect(demo).toContain("configured operational trigger");
-    expect(demo).toContain("keeps the evidence together for review");
+    expect(demo).toContain("One connected operational view from particulate readings through response and record.");
     expect(demo).not.toContain("verifies control measures");
     expect(demo).not.toContain("PM2.5 > 25 µg/m³");
   });
@@ -35,6 +33,11 @@ describe("public page content", () => {
     expect(Object.keys(pageContent)).toEqual(
       expect.arrayContaining(["healthcare", "construction", "infrastructure", "government", "schools", "commercial-buildings"])
     );
+  });
+
+  it("provides dedicated content for primary product and solutions navigation", () => {
+    expect(pageContent.product.heading).toContain("monitoring, response and operational records");
+    expect(pageContent.solutions.heading).toContain("dust-sensitive projects");
   });
 });
 

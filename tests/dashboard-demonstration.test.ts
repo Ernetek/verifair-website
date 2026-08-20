@@ -31,14 +31,13 @@ describe("dashboard demonstrations", () => {
     expect(dashboards).toContain("replayState.timestamp");
   });
 
-  it("uses distinct deterministic trend profiles for each monitoring zone", () => {
+  it("uses one replay-derived monitor collection for Control Centre and Wallboard", () => {
     const dashboards = read("components/demonstration/UnifiedDemonstration.tsx");
 
-    expect(dashboards).toContain("monitorTrendPoints");
-    expect(dashboards).toContain("WORK_ZONE_A: \"0,48");
-    expect(dashboards).toContain("OCCUPIED_INTERFACE: \"0,30");
-    expect(dashboards).toContain("SHARED_CORRIDOR: \"0,35");
-    expect(dashboards).toContain("EXTERNAL_BOUNDARY: \"0,42");
+    expect(dashboards).toContain('"CONTROL_CENTRE" | "WALLBOARD"');
+    expect(dashboards).toContain("const monitors: readonly MonitorStatus[]");
+    expect(dashboards).toContain("<MonitoringLocationCard key={monitor.id} monitor={monitor} wallboard={wallboard} />");
+    expect(dashboards).toContain("resolveMonitoringPresentation");
   });
 
   it("models canonical workflow phases", () => {

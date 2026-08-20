@@ -1,525 +1,510 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import Image from "next/image";
+import { useState } from "react";
+import { ArrowRightIcon, FunnelIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
+import { OPERATIONAL_TIMELINE } from "@/lib/demonstration/operational-timeline";
+import { DEMONSTRATION_METRICS, publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
-import {
-  DemonstrationSession,
-  getSharedDemonstrationSession,
-} from "@/lib/demonstration/session";
 
-type ReportType =
-  | "Executive summary"
-  | "Particulate trends"
-  | "Alert and response register"
-  | "Data quality and availability"
-  | "Project-period evidence pack";
+const EVENT_OFFSET_MS = 240_000;
+const INCIDENT_ID = "VA-INC-2026-0042";
+const eventMonitor = publicDemonstrationScenario.monitors[0];
+const displayOrder = ["RESPIRABLE_DUST", "PM1", "PM2_5", "PM10"] as const;
 
-type Period =
-  | "Last 24 hours"
-  | "Last 7 days"
-  | "Last 30 days"
-  | "Project to date";
+function valueAt(metricId: (typeof DEMONSTRATION_METRICS)[number]["id"]) {
+  const readings = publicDemonstrationScenario.observations.filter(
+    (observation) =>
+      observation.monitorId === eventMonitor.id && observation.metricId === metricId && observation.offsetMs <= EVENT_OFFSET_MS
+  );
+  const observation = readings[readings.length - 1];
+  return observation?.reading.status === "available" ? observation.reading.value : 0;
+}
 
-const reportDescriptions: Record<ReportType, string> = {
-  "Executive summary":
-    "Current project position, zone status, alert workload and monitoring coverage.",
-  "Particulate trends":
-    "Time-series analysis by zone and metric with configured review and action references.",
-  "Alert and response register":
-    "A complete chronology of acknowledgements, assignments, status updates, escalation and closure.",
-  "Data quality and availability":
-    "Device connectivity, monitoring coverage, data gaps and recorded downtime.",
-  "Project-period evidence pack":
-    "A structured management record combining project context, trends, events, responses and review notes.",
-};
+const recordObservations = displayOrder.map((metricId) => {
+  const metric = DEMONSTRATION_METRICS.find((item) => item.id === metricId) ?? DEMONSTRATION_METRICS[0];
+  return { ...metric, value: valueAt(metric.id) };
+});
 
-const zones = [
-  "All locations",
-  "Construction Site Entry Door",
-  "Construction Site Exit Door",
-  "Shared Corridor",
-  "General Entry Door",
-] as const;
-
-const reports = Object.keys(reportDescriptions) as ReportType[];
-
-function TrendChart({ metric }: { readonly metric: string }) {
+function StatePill({ children, tone = "blue" }: { children: React.ReactNode; tone?: "blue" | "red" | "green" }) {
+  const tones = {
+    blue: "border-blue-200 bg-blue-50 text-blue-900",
+    red: "border-red-200 bg-red-50 text-red-900",
+    green: "border-emerald-200 bg-emerald-50 text-emerald-900"
+  };
   return (
-    <div className="border border-slate-300 bg-white p-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">
-            Project trend
+    <span className={`inline-flex min-h-9 items-center gap-2 border px-3 text-xs font-black uppercase tracking-[0.08em] ${tones[tone]}`}>
+      <span aria-hidden="true" className="size-2 rounded-full bg-current" />
+      {children}
+    </span>
+  );
+}
+
+function ObservationSummary() {
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {recordObservations.map((observation, index) => (
+        <div key={observation.id} className={`border p-3 ${index === 0 ? "border-blue-300 bg-blue-50" : "border-slate-200 bg-slate-50"}`}>
+          <p className="text-[10px] font-black uppercase tracking-[0.08em] text-slate-500">
+            {observation.label === "Respirable Dust" ? "Respirable" : observation.label}
           </p>
-          <h3 className="mt-2 text-xl font-black text-slate-950">
-            {metric} across monitored locations
-          </h3>
+          <p className="mt-2 text-2xl font-black text-slate-950">{observation.value}</p>
+          <p className="text-[10px] font-bold text-slate-500">{PARTICULATE_UNIT}</p>
         </div>
-        <div className="flex gap-4 text-xs font-bold text-slate-600">
-          <span className="flex items-center gap-2">
-            <i className="h-0.5 w-5 bg-amber-500" />
-            Review reference
+      ))}
+    </div>
+  );
+}
+
+function RecordTimeline() {
+  return (
+    <ol className="border-l-2 border-slate-200 pl-5 sm:pl-7">
+      {OPERATIONAL_TIMELINE.map(([actor, time, title, description]) => (
+        <li key={`${time}-${title}`} className="relative pb-5 last:pb-0">
+          <span
+            className={`absolute -left-[1.65rem] top-0 flex size-5 items-center justify-center rounded-full border-2 border-white text-[9px] font-black text-white sm:-left-[2.35rem] ${actor === "SYSTEM" ? "bg-blue-700" : "bg-slate-700"}`}
+            aria-hidden="true"
+          >
+            {actor === "SYSTEM" ? "S" : "U"}
           </span>
-          <span className="flex items-center gap-2">
-            <i className="h-0.5 w-5 bg-red-600" />
-            Action reference
-          </span>
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">
+              {actor === "SYSTEM" ? "System" : "User"}
+            </span>
+            <time className="font-mono text-xs font-bold text-blue-700">{time}</time>
+          </div>
+          <h3 className="mt-1 text-sm font-black text-slate-950">{title}</h3>
+          <p className="mt-1 text-xs leading-5 text-slate-600">{description}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function RecordDetail() {
+  return (
+    <section className="border border-slate-300 bg-white shadow-sm">
+      <div className="border-b border-slate-200 bg-slate-950 p-5 text-white sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-300">Operational Record</p>
+            <h2 className="mt-2 text-2xl font-black">Sydney Hospital Project</h2>
+            <p className="mt-1 text-xs text-slate-300">Work Zone · Work Zone A · {INCIDENT_ID}</p>
+          </div>
+          <StatePill tone="green">Resolved</StatePill>
+        </div>
+        <dl className="mt-5 grid gap-3 text-xs sm:grid-cols-4">
+          <div>
+            <dt className="text-slate-400">Created</dt>
+            <dd className="mt-1 font-black">Scenario offset 00:02</dd>
+          </div>
+          <div>
+            <dt className="text-slate-400">Resolved</dt>
+            <dd className="mt-1 font-black">Scenario offset 00:12</dd>
+          </div>
+          <div>
+            <dt className="text-slate-400">Operational state</dt>
+            <dd className="mt-1 font-black text-red-300">ACTION</dd>
+          </div>
+          <div>
+            <dt className="text-slate-400">Report status</dt>
+            <dd className="mt-1 font-black text-emerald-300">AVAILABLE</dd>
+          </div>
+        </dl>
+      </div>
+      <div className="grid gap-6 p-5 sm:p-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Observations</p>
+          <div className="mt-3">
+            <ObservationSummary />
+          </div>
+          <dl className="mt-5 grid gap-2 border-t border-slate-200 pt-4 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Observation freshness</dt>
+              <dd className="font-black text-emerald-800">CURRENT</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">System / data health</dt>
+              <dd className="font-black text-emerald-800">HEALTHY</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Acknowledged by</dt>
+              <dd className="font-black">Site Manager</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Assigned to</dt>
+              <dd className="font-black">Site Supervisor</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Reviewed by</dt>
+              <dd className="font-black">Project Manager</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Resolved by</dt>
+              <dd className="font-black">Project Manager</dd>
+            </div>
+          </dl>
+        </div>
+        <div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Connected event history</p>
+              <p className="mt-1 text-sm font-bold text-slate-900">Time-stamped operational record</p>
+            </div>
+            <StatePill>Traceable history</StatePill>
+          </div>
+          <div className="mt-4">
+            <RecordTimeline />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TrendPanel() {
+  const [metricId, setMetricId] = useState<(typeof DEMONSTRATION_METRICS)[number]["id"]>("RESPIRABLE_DUST");
+  const metric = DEMONSTRATION_METRICS.find((item) => item.id === metricId) ?? DEMONSTRATION_METRICS[0];
+  const history = publicDemonstrationScenario.observations.filter(
+    (observation) =>
+      observation.monitorId === eventMonitor.id && observation.metricId === metric.id && observation.reading.status === "available"
+  );
+  return (
+    <section className="border border-slate-300 bg-white p-5 shadow-sm sm:p-7">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Historical observations</p>
+          <h2 className="mt-2 text-2xl font-black">One selected trend, four available channels.</h2>
+        </div>
+        <div className="flex flex-wrap gap-2" aria-label="Report trend metric">
+          {displayOrder.map((id) => {
+            const item = DEMONSTRATION_METRICS.find((candidate) => candidate.id === id) ?? DEMONSTRATION_METRICS[0];
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={metricId === id}
+                onClick={() => setMetricId(id)}
+                className="min-h-10 border border-slate-300 px-3 text-xs font-black text-slate-700 aria-pressed:border-blue-700 aria-pressed:bg-blue-700 aria-pressed:text-white"
+              >
+                {item.label === "Respirable Dust" ? "Respirable" : item.label}
+              </button>
+            );
+          })}
         </div>
       </div>
       <svg
-        viewBox="0 0 900 320"
-        className="mt-5 w-full"
+        className="mt-5 h-60 w-full border border-slate-200 bg-slate-50"
+        viewBox="0 0 640 220"
         role="img"
-        aria-label={`${metric} demonstration trend by location`}
+        aria-label={`${metric.label} historical trend for Work Zone`}
       >
-        <defs>
-          <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2563eb" stopOpacity="0.24" />
-            <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {[45, 105, 165, 225, 285].map((y, i) => (
-          <g key={y}>
-            <line x1="55" y1={y} x2="875" y2={y} stroke="#e2e8f0" />
-            <text x="12" y={y + 5} fill="#64748b" fontSize="12">
-              {40 - i * 10}
-            </text>
-          </g>
+        {[40, 85, 130, 175].map((y) => (
+          <line key={y} x1="35" y1={y} x2="615" y2={y} stroke="#cbd5e1" strokeWidth="1" />
         ))}
-        <line x1="55" y1="165" x2="875" y2="165" stroke="#d97706" strokeWidth="2" strokeDasharray="8 7" />
-        <line x1="55" y1="105" x2="875" y2="105" stroke="#dc2626" strokeWidth="2" strokeDasharray="8 7" />
-        <path d="M55 258 C120 251 165 242 230 246 C300 250 338 202 405 211 C470 220 515 116 575 130 C640 145 675 193 735 178 C790 164 830 218 875 205 L875 285 L55 285Z" fill="url(#trend-fill)" />
-        <path d="M55 258 C120 251 165 242 230 246 C300 250 338 202 405 211 C470 220 515 116 575 130 C640 145 675 193 735 178 C790 164 830 218 875 205" fill="none" stroke="#2563eb" strokeWidth="6" strokeLinecap="round" />
-        <circle cx="575" cy="130" r="8" fill="#fff" stroke="#dc2626" strokeWidth="4" />
-        {[[55, "06:00"], [230, "09:00"], [405, "12:00"], [575, "15:00"], [735, "18:00"], [875, "21:00"]].map(([x, label]) => (
-          <text key={label} x={x as number} y="310" textAnchor="middle" fill="#64748b" fontSize="12">
-            {label}
-          </text>
-        ))}
+        <path d="M35 178 C110 170 145 158 210 164 S320 120 390 132 S500 88 615 105" fill="none" stroke="#0369a1" strokeWidth="5" />
+        <circle cx="615" cy="105" r="6" fill="#0369a1" />
+        <text x="42" y="207" fill="#64748b" fontSize="11">
+          Earlier
+        </text>
+        <text x="570" y="207" fill="#64748b" fontSize="11">
+          Current
+        </text>
       </svg>
-      <p className="mt-3 text-xs leading-5 text-slate-500">
-        Simulated readings. Reference lines demonstrate configured project settings and are not workplace exposure limits.
+      <p className="mt-3 text-xs font-bold text-slate-600">
+        {metric.label} · {history.length} observations
       </p>
-    </div>
+    </section>
   );
 }
 
-function ExecutiveReport({ metric }: { readonly metric: string }) {
-  const cards = [
-    ["Locations online", "4 / 4", "100% coverage", "good"],
-    ["Open alerts", "1", "1 action · 0 overdue", "alert"],
-    ["Acknowledgement", "2 min", "Median response time", "good"],
-    ["Data availability", "99.9%", "3 min recorded gap", "good"],
-  ] as const;
+function EventRegister() {
   return (
-    <div className="space-y-6">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map(([label, value, detail, tone]) => (
-          <article
-            key={label}
-            className={`border-t-4 bg-white p-5 shadow-sm ${
-              tone === "alert" ? "border-red-600" : "border-emerald-600"
-            }`}
+    <section className="border border-slate-300 bg-white p-5 shadow-sm sm:p-7">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">Record Register</p>
+          <h2 className="mt-2 text-2xl font-black">Find a historical event quickly.</h2>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <label className="flex min-h-10 items-center gap-2 border border-slate-300 px-3 text-xs font-bold text-slate-600">
+            <MagnifyingGlassIcon className="size-4" aria-hidden="true" />
+            <span className="sr-only">Search records</span>
+            <input className="w-40 border-0 p-0 text-xs font-mono outline-none" value={INCIDENT_ID} readOnly aria-label="Search records" />
+          </label>
+          <button
+            type="button"
+            className="inline-flex min-h-10 items-center gap-2 border border-slate-300 px-3 text-xs font-black text-slate-700"
           >
-            <p className="text-xs font-black uppercase tracking-wide text-slate-500">
-              {label}
-            </p>
-            <p className="mt-3 text-3xl font-black text-slate-950">{value}</p>
-            <p className="mt-2 text-sm text-slate-600">{detail}</p>
-          </article>
-        ))}
-      </div>
-      <TrendChart metric={metric} />
-      <div className="grid gap-5 lg:grid-cols-2">
-        <div className="border border-slate-300 bg-white p-5">
-          <h3 className="font-black text-slate-950">Zone status</h3>
-          {[
-            ["Construction Site Entry Door", "Review", "18"],
-            ["Construction Site Exit Door", "Normal", "7"],
-            ["Shared Corridor", "Normal", "5"],
-            ["General Entry Door", "Action", "29"],
-          ].map(([name, status, value]) => (
-            <div
-              key={name}
-              className="grid grid-cols-[1fr_auto_auto] items-center gap-4 border-b border-slate-200 py-3 last:border-0"
-            >
-              <span className="text-sm font-semibold">{name}</span>
-              <span className="text-sm font-black">
-                {value} {PARTICULATE_UNIT}
-              </span>
-              <span
-                className={`px-2 py-1 text-xs font-black uppercase ${
-                  status === "Action"
-                    ? "bg-red-100 text-red-800"
-                    : status === "Review"
-                    ? "bg-amber-100 text-amber-900"
-                    : "bg-emerald-100 text-emerald-800"
-                }`}
-              >
-                {status}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="border border-slate-300 bg-white p-5">
-          <h3 className="font-black text-slate-950">Management attention</h3>
-          <ol className="mt-4 space-y-4">
-            <li>
-              <strong>1 action alert</strong>
-              <p className="text-sm text-slate-600">
-                Assigned to Jordan Lee; investigation in progress.
-              </p>
-            </li>
-            <li>
-              <strong>1 review condition</strong>
-              <p className="text-sm text-slate-600">
-                Acknowledged; monitoring continues.
-              </p>
-            </li>
-            <li>
-              <strong>No overdue responses</strong>
-              <p className="text-sm text-slate-600">
-                All demonstrated response targets remain within range.
-              </p>
-            </li>
-          </ol>
+            <FunnelIcon className="size-4" aria-hidden="true" />
+            Filters
+          </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-function RegisterReport({ session }: { readonly session: DemonstrationSession }) {
-  const snapshot = useSyncExternalStore(
-    session.subscribe,
-    session.getSnapshot,
-    session.getSnapshot,
-  );
-  const { incidentState } = snapshot;
-
-  const rows = [
-    [
-      incidentState.incidentId,
-      "General Entry Door",
-      incidentState.triggerCondition,
-      incidentState.assignedTo ?? "Jordan Lee",
-      incidentState.progressStatus,
-      "15 Aug · 10:44",
-    ],
-    ["INC-0041", "Construction Site Entry Door", "Review condition", "Maria Chen", "Closed", "15 Aug · 09:18"],
-    ["INC-0040", "Shared Corridor", "Review condition", "Jordan Lee", "Closed", "14 Aug · 16:07"],
-  ];
-
-  return (
-    <div className="overflow-x-auto border border-slate-300 bg-white">
-      <table className="w-full min-w-[58rem] text-left text-sm">
-        <thead className="bg-slate-950 text-xs uppercase tracking-wide text-white">
-          <tr>
-            {["Incident", "Location", "Trigger", "Assigned to", "Status", "Latest activity"].map((h) => (
-              <th key={h} className="px-4 py-4">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]} className="border-t border-slate-200">
-              {row.map((cell, i) => (
-                <td key={cell} className={`px-4 py-4 ${i === 0 ? "font-mono font-bold text-blue-700" : ""}`}>
-                  {cell}
-                </td>
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-[820px] border-collapse text-left text-xs">
+          <thead>
+            <tr className="border-y border-slate-200 text-[10px] font-black uppercase tracking-[0.1em] text-slate-500">
+              {[
+                "Date",
+                "Incident / event ID",
+                "Site",
+                "Zone",
+                "Monitoring location",
+                "Operational state",
+                "Event status",
+                "Assigned to",
+                "Report"
+              ].map((heading) => (
+                <th key={heading} className="px-3 py-3">
+                  {heading}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="border-t border-slate-300 bg-slate-50 p-5">
-        <h3 className="text-xl font-black text-slate-950">Selected incident evidence</h3>
-        <ol className="mt-3 grid gap-3 md:grid-cols-4">
-          {incidentState.events.length === 0 ? (
-            <li className="border-l-4 border-blue-600 bg-white p-3 text-sm font-semibold">
-              10:42 Alert opened
-            </li>
-          ) : (
-            incidentState.events.map((ev, i) => (
-              <li key={`${ev.type}-${i}`} className="border-l-4 border-blue-600 bg-white p-3 text-sm font-semibold">
-                {ev.type}
-              </li>
-            ))
-          )}
-        </ol>
+          </thead>
+          <tbody>
+            <tr className="border-b border-slate-200">
+              <td className="px-3 py-4 font-mono">00:02</td>
+              <td className="px-3 py-4 font-mono font-bold">{INCIDENT_ID}</td>
+              <td className="px-3 py-4 font-bold">Sydney Hospital Project</td>
+              <td className="px-3 py-4">Work Zone</td>
+              <td className="px-3 py-4 font-bold">Work Zone A</td>
+              <td className="px-3 py-4">
+                <StatePill tone="red">Action</StatePill>
+              </td>
+              <td className="px-3 py-4">
+                <StatePill tone="green">Resolved</StatePill>
+              </td>
+              <td className="px-3 py-4">Site Supervisor</td>
+              <td className="px-3 py-4 font-black text-blue-700">Available</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
+    </section>
   );
 }
 
-function AvailabilityReport() {
+function ReportPreview() {
   return (
-    <div className="grid gap-5 lg:grid-cols-[0.38fr_0.62fr]">
-      <div className="border border-slate-300 bg-slate-950 p-6 text-white">
-        <p className="text-xs font-black uppercase tracking-wide text-sky-300">
-          Overall availability
-        </p>
-        <p className="mt-4 text-6xl font-black">99.9%</p>
-        <p className="mt-3 text-slate-300">Across four configured demonstration locations.</p>
-      </div>
-      <div className="border border-slate-300 bg-white p-5">
-        <h3 className="font-black">Location coverage and device health</h3>
-        {[
-          ["Construction Site Entry Door", "100%", "Online"],
-          ["Construction Site Exit Door", "99.8%", "Online"],
-          ["Shared Corridor", "100%", "Online"],
-          ["General Entry Door", "99.9%", "Online"],
-        ].map((r) => (
-          <div key={r[0]} className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-slate-200 py-4 last:border-0">
-            <span className="font-semibold">{r[0]}</span>
-            <span className="font-black">{r[1]}</span>
-            <span className="text-emerald-700">● {r[2]}</span>
+    <section className="border border-slate-300 bg-white shadow-sm">
+      <div className="border-b-4 border-blue-700 p-5 sm:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xl font-black tracking-[0.12em] text-blue-900">VERIFAIR</p>
+            <p className="mt-1 text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+              Particulate Monitoring · Operational Event Report
+            </p>
           </div>
-        ))}
+          <div className="text-right text-xs text-slate-500">
+            <p>Generated report</p>
+            <p className="mt-1 font-mono font-bold">Scenario record</p>
+          </div>
+        </div>
+        <h2 className="mt-8 text-3xl font-black">Sydney Hospital Project</h2>
+        <p className="mt-1 text-sm font-bold text-slate-600">Work Zone · Work Zone A · {INCIDENT_ID}</p>
       </div>
-    </div>
-  );
-}
-
-function EvidencePack() {
-  return (
-    <div className="border border-slate-300 bg-white">
-      <div className="bg-slate-950 p-6 text-white">
-        <p className="text-xs font-black uppercase tracking-wide text-sky-300">
-          Controlled demonstration report
-        </p>
-        <h3 className="mt-2 text-3xl font-black">
-          Project-period monitoring evidence pack
-        </h3>
-        <p className="mt-3 text-slate-300">
-          Prepared for authorised management review · Version DEMO-1
-        </p>
+      <div className="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Event summary</p>
+          <dl className="mt-3 grid gap-3 text-sm">
+            <div className="flex justify-between border-b border-slate-100 pb-2">
+              <dt>Operational state</dt>
+              <dd className="font-black text-red-800">ACTION</dd>
+            </div>
+            <div className="flex justify-between border-b border-slate-100 pb-2">
+              <dt>Event status</dt>
+              <dd className="font-black text-emerald-800">RESOLVED</dd>
+            </div>
+            <div className="flex justify-between border-b border-slate-100 pb-2">
+              <dt>Created</dt>
+              <dd className="font-mono font-bold">00:02</dd>
+            </div>
+            <div className="flex justify-between border-b border-slate-100 pb-2">
+              <dt>Resolved</dt>
+              <dd className="font-mono font-bold">00:12</dd>
+            </div>
+          </dl>
+        </div>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Observation summary</p>
+          <div className="mt-3">
+            <ObservationSummary />
+          </div>
+        </div>
       </div>
-      <div className="grid gap-0 md:grid-cols-2">
-        {[
-          ["1. Project and monitoring scope", "Locations, selected metrics, reporting period and configured project settings."],
-          ["2. Data completeness statement", "Availability, device status, gaps and limitations for the reporting period."],
-          ["3. Trend and event analysis", "Time-series charts, review/action references and event annotations."],
-          ["4. Response evidence", "Acknowledgement, assignment, escalation, status notes and closure record."],
-          ["5. Review and approvals", "Reviewer comments, exceptions, issue owners and controlled sign-off."],
-          ["6. Appendices", "Detailed readings, event register and generated-report metadata."],
-        ].map(([h, p]) => (
-          <section key={h} className="border-b border-r border-slate-200 p-5">
-            <h4 className="font-black">{h}</h4>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{p}</p>
-          </section>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export function ReportingPage({
-  session: sessionProp,
-}: {
-  readonly session?: DemonstrationSession;
-}) {
-  const session = sessionProp ?? getSharedDemonstrationSession();
-  const [report, setReport] = useState<ReportType>("Executive summary");
-  const [period, setPeriod] = useState<Period>("Last 7 days");
-  const [zone, setZone] = useState<(typeof zones)[number]>("All locations");
-  const [metric, setMetric] = useState("PM2.5");
-  const [uploadedEvidence, setUploadedEvidence] = useState<{
-    name: string;
-    dataUrl: string;
-  } | null>(null);
-
-  useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem("verifair-demo-photo-evidence");
-      if (saved) setUploadedEvidence(JSON.parse(saved));
-    } catch {}
-  }, []);
-
-  return (
-    <>
-      <section className="border-b border-slate-200 bg-slate-100 py-10 sm:py-14">
-        <div className="container">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">
-            Reporting portal · demonstration data
+      <div className="grid gap-6 border-t border-slate-200 p-5 sm:p-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Operational history</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {[
+              "Configured trigger and alert",
+              "Notifications and acknowledgement",
+              "Assignment and investigation",
+              "Recorded action and comments",
+              "Subsequent observations",
+              "Review and resolution"
+            ].map((item) => (
+              <p key={item} className="border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-700">
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Review / resolution</p>
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            Operational event closed after review. This report is an operational record, not a regulatory, occupational hygiene or personal
+            exposure assessment.
           </p>
-          <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
-            <div>
-              <h1 className="max-w-4xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                Detailed monitoring reports built for action and review.
-              </h1>
-              <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">
-                Select a report, period, location and metric. Every view retains the operational context and evidence needed to understand what happened next.
-              </p>
-            </div>
-            <Link
-              href="/downloads/verifair-demonstration-report.pdf"
-              className="inline-flex min-h-12 items-center bg-slate-950 px-5 font-black text-white"
-            >
-              Download evidence pack ↓
-            </Link>
-          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <div className="mt-8 grid gap-4 border border-slate-300 bg-white p-5 md:grid-cols-2 xl:grid-cols-4">
-            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
-              Report type
-              <select
-                aria-label="Report type"
-                value={report}
-                onChange={(e) => setReport(e.target.value as ReportType)}
-                className="mt-2 block min-h-12 w-full border border-blue-400 bg-blue-50 px-3 text-sm font-bold normal-case text-slate-950"
+export function ReportingPage() {
+  return (
+    <main className="bg-white text-slate-950">
+      <section className="border-b border-slate-800 bg-slate-950 py-20 text-white sm:py-28">
+        <div className="container grid items-center gap-10 lg:grid-cols-[0.7fr_1.3fr]">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">VERIFAIR REPORTING</p>
+            <h1 className="mt-5 max-w-2xl text-5xl font-black leading-[0.98] tracking-tight sm:text-6xl">
+              Turn operational activity into a connected record.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-200">
+              VerifAir brings observations, alerts, response activity and recorded actions together into a clear operational history for
+              review and reporting.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="#record-centre" className="cta-primary inline-flex min-h-12 items-center justify-center px-6 font-black">
+                Explore the Record
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex min-h-12 items-center justify-center border border-white/50 px-6 font-black text-white hover:bg-white/10"
               >
-                {reports.map((x) => (
-                  <option key={x}>{x}</option>
-                ))}
-              </select>
-            </label>
-            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
-              Reporting period
-              <select
-                value={period}
-                onChange={(e) => setPeriod(e.target.value as Period)}
-                className="mt-2 block min-h-12 w-full border border-slate-300 bg-white px-3 text-sm font-bold normal-case"
-              >
-                {["Last 24 hours", "Last 7 days", "Last 30 days", "Project to date"].map(
-                  (x) => (
-                    <option key={x}>{x}</option>
-                  ),
-                )}
-              </select>
-            </label>
-            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
-              Location
-              <select
-                value={zone}
-                onChange={(e) => setZone(e.target.value as typeof zone)}
-                className="mt-2 block min-h-12 w-full border border-slate-300 bg-white px-3 text-sm font-bold normal-case"
-              >
-                {zones.map((x) => (
-                  <option key={x}>{x}</option>
-                ))}
-              </select>
-            </label>
-            <label className="text-xs font-black uppercase tracking-wide text-slate-500">
-              Metric
-              <select
-                value={metric}
-                onChange={(e) => setMetric(e.target.value)}
-                className="mt-2 block min-h-12 w-full border border-slate-300 bg-white px-3 text-sm font-bold normal-case"
-              >
-                {["PM1", "PM2.5", "Respirable dust", "PM10"].map((x) => (
-                  <option key={x}>{x}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <div className="mt-6 border-b border-slate-300 pb-4">
-            <div className="flex flex-wrap justify-between gap-3">
-              <div>
-                <p className="text-xs font-black uppercase tracking-wide text-blue-700">
-                  {report}
-                </p>
-                <h2 className="mt-1 text-2xl font-black">
-                  {zone} · {period}
-                </h2>
-              </div>
-              <p className="max-w-xl text-sm text-slate-600">
-                {reportDescriptions[report]}
-              </p>
+                Discuss Your Requirements
+              </Link>
             </div>
           </div>
-
-          <div className="mt-6">
-            {report === "Executive summary" ? (
-              <ExecutiveReport metric={metric} />
-            ) : report === "Particulate trends" ? (
-              <TrendChart metric={metric} />
-            ) : report === "Alert and response register" ? (
-              <RegisterReport session={session} />
-            ) : report === "Data quality and availability" ? (
-              <AvailabilityReport />
-            ) : (
-              <EvidencePack />
-            )}
+          <Image
+            src="/assets/reports-evidence-review.png"
+            alt="VerifAir RECORD operational review"
+            width={1536}
+            height={1024}
+            className="h-full max-h-[34rem] w-full object-cover"
+            priority
+            unoptimized
+          />
+        </div>
+      </section>
+      <section id="record-centre" className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">
+        <div className="container">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">RECORD · Operational history</p>
+          <div className="mt-5">
+            <RecordDetail />
           </div>
-
-          {report === "Alert and response register" ||
-          report === "Project-period evidence pack" ? (
-            <section className="mt-6 border border-slate-300 bg-white p-5">
-              <div className="flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-wide text-blue-700">
-                    Incident photo evidence
-                  </p>
-                  <h3 className="mt-1 text-xl font-black">
-                    Evidence attached to INC-0042
-                  </h3>
-                </div>
-                <p className="text-xs font-semibold text-slate-500">
-                  Available for authorised viewing and download
-                </p>
-              </div>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <article className="border border-slate-200 p-3">
-                  <Image
-                    src="/assets/workflow-site-investigation.webp"
-                    alt="Preloaded demonstration evidence showing a site investigation"
-                    width={900}
-                    height={600}
-                    className="aspect-[3/2] w-full object-cover"
-                  />
-                  <p className="mt-3 font-bold">
-                    Site investigation · preloaded evidence
-                  </p>
-                  <a
-                    href="/assets/workflow-site-investigation.webp"
-                    download
-                    className="mt-2 inline-flex text-sm font-black text-blue-700"
-                  >
-                    Download evidence
-                  </a>
-                </article>
-                {uploadedEvidence ? (
-                  <article className="border border-blue-300 bg-blue-50 p-3">
-                    <Image
-                      src={uploadedEvidence.dataUrl}
-                      alt="Uploaded incident photo evidence"
-                      width={900}
-                      height={600}
-                      unoptimized
-                      className="aspect-[3/2] w-full object-cover"
-                    />
-                    <p className="mt-3 font-bold">{uploadedEvidence.name}</p>
-                    <a
-                      href={uploadedEvidence.dataUrl}
-                      download={uploadedEvidence.name}
-                      className="mt-2 inline-flex text-sm font-black text-blue-700"
-                    >
-                      Download uploaded evidence
-                    </a>
-                  </article>
-                ) : (
-                  <article className="grid min-h-52 place-items-center border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm text-slate-600">
-                    Upload photo evidence from the workflow to add it to this incident report.
-                  </article>
-                )}
-              </div>
-            </section>
-          ) : null}
-
-          <p className="mt-6 text-xs font-semibold text-slate-500">
-            Generated from frozen, fictional demonstration records. Report settings and reference lines are illustrative and require project-specific competent review.
+        </div>
+      </section>
+      <section className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">
+        <div className="container">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-center">
+            <span className="border border-slate-300 bg-white px-5 py-3 text-sm font-black">
+              MONITORING
+              <br />
+              <span className="text-xs text-slate-500">Condition observed</span>
+            </span>
+            <ArrowRightIcon className="size-5 text-blue-700" aria-hidden="true" />
+            <span className="border border-slate-300 bg-white px-5 py-3 text-sm font-black">
+              WORKFLOW
+              <br />
+              <span className="text-xs text-slate-500">Response coordinated</span>
+            </span>
+            <ArrowRightIcon className="size-5 text-blue-700" aria-hidden="true" />
+            <span className="border-2 border-blue-700 bg-blue-50 px-7 py-4 text-base font-black text-blue-950">
+              REPORTING
+              <br />
+              <span className="text-xs text-blue-700">Connected record retained</span>
+            </span>
+          </div>
+          <p className="mx-auto mt-5 max-w-2xl text-center text-sm leading-6 text-slate-600">
+            The generated report is an output of the connected operational record, not the record itself.
           </p>
         </div>
       </section>
-      <PageDisclaimer />
-    </>
+      <section className="border-b border-slate-200 py-14 sm:py-20">
+        <div className="container">
+          <EventRegister />
+        </div>
+      </section>
+      <section className="border-b border-slate-200 py-14 sm:py-20">
+        <div className="container">
+          <TrendPanel />
+        </div>
+      </section>
+      <section className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">
+        <div className="container">
+          <ReportPreview />
+        </div>
+      </section>
+      <section className="border-b border-slate-200 py-14 sm:py-20">
+        <div className="container grid gap-6 md:grid-cols-3">
+          <article className="border border-slate-200 bg-white p-5">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-blue-700">Generate report</p>
+            <h2 className="mt-3 text-xl font-black">Reporting configured to project requirements.</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Custom reporting configurations can organise event details, observations, timestamps, response activity and review information
+              for operational needs.
+            </p>
+          </article>
+          <article className="border border-slate-200 bg-white p-5">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-blue-700">Retention</p>
+            <h2 className="mt-3 text-xl font-black">Keep the history available.</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Records and reports remain available according to configured retention requirements.
+            </p>
+          </article>
+          <article className="border border-slate-200 bg-white p-5">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-blue-700">Traceability</p>
+            <h2 className="mt-3 text-xl font-black">Find the relevant history quickly.</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Time-stamped operational records, recorded user actions and event chronology support practical review.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section className="border-b border-slate-200 py-12">
+        <div className="container">
+          <p className="max-w-3xl text-sm leading-6 text-slate-500">
+            VerifAir reporting supports operational review. It does not replace occupational hygiene assessment, personal exposure
+            monitoring, applicable regulatory obligations or professional interpretation where required.
+          </p>
+        </div>
+      </section>
+      <section className="bg-blue-700 py-16 text-white sm:py-20">
+        <div className="container flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-200">Continue to the next capability</p>
+            <h2 className="mt-3 max-w-2xl text-3xl font-black sm:text-4xl">Keep the operational history connected.</h2>
+          </div>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <Link href="/contact" className="cta-primary-inverse inline-flex min-h-12 items-center justify-center px-6 font-black">
+              Discuss Your Requirements
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="inline-flex min-h-12 items-center justify-center border border-white/60 px-6 font-black text-white hover:bg-white/10"
+            >
+              Explore How It Works
+            </Link>
+          </div>
+        </div>
+      </section>
+      <p className="container py-4 text-xs text-slate-500">Demonstration only. Sites, events, people and readings shown are fictional and are used to demonstrate VerifAir functionality.</p>
+    </main>
   );
 }

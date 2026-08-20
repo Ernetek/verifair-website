@@ -1,10 +1,21 @@
 import { BellAlertIcon, CheckCircleIcon, MapPinIcon, SignalIcon } from "@heroicons/react/24/outline";
 
-const zones = [
-  { name: "Hospital boundary", pm1: 8, pm25: 16, pm10: 42, status: "Normal" },
-  { name: "Loading dock", pm1: 18, pm25: 39, pm10: 86, status: "Elevated" },
-  { name: "Ward corridor", pm1: 7, pm25: 13, pm10: 28, status: "Normal" },
-  { name: "Work front A", pm1: 28, pm25: 58, pm10: 121, status: "Alert" }
+import {
+  DEMO_DISCLOSURE,
+  type VerifAirOperationalState,
+} from "@/lib/product-model";
+
+const zones: ReadonlyArray<{
+  name: string;
+  pm1: number;
+  pm25: number;
+  pm10: number;
+  status: VerifAirOperationalState;
+}> = [
+  { name: "Hospital boundary", pm1: 8, pm25: 16, pm10: 42, status: "NORMAL" },
+  { name: "Loading dock", pm1: 18, pm25: 39, pm10: 86, status: "ATTENTION" },
+  { name: "Ward corridor", pm1: 7, pm25: 13, pm10: 28, status: "NORMAL" },
+  { name: "Work front A", pm1: 28, pm25: 58, pm10: 121, status: "ACTION" }
 ];
 
 const statCards = [
@@ -21,7 +32,7 @@ export function DashboardPreview() {
           <p className="text-sm font-bold text-slate-400">VerifAir dashboard</p>
           <h3 className="text-xl font-black">North Wing Redevelopment</h3>
         </div>
-        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-slate-200">Demonstration data</span>
+        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-slate-200">{DEMO_DISCLOSURE}</span>
       </div>
       <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="border-b border-white/10 p-5 lg:border-b-0 lg:border-r">
@@ -40,7 +51,7 @@ export function DashboardPreview() {
                 <tr>
                   <th className="p-3">Zone</th>
                   <th className="p-3">PM1</th>
-                  <th className="p-3">PM2.5</th>
+                  <th className="p-3">PM10</th>
                   <th className="p-3">PM2.5</th>
                   <th className="p-3">Status</th>
                 </tr>
@@ -52,7 +63,7 @@ export function DashboardPreview() {
                     <td className="p-3 font-mono">{zone.pm1}</td>
                     <td className="p-3 font-mono">{zone.pm25}</td>
                     <td className="p-3 font-mono">{zone.pm10}</td>
-                    <td className={`p-3 font-bold ${zone.status === "Alert" ? "text-red-300" : zone.status === "Elevated" ? "text-amber-300" : "text-emerald-300"}`}>
+                    <td className={`p-3 font-bold ${zone.status === "ACTION" ? "text-red-300" : zone.status === "ATTENTION" ? "text-amber-300" : "text-emerald-300"}`}>
                       {zone.status}
                     </td>
                   </tr>
@@ -60,7 +71,7 @@ export function DashboardPreview() {
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-xs text-slate-400">Readings shown in ug/m3 for demonstration only. Project thresholds must be configured to suit professional monitoring strategy.</p>
+          <p className="mt-3 text-xs text-slate-400">{DEMO_DISCLOSURE} Operational triggers require project-specific configuration.</p>
         </div>
         <div className="p-5">
           <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-white/10 bg-[linear-gradient(135deg,#132033,#0b1220)]">
@@ -69,7 +80,7 @@ export function DashboardPreview() {
                 key={zone.name}
                 className={`absolute flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold backdrop-blur ${index === 0 ? "left-[12%] top-[22%]" : index === 1 ? "right-[11%] top-[33%]" : index === 2 ? "left-[18%] bottom-[18%]" : "right-[18%] bottom-[22%]"}`}
               >
-                <MapPinIcon className={zone.status === "Alert" ? "h-4 w-4 text-red-300" : zone.status === "Elevated" ? "h-4 w-4 text-amber-300" : "h-4 w-4 text-emerald-300"} />
+                <MapPinIcon className={zone.status === "ACTION" ? "h-4 w-4 text-red-300" : zone.status === "ATTENTION" ? "h-4 w-4 text-amber-300" : "h-4 w-4 text-emerald-300"} />
                 {zone.name}
               </div>
             ))}
@@ -79,10 +90,10 @@ export function DashboardPreview() {
           <div className="mt-5">
             <h4 className="font-black">Recent activity</h4>
             <ul className="mt-3 grid gap-3 text-sm text-slate-300">
-              <li>10:42 Alert raised at Work front A.</li>
-              <li>10:37 Loading dock moved to elevated watch.</li>
+              <li>10:42 ACTION alert raised at Work front A.</li>
+              <li>10:37 Loading dock moved to ATTENTION.</li>
               <li>10:31 Gateway synchronised buffered records.</li>
-              <li>10:18 Hospital boundary returned to normal.</li>
+              <li>10:18 Hospital boundary returned to NORMAL.</li>
             </ul>
           </div>
         </div>

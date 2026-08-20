@@ -1,15 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+
+import { DEMO_DISCLOSURE } from "@/lib/product-model";
 import {
   ArrowPathIcon,
   ComputerDesktopIcon,
-  DevicePhoneMobileIcon,
   CpuChipIcon,
   CloudIcon,
-  GlobeAltIcon,
-  LifebuoyIcon,
-  ShieldCheckIcon,
-  WrenchScrewdriverIcon,
   SignalIcon,
 } from "@heroicons/react/24/outline";
 
@@ -51,17 +48,17 @@ const architectureLayers = [
     description: "Particulate sensing across configured sites and zones.",
   },
   {
-    title: "VERIFAIR EDGE",
-    connector: "↓ Bluetooth technology",
+    title: "EDGE COMPUTING & LOCAL INTELLIGENCE",
+    connector: "↓ BLE / local communications",
     Icon: CpuChipIcon,
     iconTone: "text-cyan-600",
-    description: "Receives nearby monitor readings over Bluetooth and prepares them for onward transmission.",
+    description: "VerifAir Edge provides local computing and intelligence close to the monitoring environment.",
   },
   {
-    title: "INDEPENDENT CELLULAR COMMUNICATIONS",
+    title: "TELSTRA PRIMARY + OPTUS SECONDARY",
     Icon: ArrowPathIcon,
     iconTone: "text-emerald-600",
-    description: "Provides a separate cellular route for operational telemetry without relying on the facility LAN or Wi-Fi.",
+    description: "Two mobile network paths are designed to support resilient communications without relying on the customer's local network.",
   },
   {
     title: "VERIFAIR PLATFORM",
@@ -107,49 +104,6 @@ const processCards = [
   },
 ] as const;
 
-const capabilityItems = [
-  {
-    title: "MULTI-SITE & MULTI-ZONE",
-    body: "Scale from multiple zones on one project to multiple sites from one central operational view.",
-    Icon: GlobeAltIcon,
-  },
-  {
-    title: "PORTABLE",
-    body: "Move monitoring zones as construction progresses and project requirements change.",
-    Icon: DevicePhoneMobileIcon,
-  },
-  {
-    title: "INDEPENDENT",
-    body: "Sensor telemetry does not require connection to the facility's operational LAN or Wi-Fi.",
-    Icon: ShieldCheckIcon,
-  },
-  {
-    title: "RESILIENT",
-    body: "Dual-provider connectivity, local buffering, system-health monitoring, watchdog processes and automated recovery support resilient operation.",
-    Icon: ArrowPathIcon,
-  },
-  {
-    title: "INDUSTRIAL EDGE",
-    body: "Industrial-grade Edge hardware designed for deployment close to the monitored work area.",
-    Icon: CpuChipIcon,
-  },
-  {
-    title: "REMOTE SUPPORT",
-    body: "Gateway health, diagnostics, software updates and security patching can be managed remotely.",
-    Icon: LifebuoyIcon,
-  },
-  {
-    title: "CALIBRATION & SERVICE",
-    body: "Calibration and service requirements can be coordinated as part of the VerifAir service model.",
-    Icon: WrenchScrewdriverIcon,
-  },
-  {
-    title: "LONG-TERM RECORDS",
-    body: "Generated operational records and reports remain organised for project review and reporting.",
-    Icon: CloudIcon,
-  },
-] as const;
-
 function ArchitectureStorySection() {
   return (
     <section className="border-b border-slate-200 bg-white py-10 sm:py-12">
@@ -160,7 +114,7 @@ function ArchitectureStorySection() {
             From distributed sensing to one operational view.
           </h2>
           <p className="mt-3 text-base font-bold leading-7 text-slate-700">
-            Multi-site. Multi-zone. One operational view.
+            Visibility across every monitoring location, scaling up to a full portfolio.
           </p>
         </div>
 
@@ -238,7 +192,7 @@ export function DemonstrationOverview() {
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">{item.label}</p>
                 <h2 className="mt-2 text-2xl font-black text-slate-950">{item.title}</h2>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-                <Link href={item.href} className="mt-5 inline-flex min-h-12 items-center justify-center self-end bg-blue-700 px-5 font-black text-white hover:bg-blue-800">
+                <Link href={item.href} className="cta-primary mt-5 inline-flex min-h-12 items-center justify-center self-end px-5 font-black">
                   {item.action} →
                 </Link>
               </div>
@@ -246,35 +200,10 @@ export function DemonstrationOverview() {
           ))}
         </div>
 
-        <p className="mt-5 text-xs font-semibold text-slate-500">All scenes, readings and records are simulated demonstration material.</p>
+        <p className="mt-5 text-xs font-semibold text-slate-500">{DEMO_DISCLOSURE}</p>
       </div>
     </section>
   );
 }
 
 export { ArchitectureStorySection };
-
-export function CapabilitySection() {
-  return (
-    <section className="border-b border-slate-200 bg-slate-50 py-10 sm:py-12" aria-labelledby="capability-heading">
-      <div className="container">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">BUILT FOR REAL PROJECTS</p>
-        <h2 id="capability-heading" className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-          Operational capabilities for changing projects.
-        </h2>
-        <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-0 border-y border-slate-200 lg:grid-cols-4">
-          {capabilityItems.map(({ title, body, Icon }, index) => (
-            <article
-              key={title}
-              className={`border-b border-slate-200 py-5 ${index % 2 === 1 ? "border-l pl-5" : ""} ${index >= 6 ? "border-b-0" : ""} ${index >= 4 ? "lg:border-b-0" : ""} lg:pl-0 ${index % 4 !== 0 ? "lg:border-l lg:pl-5" : ""}`}
-            >
-              <Icon className="h-6 w-6 text-blue-700" aria-hidden="true" />
-              <h3 className="mt-3 text-xs font-black leading-5 tracking-[0.08em] text-slate-950 sm:text-sm">{title}</h3>
-              <p className="mt-2 text-xs leading-5 text-slate-600 sm:text-sm">{body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}

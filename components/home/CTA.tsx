@@ -20,7 +20,7 @@ export function FinalCTA() {
 
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <Link
-                className="inline-flex min-h-14 items-center justify-center rounded-xl !bg-blue-500 px-7 font-bold !text-slate-950 shadow-sm transition hover:!bg-blue-400 hover:!text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
+                className="cta-primary inline-flex min-h-14 items-center justify-center rounded-xl px-7 font-bold shadow-sm focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
                 href="/contact"
               >
                 Discuss Your Project
