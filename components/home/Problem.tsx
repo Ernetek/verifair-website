@@ -1,22 +1,29 @@
 import Image from "next/image";
+import { EyeSlashIcon, MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 import { Reveal } from "./Reveal";
 
 const problemCards = [
   {
-    number: "01",
     title: "NOT ALWAYS VISIBLE",
     body: "Particulate conditions can change without an obvious visual indication.",
+    icon: EyeSlashIcon,
+    tone: "border-red-200 bg-red-50/70 text-red-900",
+    iconTone: "border-red-200 bg-white/70 text-red-700",
   },
   {
-    number: "02",
     title: "MULTIPLE LOCATIONS",
     body: "Conditions may differ between work areas, boundaries and nearby occupied environments.",
+    icon: MapPinIcon,
+    tone: "border-amber-200 bg-amber-50/70 text-amber-950",
+    iconTone: "border-amber-200 bg-white/70 text-amber-700",
   },
   {
-    number: "03",
     title: "SHARED RESPONSE",
     body: "Project teams need a shared view to recognise changing conditions and coordinate what happens next.",
+    icon: UserGroupIcon,
+    tone: "border-emerald-200 bg-emerald-50/70 text-emerald-950",
+    iconTone: "border-emerald-200 bg-white/70 text-emerald-700",
   },
 ];
 
@@ -65,22 +72,25 @@ export function ProblemSection() {
         </Reveal>
 
         <div className="grid gap-4 lg:col-span-2 lg:grid-cols-3">
-          {problemCards.map((item) => (
+          {problemCards.map((item) => {
+            const Icon = item.icon;
+            return (
             <article
-              key={item.number}
-              className="border border-slate-200 bg-slate-50 p-6 shadow-sm"
+              key={item.title}
+              className={`border p-5 shadow-sm ${item.tone}`}
             >
-              <span className="font-mono text-sm font-bold text-blue-600">
-                {item.number}
+              <span className={`grid size-9 place-items-center border ${item.iconTone}`}>
+                <Icon className="size-5" aria-hidden="true" />
               </span>
-              <h3 className="mt-5 text-lg font-black leading-tight tracking-tight text-slate-950">
+              <h3 className="mt-4 text-base font-black leading-tight sm:text-lg">
                 {item.title}
               </h3>
-              <p className="mt-4 text-base leading-7 text-slate-600">
+              <p className="mt-2 text-sm leading-6 text-slate-700">
                 {item.body}
               </p>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

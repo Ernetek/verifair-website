@@ -28,8 +28,9 @@ describe("Part 2 homepage product presentation", () => {
       expect(index).toBeGreaterThan(previous);
       previous = index;
     }
-    expect(source).toContain("one project, multiple monitoring locations");
-    expect(source).toContain("Scaling capability: multiple projects / portfolio");
+    expect(source).not.toContain("one project, multiple monitoring locations");
+    expect(source).not.toContain("Scaling capability: multiple projects / portfolio");
+    expect(source).not.toContain("A single project with several monitoring locations");
   });
 
   it("makes Respirable Dust primary and keeps the other measurements secondary", () => {
@@ -98,6 +99,48 @@ describe("Part 2 homepage product presentation", () => {
     }
     expect(source).toContain("Telstra primary with Optus secondary connectivity.");
     expect(source).not.toMatch(/dual SIM/i);
+  });
+
+  it("presents every approved capability in a multi-card horizontal rail", () => {
+    const source = read("components/home/PilotDeployment.tsx");
+
+    expect(source).toContain('aria-roledescription="carousel"');
+    expect(source).not.toContain("capabilityRailSets");
+    expect(source).toContain("overflow-x-auto");
+    expect(source).toContain("w-[78vw]");
+    expect(source).toContain("lg:w-[18rem]");
+    expect(source).toContain('aria-label="Previous capability"');
+    expect(source).toContain('aria-label="Next capability"');
+    expect(source).toContain('event.key === "ArrowLeft"');
+    expect(source).toContain('event.key === "ArrowRight"');
+    expect(source).not.toContain("aria-live");
+  });
+
+  it("moves capabilities automatically while preserving interaction pauses", () => {
+    const source = read("components/home/PilotDeployment.tsx");
+
+    expect(source).toContain("useReducedMotion");
+    expect(source).toContain("onPointerDown");
+    expect(source).toContain("window.setInterval");
+    expect(source).toContain("pauseRef.current.hover = true");
+    expect(source).toContain("pauseRef.current.focus = true");
+    expect(source).toContain("document.hidden");
+    expect(source).not.toContain("ResizeObserver");
+    expect(source).not.toContain("desktopMotion");
+  });
+
+  it("presents industries in a healthcare-first accessible accordion", () => {
+    const source = read("components/home/Industries.tsx");
+
+    expect(source).toContain('title: "Healthcare"');
+    expect(source).toContain('/assets/healthcare_construction.webp');
+    expect(source).toContain("useState(0)");
+    expect(source).toContain("aria-expanded={expanded}");
+    expect(source).toContain("aria-controls={panelId}");
+    expect(source).toContain('role="region"');
+    expect(source).toContain("lg:grid-cols-[minmax(18rem,0.78fr)_minmax(0,1.22fr)]");
+    expect(source).not.toContain('aria-roledescription="carousel"');
+    expect(source).not.toContain("industryRailSets");
   });
 
   it("uses mobile-first dashboard grids without horizontal page overflow", () => {

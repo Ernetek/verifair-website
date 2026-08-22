@@ -68,6 +68,47 @@ describe("DemonstrationSession Integration", () => {
     expect(snap.incidentState.opened).toBe(false);
   });
 
+  it("keeps environmental recovery independent from the outstanding incident", () => {
+    const session = new DemonstrationSession(undefined, false);
+
+    session._testOnlySeek(60_000);
+    expect(session.getSnapshot().incidentState.opened).toBe(false);
+
+    session._testOnlySeek(120_000);
+    expect(session.getSnapshot().incidentState.opened).toBe(true);
+    expect(session.getSnapshot().incidentState.incidentId).toBe("INC-0042");
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+
+    session._testOnlySeek(480_000);
+    expect(session.getSnapshot().incidentState.opened).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+  });
+
+  it("requires explicit closure after acknowledgement, assignment, response and comment", () => {
+    const session = new DemonstrationSession(undefined, false);
+    session._testOnlySeek(120_000);
+
+    expect(session.dispatchIncidentEvent({ type: "ACKNOWLEDGED", acknowledgedBy: "Jordan" }).ok).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+    expect(session.dispatchIncidentEvent({ type: "ASSIGNED", assignee: "Jordan" }).ok).toBe(true);
+    expect(session.dispatchIncidentEvent({ type: "INVESTIGATION_STARTED", startedBy: "Jordan" }).ok).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+    expect(session.dispatchIncidentEvent({ type: "RESPONSE_RECORDED", responseType: "Local response", details: "Controls reviewed.", performedBy: "Jordan" }).ok).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+    expect(session.dispatchIncidentEvent({ type: "RESPONSE_NOTE_ADDED", author: "Jordan", note: "Follow-up retained." }).ok).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+
+    session._testOnlySeek(480_000);
+    expect(session.getSnapshot().incidentState.phase).toBe("Investigate");
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+    expect(session.dispatchIncidentEvent({ type: "VERIFICATION_STARTED", verifier: "Jordan" }).ok).toBe(true);
+    expect(session.dispatchIncidentEvent({ type: "VERIFICATION_COMPLETED", verifier: "Jordan", outcome: "sufficient_to_close", notes: "Ready to close." }).ok).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(false);
+    expect(session.dispatchIncidentEvent({ type: "INCIDENT_CLOSED", category: "Review complete", details: "Explicitly resolved.", closedBy: "Jordan" }).ok).toBe(true);
+    expect(session.getSnapshot().incidentState.closed).toBe(true);
+    expect(session.getSnapshot().incidentState.phase).toBe("Closed");
+  });
+
   it("allows the demo to be started explicitly so monitoring can create the incident workflow", () => {
     const session = new DemonstrationSession(undefined, false);
 

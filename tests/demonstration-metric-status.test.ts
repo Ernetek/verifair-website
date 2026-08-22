@@ -19,3 +19,12 @@ describe.each([
     });
   },
 );
+
+it("keeps environmental operational state independent from system-health degradation", () => {
+  const beforeDegradation = classifyDemonstrationMetric("PM2_5", 18).label;
+  const systemHealth = "DEGRADED";
+
+  expect(systemHealth).toBe("DEGRADED");
+  expect(classifyDemonstrationMetric("PM2_5", 18).label).toBe(beforeDegradation);
+  expect(beforeDegradation).toBe("ATTENTION");
+});

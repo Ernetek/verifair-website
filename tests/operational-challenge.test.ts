@@ -21,6 +21,13 @@ describe("operational challenge", () => {
     expect(source).toContain("NOT ALWAYS VISIBLE");
     expect(source).toContain("MULTIPLE LOCATIONS");
     expect(source).toContain("SHARED RESPONSE");
+    expect(source).toContain("EyeSlashIcon");
+    expect(source).toContain("MapPinIcon");
+    expect(source).toContain("UserGroupIcon");
+    expect(source).toContain("bg-red-50/70");
+    expect(source).toContain("bg-amber-50/70");
+    expect(source).toContain("bg-emerald-50/70");
+    expect(source).not.toContain('number: "01"');
   });
 
   it("moves the detailed measurement limitation out of the visible observations", () => {

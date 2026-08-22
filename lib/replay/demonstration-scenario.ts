@@ -11,11 +11,27 @@ export const DEMONSTRATION_METRICS = [
   PARTICULATE_METRICS[3],
 ] as const;
 
+export const DEMONSTRATION_DEVICE_HEALTH = {
+  gateway: {
+    name: "Site Gateway 01",
+    serialNumber: "VFA-GW-DEMO-01",
+    status: "ONLINE",
+    connection: "Independent cellular",
+    firmware: "Demo 1.8.4",
+  },
+  sensors: [
+    { monitorId: "WORK_ZONE_A", serialNumber: "VFA-PM-DEMO-101", batteryPercent: 94, nextCalibration: "15 Sep 2026" },
+    { monitorId: "OCCUPIED_INTERFACE", serialNumber: "VFA-PM-DEMO-102", batteryPercent: 88, nextCalibration: "18 Sep 2026" },
+    { monitorId: "SHARED_CORRIDOR", serialNumber: "VFA-PM-DEMO-103", batteryPercent: 91, nextCalibration: "21 Sep 2026" },
+    { monitorId: "EXTERNAL_BOUNDARY", serialNumber: "VFA-PM-DEMO-104", batteryPercent: 86, nextCalibration: "24 Sep 2026" },
+  ],
+} as const;
+
 const monitors = [
-  { id: "WORK_ZONE_A", name: "Work Zone A" },
-  { id: "OCCUPIED_INTERFACE", name: "Occupied Interface" },
-  { id: "SHARED_CORRIDOR", name: "Shared Corridor" },
-  { id: "EXTERNAL_BOUNDARY", name: "External Boundary" },
+  { id: "WORK_ZONE_A", name: "Zone A · Monitoring Location 1" },
+  { id: "OCCUPIED_INTERFACE", name: "Zone A · Monitoring Location 2" },
+  { id: "SHARED_CORRIDOR", name: "Zone A · Monitoring Location 3" },
+  { id: "EXTERNAL_BOUNDARY", name: "Zone A · Monitoring Location 4" },
 ] as const;
 
 const rows = [
@@ -23,6 +39,10 @@ const rows = [
   [0, "OCCUPIED_INTERFACE", 4, 7, 6, 12],
   [0, "SHARED_CORRIDOR", 3, 5, 4, 9],
   [0, "EXTERNAL_BOUNDARY", 6, 9, 8, 15],
+  [60_000, "WORK_ZONE_A", 12, 18, 16, 28],
+  [60_000, "OCCUPIED_INTERFACE", 4, 7, 6, 12],
+  [60_000, "SHARED_CORRIDOR", 3, 5, 4, 9],
+  [60_000, "EXTERNAL_BOUNDARY", 6, 9, 8, 15],
   [120_000, "WORK_ZONE_A", 16, 26, 21, 38],
   [120_000, "OCCUPIED_INTERFACE", 5, 8, 7, 14],
   [120_000, "SHARED_CORRIDOR", 4, 6, 5, 11],
@@ -35,11 +55,31 @@ const rows = [
   [360_000, "OCCUPIED_INTERFACE", 6, 10, 8, 16],
   [360_000, "SHARED_CORRIDOR", 4, 7, 6, 12],
   [360_000, "EXTERNAL_BOUNDARY", 7, 12, 10, 19],
-  [480_000, "WORK_ZONE_A", 11, 17, 14, 27],
+  [480_000, "WORK_ZONE_A", 7, 14, 14, 27],
   [480_000, "OCCUPIED_INTERFACE", 5, 8, 7, 13],
   [480_000, "SHARED_CORRIDOR", 3, 6, 5, 10],
   [480_000, "EXTERNAL_BOUNDARY", 6, 10, 8, 16],
 ] as const;
+
+const stableTrendShape = [-0.08, 0.04, -0.03, 0.09, -0.05, 0.06, 0] as const;
+const risingTrendShape = [-0.34, -0.27, -0.22, -0.16, -0.11, -0.05, 0] as const;
+const fallingTrendShape = [0.34, 0.27, 0.21, 0.15, 0.1, 0.04, 0] as const;
+
+export function getDemonstrationRespirableDustTrend(monitorId: string, offsetMs: number): number[] {
+  const latestRow = [...rows]
+    .reverse()
+    .find(([rowOffset, rowMonitorId]) => rowOffset <= offsetMs && rowMonitorId === monitorId);
+  const latest = latestRow?.[4] ?? 0;
+  const workZoneShape = offsetMs >= 360_000
+    ? fallingTrendShape
+    : offsetMs >= 60_000
+      ? risingTrendShape
+      : stableTrendShape;
+  const shape = monitorId === "WORK_ZONE_A" ? workZoneShape : stableTrendShape;
+  return shape.map((relativeChange, index) => index === shape.length - 1
+    ? latest
+    : Math.max(0, Math.round(latest * (1 + relativeChange) * 10) / 10));
+}
 
 function timestampAt(offsetMs: number): string {
   return new Date(Date.parse(START_TIMESTAMP) + offsetMs).toISOString();
@@ -63,7 +103,7 @@ const observations: Observation[] = rows.flatMap(
 
 const definition: ScenarioDefinition = {
   id: "VERIFAIR_PUBLIC_CONSTRUCTION_DEMO",
-  version: "2026-08-13.1",
+  version: "2026-08-23.1",
   startTimestamp: START_TIMESTAMP,
   durationMs: 480_000,
   interpolationPolicy: "hold-last-known-value",
@@ -84,7 +124,7 @@ const definition: ScenarioDefinition = {
       openedTimestamp: timestampAt(120_000),
       title: "Configured alert triggered and site contact notified",
       description:
-        "A review was started for Work Zone A and the nominated demonstration contact received the notification.",
+        "A review was started for Zone A, Monitoring Location 1, and the nominated demonstration contact received the notification.",
       severity: "review",
       category: "environmental-observation",
     },

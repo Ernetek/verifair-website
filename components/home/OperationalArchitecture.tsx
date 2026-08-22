@@ -73,19 +73,6 @@ export function OperationalArchitectureSection() {
           ))}
         </ol>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-          <p className="inline-flex items-center gap-2 border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-black uppercase tracking-[0.08em] text-blue-800">
-            Primary: one project, multiple monitoring locations
-          </p>
-          <p className="inline-flex items-center gap-2 border border-slate-200 bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
-            Scaling capability: multiple projects / portfolio
-          </p>
-        </div>
-
-        <p className="mt-5 max-w-4xl text-sm leading-6 text-slate-600">
-          A single project with several monitoring locations is a complete VerifAir use case. The same platform scales up to a portfolio
-          view when a team needs visibility across multiple projects.
-        </p>
       </div>
     </section>
   );
