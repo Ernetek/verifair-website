@@ -20,6 +20,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { selectLatestObservation } from "@/lib/replay/selectors";
 import {
   DEMONSTRATION_DEVICE_HEALTH,
+  getDemonstrationMetricTrendSeries,
   getDemonstrationRespirableDustTrend,
   publicDemonstrationScenario,
 } from "@/lib/replay/demonstration-scenario";
@@ -246,36 +247,45 @@ function MonitoringTile({ snapshot, monitorId, selected, onSelect }: {
 }
 
 function Trend({ snapshot, monitorId, metricId, onChange }: { snapshot: ReturnType<DemonstrationSession["getSnapshot"]>; monitorId: string; metricId: MetricId; onChange: (metric: MetricId) => void }) {
-  const points = publicDemonstrationScenario.observations
-    .filter((observation) => observation.monitorId === monitorId && observation.metricId === metricId && observation.offsetMs <= snapshot.replayState.offsetMs)
-    .slice(-6);
-  const values = points.map((point) => (point.reading.status === "available" ? point.reading.value : 0));
+  const values = getDemonstrationMetricTrendSeries(monitorId, metricId, snapshot.replayState.offsetMs);
   const latest = currentValue(snapshot, monitorId, metricId);
   const threshold = metricId === "RESPIRABLE_DUST" ? { attention: 25, action: 50 } : metricId === "PM1" ? { attention: 8, action: 20 } : metricId === "PM2_5" ? { attention: 15, action: 25 } : { attention: 30, action: 50 };
   const max = Math.max(latest, threshold.action, ...values, 1);
   const x = (index: number) => 38 + (index / Math.max(values.length - 1, 1)) * 560;
   const y = (value: number) => 184 - (value / max) * 150;
   const path = values.length > 1 ? values.map((value, index) => `${index ? "L" : "M"}${x(index)} ${y(value)}`).join(" ") : `M38 ${y(latest)} L598 ${y(latest)}`;
+  const smoothedPath = values.length > 1
+    ? values.map((value, index) => {
+      const prev = values[index - 1] ?? value;
+      const next = values[index + 1] ?? value;
+      const smoothed = (prev + value + next) / 3;
+      return `${index ? "L" : "M"}${x(index)} ${y(smoothed)}`;
+    }).join(" ")
+    : path;
+  const timelineLabels = values.map((_, index) => {
+    const hoursAgo = (values.length - 1 - index) * 2;
+    return hoursAgo === 0 ? "Now" : `-${hoursAgo}h`;
+  });
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">LIVE DAILY TREND</p>
-          <p className="mt-1 text-sm font-bold text-slate-900">TODAY · {metrics.find((metric) => metric.id === metricId)?.label}</p>
+          <p className="mt-1 text-sm font-bold text-slate-900">2-hour timeline · {metrics.find((metric) => metric.id === metricId)?.label}</p>
         </div>
         <MetricSelector selected={metricId} onChange={onChange} />
       </div>
       <div className="mt-3 overflow-hidden border border-slate-200 bg-slate-50">
-        <svg className="h-48 w-full" viewBox="0 0 640 220" role="img" aria-label={`${metricId} live daily trend with latest reading ${latest} ${PARTICULATE_UNIT}`}>
+        <svg className="h-52 w-full" viewBox="0 0 640 230" role="img" aria-label={`${metricId} live daily trend with latest reading ${latest} ${PARTICULATE_UNIT}`}>
           {[35, 85, 135, 185].map((line) => <line key={line} x1="38" y1={line} x2="598" y2={line} stroke="#e2e8f0" />)}
           <line x1="38" y1={y(threshold.attention)} x2="598" y2={y(threshold.attention)} stroke="#d97706" strokeDasharray="6 4" />
           <line x1="38" y1={y(threshold.action)} x2="598" y2={y(threshold.action)} stroke="#dc2626" strokeDasharray="6 4" />
           <text x="4" y="39" fontSize="10" fill="#64748b">{max} {PARTICULATE_UNIT}</text>
           <text x="4" y="187" fontSize="10" fill="#64748b">0</text>
-          <text x="42" y="207" fontSize="10" fill="#64748b">Earlier</text>
-          <text x="560" y="207" fontSize="10" fill="#64748b">Now</text>
+          <path d={smoothedPath} fill="none" stroke="#7dd3fc" strokeWidth="3" strokeDasharray="4 4" strokeLinecap="round" strokeLinejoin="round" />
           <path d={path} fill="none" stroke="#0369a1" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
           <circle cx={values.length > 1 ? x(values.length - 1) : 598} cy={y(latest)} r="6" fill="#0369a1" stroke="white" strokeWidth="2"><title>{`Latest reading: ${latest} ${PARTICULATE_UNIT}`}</title></circle>
+          {timelineLabels.map((label, index) => <text key={label} x={x(index) - 9} y="221" fontSize="10" fill="#64748b">{label}</text>)}
         </svg>
       </div>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-600">
@@ -535,15 +545,21 @@ export function HomepageInteractiveDemo() {
             <div>
               <div className="flex items-center justify-between gap-3">
                 <h3 id="demo-sequence-heading" className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Demo sequence</h3>
-                {currentStepIndex === 0 ? <button type="button" onClick={completeGuidedStep} className="min-h-10 bg-blue-600 px-3 text-xs font-black text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">START DEMO</button> : <strong className="font-mono text-[10px] text-slate-700">{currentStepIndex + 1}/{sequenceSteps.length} · {currentStep.label}</strong>}
+                <strong className="font-mono text-[10px] text-slate-700">{currentStepIndex + 1}/{sequenceSteps.length} · {currentStep.label}</strong>
               </div>
               <div className="mt-2 flex items-center gap-1.5" aria-label={`Step ${currentStepIndex + 1} of ${sequenceSteps.length}`}>{sequenceSteps.map((step, index) => <span key={step.label} className={`h-2 rounded-full transition-all ${index === currentStepIndex ? "w-8 bg-slate-950" : index < currentStepIndex ? "w-2 bg-sky-600" : "w-2 bg-slate-300"}`} />)}</div>
             </div>
             <div className="min-w-0 border-l-2 border-sky-500 pl-3">
-              <h4 className="text-sm font-black text-slate-950">{currentStep.title}</h4>
-              <p className="mt-1 text-xs leading-4 text-slate-600">{currentStep.description} <strong className="text-slate-800">{stepInstruction}</strong></p>
+              <h4 className="text-sm font-black text-slate-950">Current stage</h4>
+              <p className="mt-1 text-xs leading-4 text-slate-600">Stage focus: {currentStep.title}</p>
             </div>
-            <div className="flex flex-wrap items-center gap-2 lg:max-w-[28rem] lg:justify-end">
+            <div className="grid gap-2 lg:min-w-[28rem] lg:justify-items-end">
+              <div className="w-full max-w-md border-l-2 border-sky-500 pl-3 text-left">
+                <h4 className="text-sm font-black text-slate-950">{currentStep.title}</h4>
+                <p className="mt-1 text-xs leading-4 text-slate-600">{currentStep.description} <strong className="text-slate-800">{stepInstruction}</strong></p>
+              </div>
+              <div className="flex w-full max-w-md flex-wrap items-center gap-2 lg:justify-end">
+              {currentStepIndex === 0 && <button type="button" onClick={completeGuidedStep} className="min-h-11 min-w-[11rem] bg-blue-600 px-5 text-xs font-black text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">START DEMO</button>}
               {currentStepIndex === 1 && <button type="button" onClick={completeGuidedStep} className="min-h-10 bg-slate-950 px-3 text-xs font-black text-white">COMPLETE ATTENTION REVIEW</button>}
               {currentStepIndex === 2 && <button type="button" onClick={() => setActiveView("events")} className="min-h-10 bg-red-700 px-3 text-xs font-black text-white">OPEN RAISED EVENT</button>}
               {currentStepIndex === 3 && <p className="max-w-xs border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-[10px] font-bold text-amber-950">Start work from the Events workspace, then continue monitoring.</p>}
@@ -551,6 +567,7 @@ export function HomepageInteractiveDemo() {
               {currentStepIndex === 5 && !eventResolved && <p className="max-w-xs border-l-4 border-sky-500 bg-sky-50 px-3 py-2 text-[10px] font-bold text-sky-950">Set the workflow to Resolution review, then resolve the event in Events.</p>}
               {currentStepIndex === 5 && eventResolved && <button type="button" onClick={() => setRecordOpen(true)} className="min-h-10 bg-blue-700 px-3 text-xs font-black text-white">OPEN CONNECTED RECORD</button>}
               {currentStepIndex > 0 && <><button type="button" onClick={() => seekStep(currentStepIndex - 1)} disabled={!hydrated} className="inline-flex min-h-10 items-center justify-center gap-1 border border-slate-300 px-3 text-xs font-bold text-slate-700"><ChevronLeftIcon className="size-4" />Previous</button><button type="button" onClick={resetDemo} disabled={!hydrated} className="grid size-10 shrink-0 place-items-center border border-slate-300 text-slate-600 disabled:text-slate-300" aria-label="Reset demonstration"><ArrowPathIcon className="size-4" /></button></>}
+              </div>
             </div>
           </section>
         </aside>
@@ -568,12 +585,12 @@ export function HomepageInteractiveDemo() {
           </div>
 
           <div className="grid grid-cols-[3.25rem_minmax(0,1fr)] sm:grid-cols-[3.75rem_minmax(0,1fr)]">
-            <nav className="bg-slate-900 px-2 py-4 text-slate-300" aria-label="Control Centre sections">
+            <nav className="relative z-10 bg-slate-900 px-2 py-4 text-slate-300" aria-label="Control Centre sections">
               <div className="sticky top-24 flex flex-col items-center gap-2 lg:top-16">
               <button type="button" onClick={() => setActiveView("monitoring")} aria-label="Monitoring overview" title="Monitoring overview" aria-pressed={activeView === "monitoring"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><Squares2X2Icon className="size-5" aria-hidden="true" /></button>
               <button type="button" onClick={() => setActiveView("trends")} aria-label="Trends" title="Trends" aria-pressed={activeView === "trends"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><ChartBarIcon className="size-5" aria-hidden="true" /></button>
               <button type="button" onClick={() => setActiveView("reports")} aria-label="Reports" title="Reports" aria-pressed={activeView === "reports"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><DocumentChartBarIcon className="size-5" aria-hidden="true" /></button>
-              <button type="button" onClick={() => setActiveView("events")} aria-label="Incidents and alerts" title="Incidents and alerts" aria-pressed={activeView === "events"} className="relative grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-red-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><BellAlertIcon className="size-5" aria-hidden="true" />{snapshot.incidentState.opened && !snapshot.incidentState.closed && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-slate-900" aria-hidden="true" />}</button>
+              <button type="button" onClick={() => setActiveView("events")} aria-label="Incidents and alerts" title="Incidents and alerts" aria-pressed={activeView === "events"} className="relative grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-amber-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><BellAlertIcon className="size-5" aria-hidden="true" />{snapshot.incidentState.opened && !snapshot.incidentState.closed && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-amber-400 ring-2 ring-slate-900" aria-hidden="true" />}</button>
               <button type="button" onClick={() => setActiveView("health")} aria-label="System health" title="System health" aria-pressed={activeView === "health"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-emerald-400 aria-pressed:bg-slate-800 aria-pressed:text-emerald-300"><HeartIcon className="size-5" aria-hidden="true" /></button>
               </div>
             </nav>

@@ -60,10 +60,19 @@ const rows = [
   [480_000, "SHARED_CORRIDOR", 3, 6, 5, 10],
   [480_000, "EXTERNAL_BOUNDARY", 6, 10, 8, 16],
 ] as const;
+type DemonstrationRow = (typeof rows)[number];
 
 const stableTrendShape = [-0.08, 0.04, -0.03, 0.09, -0.05, 0.06, 0] as const;
 const risingTrendShape = [-0.34, -0.27, -0.22, -0.16, -0.11, -0.05, 0] as const;
 const fallingTrendShape = [0.34, 0.27, 0.21, 0.15, 0.1, 0.04, 0] as const;
+const microVariationShape = [-0.06, 0.04, -0.05, 0.03, -0.03, 0.05, 0] as const;
+
+function metricValueFromRow(row: DemonstrationRow, metricId: string) {
+  if (metricId === "PM1") return row[2];
+  if (metricId === "PM2_5") return row[3];
+  if (metricId === "RESPIRABLE_DUST") return row[4];
+  return row[5];
+}
 
 export function getDemonstrationRespirableDustTrend(monitorId: string, offsetMs: number): number[] {
   const latestRow = [...rows]
@@ -79,6 +88,29 @@ export function getDemonstrationRespirableDustTrend(monitorId: string, offsetMs:
   return shape.map((relativeChange, index) => index === shape.length - 1
     ? latest
     : Math.max(0, Math.round(latest * (1 + relativeChange) * 10) / 10));
+}
+
+export function getDemonstrationMetricTrendSeries(monitorId: string, metricId: string, offsetMs: number, pointCount = 7): number[] {
+  const readings = rows
+    .filter(([rowOffset, rowMonitorId]) => rowMonitorId === monitorId && rowOffset <= offsetMs)
+    .map((row) => metricValueFromRow(row, metricId));
+  const latest = readings.at(-1) ?? 0;
+  const previous = readings.length > 1 ? readings[readings.length - 2] : latest;
+  if (latest === 0 && previous === 0) return Array.from({ length: pointCount }, () => 0);
+
+  const seriesLength = Math.max(pointCount, 2);
+  const drift = latest - previous;
+  const start = Math.max(0, latest - drift * (seriesLength - 1));
+  const varianceFloor = metricId === "RESPIRABLE_DUST" ? 1.2 : 0.5;
+  const variance = Math.max(Math.abs(latest) * 0.08, varianceFloor);
+
+  return Array.from({ length: seriesLength }, (_, index) => {
+    if (index === seriesLength - 1) return latest;
+    const progress = index / (seriesLength - 1);
+    const baseline = start + (latest - start) * progress;
+    const wobble = variance * microVariationShape[index % microVariationShape.length];
+    return Math.max(0, Math.round((baseline + wobble) * 10) / 10);
+  });
 }
 
 function timestampAt(offsetMs: number): string {
