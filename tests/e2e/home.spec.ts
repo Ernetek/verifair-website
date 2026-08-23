@@ -184,79 +184,49 @@ test("Control Centre keeps environmental recovery independent from explicit even
 
   await expect(controlCentre).toBeVisible();
 
-  // Step 0 -> 1: begin the deterministic scenario.
   await controlCentre.getByRole("button", { name: "START DEMO" }).click();
-
-  // Step 1 -> 2: complete review of the attention condition.
-  await controlCentre.getByRole("button", { name: "COMPLETE ATTENTION REVIEW" }).click();
-
-  // Step 2: open the raised operational event.
+  await expect(controlCentre.getByRole("button", { name: "COMPLETE ATTENTION REVIEW" })).toHaveCount(0);
   await controlCentre.getByRole("button", { name: "OPEN RAISED EVENT" }).click();
-
-  // The current product architecture uses the integrated Events workspace,
-  // not the removed ACT event workspace.
   await expect(
     controlCentre.getByRole("heading", {
-      name: "Alerts & events",
+      name: "Operational event response",
       exact: true
     })
   ).toBeVisible();
-
   await expect(controlCentre.getByText("Respirable Dust action condition", { exact: true }).first()).toBeVisible();
-
-  const startWork = controlCentre.getByRole("button", {
-    name: "ACKNOWLEDGE, ASSIGN & START WORK"
-  });
-
-  await expect(startWork).toBeVisible();
-  await startWork.click();
-
-  const workflowStatus = controlCentre.getByLabel("Workflow status");
-
-  await expect(workflowStatus).toHaveValue("In progress");
-
-  // Current Events workspace capabilities.
+  await controlCentre.getByRole("button", { name: "START WORK" }).click();
   await expect(controlCentre.getByLabel("Response type")).toBeEnabled();
   await expect(controlCentre.getByLabel("Observed conditions")).toBeEnabled();
   await expect(controlCentre.getByLabel("Action taken")).toBeEnabled();
-  await expect(controlCentre.getByLabel("Add comment")).toBeEnabled();
-
+  await expect(controlCentre.getByLabel("Group")).toBeEnabled();
+  await expect(controlCentre.getByLabel("Assignee")).toBeEnabled();
+  await expect(controlCentre.getByLabel("Priority")).toBeEnabled();
   await expect(
     controlCentre.getByRole("img", {
       name: "Respirable Dust event trend"
     })
   ).toBeVisible();
-
-  // Return to monitoring and allow the deterministic environmental
-  // condition to recover. Recovery must not resolve the incident.
+  await controlCentre.getByLabel("Response type").selectOption("Site inspection");
+  await controlCentre.getByLabel("Observed conditions").selectOption("Elevated dust visible in work zone");
+  await controlCentre.getByLabel("Action taken").selectOption("Stopped work and assessed area");
+  await controlCentre.getByLabel("Group").selectOption("site_response");
+  await expect(controlCentre.getByLabel("Assignee")).toHaveValue("Project manager");
+  await controlCentre.getByLabel("Assignee").selectOption("Facilities coordinator");
+  await controlCentre.getByRole("button", { name: "Save work log" }).click();
   await controlCentre.getByRole("button", { name: "Monitoring overview" }).click();
-
   await controlCentre.getByRole("button", { name: "COMPLETE MONITORING PERIOD" }).click();
-
   await expect(
     controlCentre.getByText("Condition returned to normal", {
       exact: true
     })
   ).toBeVisible();
-
-  // Re-open Events. The incident must still require explicit operator
-  // verification/resolution even though the environmental condition recovered.
+  await expect(
+    controlCentre.getByTestId("homepage-monitoring-location-WORK_ZONE_A").getByLabel("ACTION history, current state HEALTHY")
+  ).toBeVisible();
   await controlCentre.getByRole("button", { name: "Incidents and alerts" }).click();
-
-  const recoveredWorkflowStatus = controlCentre.getByLabel("Workflow status");
-
-  await expect(recoveredWorkflowStatus).toHaveValue("In progress");
-
-  await recoveredWorkflowStatus.selectOption("Verification");
-  await expect(recoveredWorkflowStatus).toHaveValue("Verification");
-
-  await recoveredWorkflowStatus.selectOption("Resolved");
-  await expect(recoveredWorkflowStatus).toHaveValue("Resolved");
-
-  // Explicit resolution should make the connected record available.
+  await expect(controlCentre.getByText("In progress", { exact: true }).first()).toBeVisible();
   await controlCentre.getByRole("button", { name: "Monitoring overview" }).click();
-
-  await expect(controlCentre.getByRole("button", { name: "OPEN RECORD" })).toBeVisible();
+  await expect(controlCentre.getByRole("button", { name: "OPEN RECORD" })).toHaveCount(0);
 });
 
 test("demo header and compact instructions remain above the full-width Control Centre", async ({ page }) => {
@@ -267,9 +237,9 @@ test("demo header and compact instructions remain above the full-width Control C
   const guide = demo.getByLabel("Demonstration guide");
   const logo = demo.getByAltText("VerifAir by ERNE Tech");
   const project = demo.getByText("Demonstration Healthcare Construction Project", { exact: true });
-  const controlCentre = demo.getByText("Project Control Centre", { exact: true });
+  const controlCentre = demo.getByText("Particulate Monitoring & Task Management", { exact: true });
 
-  await expect(demo.getByRole("heading", { name: "See the VerifAir Control Centre in action." })).toBeVisible();
+  await expect(demo.getByRole("heading", { name: "See the VerifAir particulate monitoring and task management workspace in action." })).toBeVisible();
   await expect(demo.getByText(/AEST|AEDT/)).toBeVisible();
   await expect(guide).toBeVisible();
 
@@ -280,7 +250,7 @@ test("demo header and compact instructions remain above the full-width Control C
     guide.boundingBox()
   ]);
   expect(logoBox?.width).toBeLessThanOrEqual(111);
-  expect(controlBox?.x).toBeLessThan(projectBox?.x ?? 0);
+  expect(controlBox?.x).toBeLessThanOrEqual(projectBox?.x ?? 0);
 
   const boardBox = await guide.evaluate((element) => {
     const box = element.nextElementSibling?.getBoundingClientRect();
@@ -384,8 +354,8 @@ test("demo uses four-reading zone cards, status rails and operational colour gui
   await demo.getByRole("button", { name: "START DEMO" }).dispatchEvent("click");
   const exception = demo.getByTestId("homepage-monitoring-location-WORK_ZONE_A");
   await expect(exception).toBeVisible();
-  await expect(exception).toHaveClass(/border-t-amber-500/);
-  await expect(exception).toHaveClass(/border-l-amber-500/);
+  await expect(exception).toHaveClass(/border-t-red-500/);
+  await expect(exception).toHaveClass(/border-l-red-500/);
   await expect(exception.getByRole("img", { name: "Zone A Monitoring Location 1 respirable dust recent trend" })).toBeVisible();
   await expect(demo.getByLabel("Monitoring overview").locator("[data-testid^='homepage-monitoring-location-']")).toHaveCount(4);
 

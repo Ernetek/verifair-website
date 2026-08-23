@@ -48,16 +48,10 @@ const sequenceSteps = [
     description: "Routine monitoring is active across the project. Select any location to inspect its current particulate readings.",
   },
   {
-    offsetMs: 60_000,
-    label: "Attention",
-    title: "Changing condition requires attention",
-    description: "Zone A · Monitoring Location 1 is promoted for review without creating or resolving an operational event.",
-  },
-  {
     offsetMs: 120_000,
     label: "Action",
     title: "Action condition detected",
-    description: "Zone A · Monitoring Location 1 is promoted above the quiet overview when a configured project action level is reached.",
+    description: "Zone A · Monitoring Location 1 is promoted straight into the action workflow when the configured project action level is reached.",
   },
   {
     offsetMs: 240_000,
@@ -195,6 +189,7 @@ function MonitoringTile({ snapshot, monitorId, selected, onSelect }: {
 }) {
   const meta = locationMeta.find(([id]) => id === monitorId) ?? locationMeta[0];
   const state = stateFor(snapshot, monitorId);
+  const retainsAlertHistory = monitorId === "WORK_ZONE_A" && snapshot.incidentState.opened && !snapshot.incidentState.closed && state === "NORMAL";
   const sparkValues = getDemonstrationRespirableDustTrend(monitorId, snapshot.replayState.offsetMs);
   const minimum = Math.min(...sparkValues);
   const range = Math.max(Math.max(...sparkValues) - minimum, 1);
@@ -207,7 +202,6 @@ function MonitoringTile({ snapshot, monitorId, selected, onSelect }: {
 
   return (
     <motion.button
-      layout
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
@@ -219,9 +213,20 @@ function MonitoringTile({ snapshot, monitorId, selected, onSelect }: {
           <span className="block text-base font-black uppercase text-slate-950 sm:text-lg">{meta[1]}</span>
           <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{meta[2]}</span>
         </span>
-        <span className={`grid size-8 shrink-0 place-items-center rounded-full ${presentation.icon}`} aria-label={state === "NORMAL" ? "HEALTHY" : state}>
-          {state === "NORMAL" ? <CheckIcon className="size-5 stroke-[3]" aria-hidden="true" /> : <ExclamationTriangleIcon className="size-5 stroke-[2.5]" aria-hidden="true" />}
-        </span>
+        {retainsAlertHistory ? (
+          <span className="flex items-center gap-1.5" aria-label="ACTION history, current state HEALTHY">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-red-600 text-white">
+              <ExclamationTriangleIcon className="size-4 stroke-[2.5]" aria-hidden="true" />
+            </span>
+            <span className={`grid size-8 shrink-0 place-items-center rounded-full ${presentation.icon}`}>
+              <CheckIcon className="size-5 stroke-[3]" aria-hidden="true" />
+            </span>
+          </span>
+        ) : (
+          <span className={`grid size-8 shrink-0 place-items-center rounded-full ${presentation.icon}`} aria-label={state === "NORMAL" ? "HEALTHY" : state}>
+            {state === "NORMAL" ? <CheckIcon className="size-5 stroke-[3]" aria-hidden="true" /> : <ExclamationTriangleIcon className="size-5 stroke-[2.5]" aria-hidden="true" />}
+          </span>
+        )}
       </span>
       <span className="mt-3 grid grid-cols-[minmax(0,1fr)_6rem] items-end gap-2 sm:mt-5 sm:grid-cols-[minmax(0,0.8fr)_minmax(8rem,1.2fr)] sm:gap-4">
         <span>
@@ -420,12 +425,33 @@ function AssessView({ session, snapshot, selectedId, setSelectedId, onOpenEvents
                 {selectedId === "WORK_ZONE_A" && snapshot.incidentState.opened && <div className="border-l-4 border-red-500 bg-red-50/60 p-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-mono text-[10px] font-black text-red-700">{INCIDENT_ID}</p><h4 className="mt-1 text-base font-black text-slate-950">Respirable Dust action condition</h4><p className="mt-1 text-xs text-slate-600">{snapshot.incidentState.closed ? "Resolved" : snapshot.incidentState.investigationStarted ? "In progress" : "Open · acknowledgement required"}</p></div><span className="border border-red-200 bg-white px-2 py-1 text-[10px] font-black text-red-800">ACTION</span></div></div>}
                 <div className="p-4"><p className="font-mono text-[10px] font-black text-slate-500">VA-INC-2026-0038</p><h4 className="mt-1 text-sm font-black text-slate-900">Observation freshness review</h4><p className="mt-1 text-xs text-slate-500">Resolved · Historical demonstration record</p></div>
               </div>
-              <div className="mt-5 flex justify-end"><button type="button" onClick={openIncidentWorkspace} className="min-h-11 bg-red-700 px-4 text-xs font-black text-white">{selectedId === "WORK_ZONE_A" && snapshot.incidentState.opened && !snapshot.incidentState.investigationStarted ? "ACKNOWLEDGE, ASSIGN & START WORK" : "OPEN EVENTS WORKSPACE"}</button></div>
+              <div className="mt-5 flex justify-end"><button type="button" onClick={openIncidentWorkspace} className="min-h-11 bg-red-700 px-4 text-xs font-black text-white">{selectedId === "WORK_ZONE_A" && snapshot.incidentState.opened && !snapshot.incidentState.investigationStarted ? "START WORK" : "OPEN EVENTS WORKSPACE"}</button></div>
             </motion.section>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export function ControlCentreMonitoring() {
+  const [session] = useState(() => {
+    const nextSession = new DemonstrationSession();
+    nextSession.seek(240_000);
+    return nextSession;
+  });
+  const snapshot = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
+  const [selectedId, setSelectedId] = useState("WORK_ZONE_A");
+
+  return (
+    <AssessView
+      session={session}
+      snapshot={snapshot}
+      selectedId={selectedId}
+      setSelectedId={setSelectedId}
+      onOpenEvents={() => window.location.assign("/workflow")}
+      onWorkStarted={() => undefined}
+    />
   );
 }
 
@@ -506,7 +532,7 @@ export function HomepageInteractiveDemo() {
   const seekStep = (index: number) => session.seek(sequenceSteps[index].offsetMs);
 
   const completeGuidedStep = () => {
-    if (currentStepIndex === 0 || currentStepIndex === 1 || currentStepIndex === 4) {
+    if (currentStepIndex === 0 || currentStepIndex === 3) {
       seekStep(currentStepIndex + 1);
     }
   };
@@ -522,66 +548,60 @@ export function HomepageInteractiveDemo() {
   const ribbon = eventResolved ? `✓ RESOLVED · ${INCIDENT_ID} · Operational record complete` : eventActive ? `● ACTION · Zone A · Monitoring Location 1 · Respirable Dust ${currentValue(snapshot, "WORK_ZONE_A", "RESPIRABLE_DUST")} ${PARTICULATE_UNIT} · ${INCIDENT_ID}` : null;
   const stepInstruction = [
     "The live baseline is shown for context. Start the scenario when you are ready to introduce a changing condition.",
-    "Inspect the promoted Zone A · Monitoring Location 1 condition, then complete the attention review.",
-    "Open the raised event and acknowledge it to begin the operational review.",
-    "Add a response action and a comment in the ACT workspace, then continue monitoring.",
+    "Zone A now opens straight into an action alert. Open the raised event to start the operational review.",
+    "Start work in the Events workspace and record the operator response.",
     "Review the retained follow-up observations, then complete the monitoring period.",
     "Complete resolution review, explicitly resolve the event, then open the connected record.",
   ][currentStepIndex];
 
-  const monitoringView = <AssessView session={session} snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} onOpenEvents={() => setActiveView("events")} onWorkStarted={() => seekStep(4)} />;
+  const monitoringView = <AssessView session={session} snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} onOpenEvents={() => setActiveView("events")} onWorkStarted={() => seekStep(2)} />;
 
   return (
     <section id="monitoring" className="border-b border-slate-200 bg-white px-3 py-8 sm:px-6 sm:py-12">
       <div className="mx-auto max-w-[96rem]">
         <header className="mb-5 max-w-3xl px-2">
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-sky-700">VerifAir · browser demonstration</p>
-          <h2 className="mt-2 text-3xl font-black leading-tight text-slate-950 sm:text-4xl">See the VerifAir Control Centre in action.</h2>
+          <h2 className="mt-2 text-3xl font-black leading-tight text-slate-950 sm:text-4xl">See the VerifAir particulate monitoring and task management workspace in action.</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">Step through a scripted healthcare-refurbishment scenario. Watch operational exceptions reorganise the board while system health remains independently visible.</p>
         </header>
 
         <aside className="mb-4 border border-slate-300 bg-white px-4 py-3 text-slate-900" aria-label="Demonstration guide">
           <section className="grid gap-3 lg:grid-cols-[11rem_minmax(0,1fr)_auto] lg:items-center" aria-labelledby="demo-sequence-heading">
             <div>
-              <div className="flex items-center justify-between gap-3">
-                <h3 id="demo-sequence-heading" className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Demo sequence</h3>
-                <strong className="font-mono text-[10px] text-slate-700">{currentStepIndex + 1}/{sequenceSteps.length} · {currentStep.label}</strong>
-              </div>
+              <h3 id="demo-sequence-heading" className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Demo sequence</h3>
               <div className="mt-2 flex items-center gap-1.5" aria-label={`Step ${currentStepIndex + 1} of ${sequenceSteps.length}`}>{sequenceSteps.map((step, index) => <span key={step.label} className={`h-2 rounded-full transition-all ${index === currentStepIndex ? "w-8 bg-slate-950" : index < currentStepIndex ? "w-2 bg-sky-600" : "w-2 bg-slate-300"}`} />)}</div>
+              <div className="mt-3">
+                {currentStepIndex === 0
+                  ? <button type="button" onClick={completeGuidedStep} className="min-h-11 min-w-[9rem] bg-blue-600 px-5 text-xs font-black text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">START DEMO</button>
+                  : <strong className="font-mono text-[10px] text-slate-700">{currentStepIndex + 1}/{sequenceSteps.length} · {currentStep.label}</strong>}
+              </div>
             </div>
             <div className="min-w-0 border-l-2 border-sky-500 pl-3">
-              <h4 className="text-sm font-black text-slate-950">Current stage</h4>
-              <p className="mt-1 text-xs leading-4 text-slate-600">Stage focus: {currentStep.title}</p>
+              <h4 className="text-sm font-black text-slate-950">{currentStep.title}</h4>
+              <p className="mt-1 text-xs leading-4 text-slate-600">{currentStep.description} <strong className="text-slate-800">{stepInstruction}</strong></p>
             </div>
-            <div className="grid gap-2 lg:min-w-[28rem] lg:justify-items-end">
-              <div className="w-full max-w-md border-l-2 border-sky-500 pl-3 text-left">
-                <h4 className="text-sm font-black text-slate-950">{currentStep.title}</h4>
-                <p className="mt-1 text-xs leading-4 text-slate-600">{currentStep.description} <strong className="text-slate-800">{stepInstruction}</strong></p>
-              </div>
-              <div className="flex w-full max-w-md flex-wrap items-center gap-2 lg:justify-end">
-              {currentStepIndex === 0 && <button type="button" onClick={completeGuidedStep} className="min-h-11 min-w-[11rem] bg-blue-600 px-5 text-xs font-black text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">START DEMO</button>}
-              {currentStepIndex === 1 && <button type="button" onClick={completeGuidedStep} className="min-h-10 bg-slate-950 px-3 text-xs font-black text-white">COMPLETE ATTENTION REVIEW</button>}
-              {currentStepIndex === 2 && <button type="button" onClick={() => setActiveView("events")} className="min-h-10 bg-red-700 px-3 text-xs font-black text-white">OPEN RAISED EVENT</button>}
-              {currentStepIndex === 3 && <p className="max-w-xs border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-[10px] font-bold text-amber-950">Start work from the Events workspace, then continue monitoring.</p>}
-              {currentStepIndex === 4 && <button type="button" onClick={completeGuidedStep} className="min-h-10 bg-slate-950 px-3 text-xs font-black text-white">COMPLETE MONITORING PERIOD</button>}
-              {currentStepIndex === 5 && !eventResolved && <p className="max-w-xs border-l-4 border-sky-500 bg-sky-50 px-3 py-2 text-[10px] font-bold text-sky-950">Set the workflow to Resolution review, then resolve the event in Events.</p>}
-              {currentStepIndex === 5 && eventResolved && <button type="button" onClick={() => setRecordOpen(true)} className="min-h-10 bg-blue-700 px-3 text-xs font-black text-white">OPEN CONNECTED RECORD</button>}
+            <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+              {currentStepIndex === 1 && <button type="button" onClick={() => setActiveView("events")} className="min-h-10 bg-red-700 px-3 text-xs font-black text-white">OPEN RAISED EVENT</button>}
+              {currentStepIndex === 2 && <p className="max-w-xs border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-[10px] font-bold text-amber-950">Start work and save the response from the Events workspace, then continue monitoring.</p>}
+              {currentStepIndex === 3 && <button type="button" onClick={completeGuidedStep} className="min-h-10 bg-slate-950 px-3 text-xs font-black text-white">COMPLETE MONITORING PERIOD</button>}
+              {currentStepIndex === 4 && !eventResolved && <p className="max-w-xs border-l-4 border-sky-500 bg-sky-50 px-3 py-2 text-[10px] font-bold text-sky-950">Resolve the event in Events, then open the connected record.</p>}
+              {currentStepIndex === 4 && eventResolved && <button type="button" onClick={() => setRecordOpen(true)} className="min-h-10 bg-blue-700 px-3 text-xs font-black text-white">OPEN CONNECTED RECORD</button>}
               {currentStepIndex > 0 && <><button type="button" onClick={() => seekStep(currentStepIndex - 1)} disabled={!hydrated} className="inline-flex min-h-10 items-center justify-center gap-1 border border-slate-300 px-3 text-xs font-bold text-slate-700"><ChevronLeftIcon className="size-4" />Previous</button><button type="button" onClick={resetDemo} disabled={!hydrated} className="grid size-10 shrink-0 place-items-center border border-slate-300 text-slate-600 disabled:text-slate-300" aria-label="Reset demonstration"><ArrowPathIcon className="size-4" /></button></>}
-              </div>
             </div>
           </section>
         </aside>
 
         <div className="relative isolate min-w-0 overflow-clip rounded-lg border border-slate-300 bg-white shadow-[0_28px_70px_-45px_rgba(15,23,42,0.45)]">
-          <div className="relative grid gap-3 border-b border-slate-800 bg-slate-900 px-4 py-3 text-white md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center sm:px-5">
-            <Image src="/assets/verifair_erne_tech_logo.webp" alt="VerifAir by ERNE Tech" width={204} height={68} className="h-auto w-24 sm:w-[6.9rem]" priority />
-            <div className="border-l border-slate-700 pl-4 text-left md:absolute md:left-1/2 md:border-l-0 md:pl-0 md:text-center md:-translate-x-1/2">
-              <strong className="text-xs font-black uppercase tracking-[0.12em] text-white">Project Control Centre</strong>
+          <div className="relative grid gap-3 border-b border-slate-800 bg-slate-900 px-4 py-3 text-white md:grid-cols-[auto_minmax(0,1fr)] md:items-center sm:px-5">
+            <Image src="/assets/verifair_erne_tech_logo.webp" alt="VerifAir by ERNE Tech" width={204} height={68} className="h-auto w-20 sm:w-[5.5rem]" priority />
+            <div className="text-left md:text-left">
+              <strong className="text-xs font-black uppercase tracking-[0.12em] text-white">Particulate Monitoring &amp; Task Management</strong>
+              <p className="mt-1 text-sm font-bold text-slate-200">Demonstration Healthcare Construction Project</p>
             </div>
-            <div className="text-left md:col-start-3 md:text-right">
-              <p className="text-sm font-bold text-white">Demonstration Healthcare Construction Project</p>
-              <p className="mt-2 font-mono text-xs font-bold text-slate-300">{clockNow ? formatAustralianTime(clockNow) : "--:--:-- AEST"}</p>
-            </div>
+          </div>
+          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:px-5">
+            <span className="font-black uppercase tracking-[0.14em] text-slate-500">Live operational view</span>
+            <span className="font-mono font-bold text-slate-700">{clockNow ? formatAustralianTime(clockNow) : "--:--:-- AEST"}</span>
           </div>
 
           <div className="grid grid-cols-[3.25rem_minmax(0,1fr)] sm:grid-cols-[3.75rem_minmax(0,1fr)]">
@@ -590,12 +610,12 @@ export function HomepageInteractiveDemo() {
               <button type="button" onClick={() => setActiveView("monitoring")} aria-label="Monitoring overview" title="Monitoring overview" aria-pressed={activeView === "monitoring"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><Squares2X2Icon className="size-5" aria-hidden="true" /></button>
               <button type="button" onClick={() => setActiveView("trends")} aria-label="Trends" title="Trends" aria-pressed={activeView === "trends"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><ChartBarIcon className="size-5" aria-hidden="true" /></button>
               <button type="button" onClick={() => setActiveView("reports")} aria-label="Reports" title="Reports" aria-pressed={activeView === "reports"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><DocumentChartBarIcon className="size-5" aria-hidden="true" /></button>
-              <button type="button" onClick={() => setActiveView("events")} aria-label="Incidents and alerts" title="Incidents and alerts" aria-pressed={activeView === "events"} className="relative grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-amber-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><BellAlertIcon className="size-5" aria-hidden="true" />{snapshot.incidentState.opened && !snapshot.incidentState.closed && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-amber-400 ring-2 ring-slate-900" aria-hidden="true" />}</button>
+              <button type="button" onClick={() => setActiveView("events")} aria-label="Incidents and alerts" title="Incidents and alerts" aria-pressed={activeView === "events"} className="relative grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-red-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><BellAlertIcon className="size-5" aria-hidden="true" />{snapshot.incidentState.opened && !snapshot.incidentState.closed && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-slate-900" aria-hidden="true" />}</button>
               <button type="button" onClick={() => setActiveView("health")} aria-label="System health" title="System health" aria-pressed={activeView === "health"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-emerald-400 aria-pressed:bg-slate-800 aria-pressed:text-emerald-300"><HeartIcon className="size-5" aria-hidden="true" /></button>
               </div>
             </nav>
             <div className="min-w-0">
-          <div aria-live="polite">{activeView === "monitoring" ? monitoringView : activeView === "trends" ? <TrendsView snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} metricId={metricId} setMetricId={setMetricId} /> : activeView === "reports" ? <ControlCentreReports /> : activeView === "events" ? <ControlCentreEvents session={session} snapshot={snapshot} onWorkStarted={() => seekStep(4)} /> : <SystemHealthView />}</div>
+          <div aria-live="polite">{activeView === "monitoring" ? monitoringView : activeView === "trends" ? <TrendsView snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} metricId={metricId} setMetricId={setMetricId} /> : activeView === "reports" ? <ControlCentreReports /> : activeView === "events" ? <ControlCentreEvents session={session} snapshot={snapshot} onWorkStarted={() => seekStep(2)} onResponseRecorded={() => seekStep(3)} /> : <SystemHealthView />}</div>
           {activeView === "monitoring" && <>
           <OperationalLegend />
           {ribbon && <div className={`border-y px-4 py-2.5 text-[10px] font-black uppercase tracking-[0.08em] sm:px-5 ${eventResolved ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-red-200 bg-red-50 text-red-900"}`}>{ribbon}</div>}

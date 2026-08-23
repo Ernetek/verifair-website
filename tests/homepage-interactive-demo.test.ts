@@ -16,12 +16,12 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).toContain('const INCIDENT_ID = "VA-INC-2026-0042"');
     expect(source).toContain("selectLatestObservation");
     expect(source).toContain("Demonstration Healthcare Construction Project");
-    expect(source).toContain("See the VerifAir Control Centre in action.");
-    expect(source).toContain("Project Control Centre");
+    expect(source).toContain("See the VerifAir particulate monitoring and task management workspace in action.");
+    expect(source).toContain("Particulate Monitoring &amp; Task Management");
     expect(source).toContain('src="/assets/verifair_erne_tech_logo.webp"');
     expect(source).toContain('id="monitoring" className="border-b border-slate-200 bg-white');
     expect(source).toContain('timeZone: "Australia/Sydney"');
-    expect(source).toContain('className="h-auto w-24 sm:w-[6.9rem]"');
+    expect(source).toContain('className="h-auto w-20 sm:w-[5.5rem]"');
   });
 
   it("uses one Control Centre with internal reports and events pages", () => {
@@ -49,7 +49,7 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).toContain('role="dialog"');
     expect(source).toContain('aria-label="Close location details"');
     expect(source).toContain("Location incidents");
-    expect(source).toContain("ACKNOWLEDGE, ASSIGN & START WORK");
+    expect(source).toContain("START WORK");
   });
 
   it("separates monitoring from the heart-accessed system health view", () => {
@@ -86,15 +86,14 @@ describe("homepage interactive VerifAir demonstration", () => {
   });
 
   it("provides Jira-style event work and searchable branded reports", () => {
-    expect(eventsSource).toContain("ACKNOWLEDGE, ASSIGN &amp; START WORK");
+    expect(eventsSource).toContain("START WORK");
     expect(eventsSource).toContain('type: "ACKNOWLEDGED"');
     expect(eventsSource).toContain('type: "ASSIGNED"');
     expect(eventsSource).toContain('type: "INVESTIGATION_STARTED"');
     expect(eventsSource).toContain("Workflow status");
     expect(eventsSource).toContain("Observed conditions");
     expect(eventsSource).toContain("Action taken");
-    expect(eventsSource).toContain("Add comment");
-    expect(eventsSource).toContain("Upload photo / video");
+    expect(eventsSource).toContain("Attach site photo");
     expect(eventsSource).toContain("Escalate");
     expect(eventsSource).toContain("Respirable Dust event trend");
     expect(reportsSource).toContain("Search reports");
@@ -126,13 +125,15 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).toContain('setActiveView("events")');
     expect(source).toContain('title="Monitoring"');
     expect(source).toContain('title="Trends"');
+    expect(source).toContain("bg-red-500");
     expect(source).not.toContain("detailsRequest");
     expect(source).not.toContain("Situational explainer");
     expect(source).not.toContain("Required step");
     expect(source).toContain("START DEMO");
     expect(source).not.toContain("START CHANGING-CONDITION SCENARIO");
     expect(source).not.toContain("COMPLETE BASELINE CHECK");
-    expect(source).toContain("COMPLETE ATTENTION REVIEW");
+    expect(source).toContain("OPEN RAISED EVENT");
+    expect(source).not.toContain("COMPLETE ATTENTION REVIEW");
     expect(source).toContain("COMPLETE MONITORING PERIOD");
     expect(source).toContain("Particulate / operational state");
     expect(source).toContain("Below configured attention level");
@@ -142,5 +143,6 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).not.toContain("Play demo sequence");
     expect(source).not.toContain("Pause demo sequence");
     expect(source).toContain("Reset demonstration");
+    expect(source).toContain('aria-label="ACTION history, current state HEALTHY"');
   });
 });

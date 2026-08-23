@@ -58,6 +58,7 @@ export type IncidentEvent =
   | {
       readonly type: "ASSIGNED";
       readonly incidentId: string;
+      readonly assigneeGroup?: string;
       readonly assignee: string;
       readonly priority?: "Normal" | "High" | "Urgent";
       readonly timestampMs: number;
@@ -162,6 +163,7 @@ export interface IncidentState {
   readonly opened: boolean;
   readonly acknowledged: boolean;
   readonly acknowledgedBy?: string;
+  readonly assignedGroup?: string;
   readonly assignedTo?: string;
   readonly priority?: "Normal" | "High" | "Urgent";
   readonly openedAtMs?: number;
@@ -330,6 +332,7 @@ export function reduceIncidentEvent(
       }
       const nextState: IncidentState = {
         ...state,
+        assignedGroup: event.assigneeGroup ?? state.assignedGroup,
         assignedTo: event.assignee,
         priority: event.priority ?? state.priority,
         progressStatus: `Assigned to ${event.assignee}`,
