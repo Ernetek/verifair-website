@@ -6,6 +6,7 @@ import { useState, useSyncExternalStore } from "react";
 import { ArrowRightIcon, CheckCircleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 
 import { ControlCentreEvents } from "@/components/home/ControlCentreEvents";
+import { HeroOperationalFlow } from "@/components/shared/HeroOperationalFlow";
 import { DemonstrationSession } from "@/lib/demonstration/session";
 import { DEMONSTRATION_METRICS, publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
@@ -140,7 +141,7 @@ function EventDetail() {
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-300">Active event · Work Zone</p>
             <h2 className="mt-2 text-2xl font-black">Work Zone / Monitor 01</h2>
-            <p className="mt-1 text-xs text-slate-300">Event ID: INCIDENT_WORK_ZONE_REVIEW · Created at scenario offset 00:02</p>
+            <p className="mt-1 text-xs text-slate-300">Event ID: {publicDemonstrationScenario.incidents[0].id} · Created at scenario offset 00:02</p>
           </div>
           <WorkflowStatus label="Action" tone="red" />
         </div>
@@ -297,15 +298,20 @@ export function WorkflowPage() {
               </Link>
             </div>
           </div>
-          <Image
-            src="/assets/workflow-site-investigation.png"
-            alt="VerifAir ACT workflow response context"
-            width={1536}
-            height={1024}
-            className="h-full max-h-[34rem] w-full object-cover"
-            priority
-            unoptimized
-          />
+          <div className="relative">
+            <Image
+              src="/assets/workflow-site-investigation.png"
+              alt="VerifAir ACT workflow response context"
+              width={1536}
+              height={1024}
+              className="h-full max-h-[34rem] w-full object-cover"
+              priority
+              unoptimized
+            />
+            <div className="absolute inset-x-2 bottom-2 sm:inset-x-4 sm:bottom-4">
+              <HeroOperationalFlow active="act" />
+            </div>
+          </div>
         </div>
       </section>
       <section id="incident-centre" className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">

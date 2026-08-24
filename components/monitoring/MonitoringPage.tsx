@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ArrowRightIcon, BuildingOffice2Icon, DevicePhoneMobileIcon, SignalIcon } from "@heroicons/react/24/outline";
 
 import { HomepageInteractiveDemo } from "@/components/home/HomepageInteractiveDemo";
+import { HeroOperationalFlow } from "@/components/shared/HeroOperationalFlow";
 import { classifyDemonstrationMetric, DEMONSTRATION_METRIC_THRESHOLDS } from "@/lib/demonstration/metric-status";
 import { resolveMonitoringPresentation } from "@/lib/demonstration/monitoring-view";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
@@ -309,7 +310,7 @@ function MonitoringControlCentre() {
         </div>
       </div>
       <div className={`${wallboard ? "bg-slate-950" : "bg-slate-100"} p-3 sm:p-5`}>
-        <div className={`grid grid-cols-2 items-stretch gap-2 sm:gap-3 ${wallboard ? "" : "xl:grid-cols-4"}`}>
+        <div className={`grid grid-cols-2 items-stretch gap-2 sm:gap-3 ${wallboard ? "" : "lg:grid-cols-4"}`}>
           {monitoringRecords.map((monitor) => {
             const status = operationalStateStyles[monitor.operationalState];
             const dark = wallboard;
@@ -413,15 +414,20 @@ export function MonitoringPage() {
               </Link>
             </div>
           </div>
-          <Image
-            src="/assets/monitoring-display.png"
-            alt="VerifAir ASSESS monitoring display"
-            width={1536}
-            height={1024}
-            className="h-full max-h-[34rem] w-full object-cover"
-            priority
-            unoptimized
-          />
+          <div className="relative">
+            <Image
+              src="/assets/monitoring-display.png"
+              alt="VerifAir ASSESS monitoring display"
+              width={1536}
+              height={1024}
+              className="h-full max-h-[34rem] w-full object-cover"
+              priority
+              unoptimized
+            />
+            <div className="absolute inset-x-2 bottom-2 sm:inset-x-4 sm:bottom-4">
+              <HeroOperationalFlow active="assess" />
+            </div>
+          </div>
         </div>
       </section>
 

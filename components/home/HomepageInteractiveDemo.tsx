@@ -116,8 +116,13 @@ function OperationalLegend() {
   );
 }
 
-function ViewHeading({ title, description }: { title: string; description: string }) {
-  return <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-5"><p className="text-[10px] font-black uppercase tracking-[0.16em] text-sky-700">Control Centre page</p><h3 className="mt-1 text-xl font-black text-slate-950">{title}</h3><p className="mt-1 text-xs text-slate-500">{description}</p></header>;
+function ViewHeading({ title, description }: { title: string; description?: string }) {
+  return (
+    <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-5">
+      <h3 className="text-xl font-black text-slate-950">{title}</h3>
+      {description ? <p className="mt-1 text-xs text-slate-500">{description}</p> : null}
+    </header>
+  );
 }
 
 const timelineRows = [
@@ -136,16 +141,6 @@ function formatTime(offsetMs: number) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(Date.parse(publicDemonstrationScenario.startTimestamp) + offsetMs));
-}
-
-function formatAustralianTime(date: Date) {
-  return new Intl.DateTimeFormat("en-AU", {
-    timeZone: "Australia/Sydney",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short",
-  }).format(date);
 }
 
 function currentValue(snapshot: ReturnType<DemonstrationSession["getSnapshot"]>, monitorId: string, metricId: string) {
@@ -210,8 +205,8 @@ function MonitoringTile({ snapshot, monitorId, selected, onSelect }: {
     >
       <span className="flex items-start justify-between gap-4">
         <span>
-          <span className="block text-base font-black uppercase text-slate-950 sm:text-lg">{meta[1]}</span>
-          <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{meta[2]}</span>
+          <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{meta[2]}</span>
+          <span className="mt-1 block text-base font-black uppercase text-slate-950 sm:text-lg">{meta[1]}</span>
         </span>
         {retainsAlertHistory ? (
           <span className="flex items-center gap-1.5" aria-label="ACTION history, current state HEALTHY">
@@ -360,7 +355,7 @@ function SystemHealthView() {
           </div>
         </div>
         <section className="mt-5 border-y border-slate-200" aria-label="Selected asset health details">
-          <div className="flex flex-wrap items-center justify-between gap-3 py-4"><div className="flex items-center gap-3"><CpuChipIcon className="size-6 text-sky-700" aria-hidden="true" /><div><p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">{selectedSensor ? "Selected hardware" : "Site health snapshot"}</p><h4 className="mt-1 text-lg font-black text-slate-950">{selectedSensor && selectedMeta ? `${selectedMeta[1]} · ${selectedMeta[2]}` : "Demonstration Healthcare Construction Project"}</h4></div></div><span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase text-slate-700"><span className="size-2 rounded-full bg-emerald-500" aria-hidden="true" /> {selectedSensor ? "Online" : "Healthy"}</span></div>
+          <div className="flex flex-wrap items-center justify-between gap-3 py-4"><div className="flex items-center gap-3"><CpuChipIcon className="size-6 text-sky-700" aria-hidden="true" /><div><p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">{selectedSensor ? "Selected hardware" : "Site health snapshot"}</p><h4 className="mt-1 text-lg font-black text-slate-950">{selectedSensor && selectedMeta ? `${selectedMeta[1]} · ${selectedMeta[2]}` : "Demonstration Project"}</h4></div></div><span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase text-slate-700"><span className="size-2 rounded-full bg-emerald-500" aria-hidden="true" /> {selectedSensor ? "Online" : "Healthy"}</span></div>
           <dl>{details.map(([label, value]) => <div key={label} className="grid gap-1 border-t border-slate-200 py-3 text-sm sm:grid-cols-[14rem_minmax(0,1fr)] sm:gap-6"><dt className="font-bold text-slate-500">{label}</dt><dd className="font-mono font-bold text-slate-900">{value}</dd></div>)}</dl>
         </section>
       </div>
@@ -379,7 +374,15 @@ function AssessView({ session, snapshot, selectedId, setSelectedId, onOpenEvents
 }) {
   const selectedMeta = locationMeta.find(([id]) => id === selectedId) ?? locationMeta[0];
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [siteFilter, setSiteFilter] = useState("all");
+  const [zoneFilter, setZoneFilter] = useState("all");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  const visibleLocations = locationMeta.filter(([, zone]) => {
+    const matchesZone = zoneFilter === "all" || zone === zoneFilter;
+    const matchesSite = siteFilter === "all" || siteFilter === "demonstration-project";
+    return matchesZone && matchesSite;
+  });
 
   useEffect(() => {
     if (!detailsOpen) return;
@@ -411,9 +414,34 @@ function AssessView({ session, snapshot, selectedId, setSelectedId, onOpenEvents
 
   return (
     <div>
-      <ViewHeading title="Monitoring" description="Current particulate conditions across Zone A monitoring locations." />
-      <div id="control-centre-overview" className="grid scroll-mt-4 gap-2 bg-slate-100 p-3 sm:grid-cols-2 sm:gap-4 sm:p-5" aria-label="Monitoring overview">
-        {locationMeta.map(([id]) => <MonitoringTile key={id} snapshot={snapshot} monitorId={id} selected={id === selectedId} onSelect={() => selectLocation(id)} />)}
+      <ViewHeading title="Monitoring" />
+      <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5 sm:py-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-600">Monitoring filters</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <label htmlFor="homepage-site-filter" className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Site</label>
+              <select id="homepage-site-filter" value={siteFilter} onChange={(event) => setSiteFilter(event.target.value)} className="min-h-9 border border-slate-300 bg-white px-2 text-xs font-bold text-slate-900">
+                <option value="all">All sites</option>
+                <option value="demonstration-project">Demonstration Project</option>
+              </select>
+              <label htmlFor="homepage-zone-filter" className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Zone</label>
+              <select id="homepage-zone-filter" value={zoneFilter} onChange={(event) => setZoneFilter(event.target.value)} className="min-h-9 border border-slate-300 bg-white px-2 text-xs font-bold text-slate-900">
+                <option value="all">All zones</option>
+                <option value="Zone A">Zone A</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-2 border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-700">
+              <span aria-hidden="true" className="size-2 rounded-full bg-emerald-500" />
+              Online
+            </span>
+          </div>
+        </div>
+      </div>
+      <div id="control-centre-overview" className="grid scroll-mt-4 gap-2 bg-slate-100 p-3 sm:gap-4 sm:p-5 md:grid-cols-2 lg:grid-cols-4" aria-label="Monitoring overview">
+        {visibleLocations.map(([id]) => <MonitoringTile key={id} snapshot={snapshot} monitorId={id} selected={id === selectedId} onSelect={() => selectLocation(id)} />)}
       </div>
 
       <AnimatePresence>
@@ -513,21 +541,10 @@ export function HomepageInteractiveDemo() {
   const [metricId, setMetricId] = useState<MetricId>("RESPIRABLE_DUST");
   const [activeView, setActiveView] = useState<"monitoring" | "trends" | "reports" | "events" | "health">("monitoring");
   const [hydrated, setHydrated] = useState(false);
-  const [clockNow, setClockNow] = useState<Date | null>(null);
   const currentStepIndex = sequenceSteps.reduce((activeIndex, step, index) => snapshot.replayState.offsetMs >= step.offsetMs ? index : activeIndex, 0);
   const currentStep = sequenceSteps[currentStepIndex];
 
   useEffect(() => setHydrated(true), []);
-
-  useEffect(() => {
-    let timerId: number;
-    const updateClock = () => {
-      setClockNow(new Date());
-      timerId = window.setTimeout(updateClock, 1_000);
-    };
-    updateClock();
-    return () => window.clearTimeout(timerId);
-  }, []);
 
   const seekStep = (index: number) => session.seek(sequenceSteps[index].offsetMs);
 
@@ -553,6 +570,12 @@ export function HomepageInteractiveDemo() {
     "Review the retained follow-up observations, then complete the monitoring period.",
     "Complete resolution review, explicitly resolve the event, then open the connected record.",
   ][currentStepIndex];
+  const sydneyNow = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Sydney",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(new Date());
 
   const monitoringView = <AssessView session={session} snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} onOpenEvents={() => setActiveView("events")} onWorkStarted={() => seekStep(2)} />;
 
@@ -592,26 +615,22 @@ export function HomepageInteractiveDemo() {
         </aside>
 
         <div className="relative isolate min-w-0 overflow-clip rounded-lg border border-slate-300 bg-white shadow-[0_28px_70px_-45px_rgba(15,23,42,0.45)]">
-          <div className="relative grid gap-3 border-b border-slate-800 bg-slate-900 px-4 py-3 text-white md:grid-cols-[auto_minmax(0,1fr)] md:items-center sm:px-5">
+          <div className="relative grid gap-3 border-b border-slate-800 bg-slate-900 px-4 py-3 text-white md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center sm:px-5">
             <Image src="/assets/verifair_erne_tech_logo.webp" alt="VerifAir by ERNE Tech" width={204} height={68} className="h-auto w-20 sm:w-[5.5rem]" priority />
             <div className="text-left md:text-left">
-              <strong className="text-xs font-black uppercase tracking-[0.12em] text-white">Particulate Monitoring &amp; Task Management</strong>
-              <p className="mt-1 text-sm font-bold text-slate-200">Demonstration Healthcare Construction Project</p>
+              <strong className="text-xs font-black uppercase tracking-[0.12em] text-white">Air Quality Control Center</strong>
+              <p className="mt-1 text-sm font-bold text-slate-200">Demonstration Project</p>
             </div>
+            <p className="text-right text-[10px] font-black uppercase tracking-[0.12em] text-slate-300">{sydneyNow}</p>
           </div>
-          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-700 sm:px-5">
-            <span className="font-black uppercase tracking-[0.14em] text-slate-500">Live operational view</span>
-            <span className="font-mono font-bold text-slate-700">{clockNow ? formatAustralianTime(clockNow) : "--:--:-- AEST"}</span>
-          </div>
-
           <div className="grid grid-cols-[3.25rem_minmax(0,1fr)] sm:grid-cols-[3.75rem_minmax(0,1fr)]">
             <nav className="relative z-10 bg-slate-900 px-2 py-4 text-slate-300" aria-label="Control Centre sections">
               <div className="sticky top-24 flex flex-col items-center gap-2 lg:top-16">
-              <button type="button" onClick={() => setActiveView("monitoring")} aria-label="Monitoring overview" title="Monitoring overview" aria-pressed={activeView === "monitoring"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><Squares2X2Icon className="size-5" aria-hidden="true" /></button>
+              <button type="button" onClick={() => setActiveView("monitoring")} aria-label="Monitoring" title="Monitoring" aria-pressed={activeView === "monitoring"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><Squares2X2Icon className="size-5" aria-hidden="true" /></button>
+              <button type="button" onClick={() => setActiveView("events")} aria-label="Events and alerts" title="Events and alerts" aria-pressed={activeView === "events"} className="relative grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-red-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><BellAlertIcon className="size-5" aria-hidden="true" />{snapshot.incidentState.opened && !snapshot.incidentState.closed && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-slate-900" aria-hidden="true" />}</button>
               <button type="button" onClick={() => setActiveView("trends")} aria-label="Trends" title="Trends" aria-pressed={activeView === "trends"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><ChartBarIcon className="size-5" aria-hidden="true" /></button>
               <button type="button" onClick={() => setActiveView("reports")} aria-label="Reports" title="Reports" aria-pressed={activeView === "reports"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-sky-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><DocumentChartBarIcon className="size-5" aria-hidden="true" /></button>
-              <button type="button" onClick={() => setActiveView("events")} aria-label="Incidents and alerts" title="Incidents and alerts" aria-pressed={activeView === "events"} className="relative grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-red-400 aria-pressed:bg-slate-800 aria-pressed:text-white"><BellAlertIcon className="size-5" aria-hidden="true" />{snapshot.incidentState.opened && !snapshot.incidentState.closed && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-slate-900" aria-hidden="true" />}</button>
-              <button type="button" onClick={() => setActiveView("health")} aria-label="System health" title="System health" aria-pressed={activeView === "health"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-emerald-400 aria-pressed:bg-slate-800 aria-pressed:text-emerald-300"><HeartIcon className="size-5" aria-hidden="true" /></button>
+              <button type="button" onClick={() => setActiveView("health")} aria-label="Health" title="Health" aria-pressed={activeView === "health"} className="grid size-10 place-items-center border-l-2 border-transparent transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 aria-pressed:border-emerald-400 aria-pressed:bg-slate-800 aria-pressed:text-emerald-300"><HeartIcon className="size-5" aria-hidden="true" /></button>
               </div>
             </nav>
             <div className="min-w-0">

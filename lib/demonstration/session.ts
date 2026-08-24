@@ -3,7 +3,7 @@
  * 
  * Combines:
  * 1. Environmental replay state (ReplayPlaybackController)
- * 2. Interactive Incident Domain state (IncidentState & IncidentEvents)
+ * 2. Interactive incident-response projection (IncidentState & IncidentEvents)
  * 3. Unified subscription model for React useSyncExternalStore
  * 4. Meaningful scenario marker navigation (Prev / Next event markers)
  */
@@ -17,6 +17,7 @@ import {
   type ReplayRate,
 } from "@/lib/replay/playback-controller";
 import {
+  createInitialIncidentState,
   reduceIncident,
   reduceIncidentEvent,
   type IncidentEvent,
@@ -28,7 +29,6 @@ type IncidentEventInput =
   IncidentEvent extends infer Event
     ? Event extends IncidentEvent
       ? Omit<Event, "incidentId" | "sequence" | "timestampMs"> & {
-          incidentId?: string;
           timestampMs?: number;
         }
       : never
@@ -63,13 +63,19 @@ export interface DemoEvidenceAsset {
   readonly previewUrl: string;
 }
 
+const scenarioIncident = publicDemonstrationScenario.incidents[0];
+
+if (!scenarioIncident?.monitorId) {
+  throw new Error("The public demonstration requires one monitor-linked canonical incident.");
+}
+
 const INITIAL_SCENARIO_EVENTS: readonly IncidentEvent[] = [
   {
     type: "INCIDENT_OPENED",
-    incidentId: "INC-0042",
-    monitorId: "MON-004",
-    triggerCondition: "Fictional configured operational trigger reached in the public demonstration",
-    timestampMs: 120_000,
+    incidentId: scenarioIncident.id,
+    monitorId: scenarioIncident.monitorId,
+    triggerCondition: scenarioIncident.title,
+    timestampMs: scenarioIncident.openedOffsetMs,
     sequence: 1,
   },
 ];
@@ -222,7 +228,7 @@ export class DemonstrationSession {
   ): { ok: true } | { ok: false; error: string } {
     const currentOffset = this.#snapshot.replayState.offsetMs;
     const timestampMs = eventInput.timestampMs ?? currentOffset;
-    const incidentId = eventInput.incidentId ?? "INC-0042";
+    const incidentId = scenarioIncident.id;
 
     const nextSeq =
       INITIAL_SCENARIO_EVENTS.length + this.#userEvents.length + 1;
@@ -259,7 +265,14 @@ export class DemonstrationSession {
       ...this.#userEvents,
     ].filter((e) => e.timestampMs <= currentOffset);
 
-    const incidentState = reduceIncident(activeEvents);
+    const incidentState = reduceIncident(
+      activeEvents,
+      createInitialIncidentState(
+        scenarioIncident.id,
+        scenarioIncident.monitorId,
+        scenarioIncident.title,
+      ),
+    );
 
     // Compute marker index
     let currentMarkerIndex = 0;
@@ -322,5 +335,3 @@ export function getSharedDemonstrationSession(): DemonstrationSession {
   }
   return sharedSessionInstance;
 }
-
-

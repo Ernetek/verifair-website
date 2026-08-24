@@ -21,7 +21,14 @@ Store only the secret names in repository documentation. Never commit or log
 their values.
 
 The production deploy job builds the same commit again and runs
-`npx wrangler deploy` only after the complete quality job succeeds.
+`npx wrangler deploy` only after the complete quality job succeeds. That build
+sets the public, non-secret `NEXT_PUBLIC_BUILD_SHA` to `github.sha`.
+
+After deployment, the workflow requests
+`https://verifair.com.au/api/health` with cache bypass semantics and retries for
+propagation. The response must report `status: ok` and the exact expected SHA.
+Until that independent live check passes, the workflow must not describe the
+revision as verified production.
 
 ## Cloudflare Workers Builds
 
@@ -62,6 +69,8 @@ the Workers Builds production deploy command.
 6. Confirm GitHub Actions completes the quality job before its deploy job and
    that the resulting GitHub Actions deployment is the only new active
    production deployment.
+7. Confirm the post-deploy health request returns an uncached response whose
+   `buildSha` exactly matches the deploying `github.sha`.
 
 ## Rollback procedure
 
@@ -83,6 +92,8 @@ Two production deployment authorities must never be active at the same time.
 
 - `TURNSTILE_SECRET_KEY`: server-side Turnstile verification secret.
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: public Turnstile site key.
+- `NEXT_PUBLIC_BUILD_SHA`: public commit identity injected by the production
+  workflow; it is not a secret and must not contain credentials.
 - Future CRM variables should remain server-side unless a vendor specifically requires a public key.
 
 ## Launch Notes

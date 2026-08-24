@@ -217,8 +217,11 @@ test("Control Centre keeps environmental recovery independent from explicit even
   await expect(controlCentre.getByText("Saved ticket work log", { exact: true }).first()).toBeVisible();
   await expect(controlCentre.getByText("Observed: Elevated dust visible in work zone. Action: Stopped work and assessed area.", { exact: true })).toBeVisible();
   await expect(controlCentre.getByText("Saved by Facilities coordinator", { exact: true })).toBeVisible();
-  await controlCentre.getByRole("button", { name: "Incidents and alerts" }).click();
-  await controlCentre.getByRole("button", { name: "Monitoring overview" }).click();
+  await controlCentre.getByRole("button", { name: "Events and alerts" }).click();
+  await controlCentre
+    .getByRole("navigation", { name: "Control Centre sections" })
+    .getByRole("button", { name: "Monitoring", exact: true })
+    .click();
   await controlCentre.getByRole("button", { name: "COMPLETE MONITORING PERIOD" }).click();
   await expect(
     controlCentre.getByText("Condition returned to normal", {
@@ -228,9 +231,12 @@ test("Control Centre keeps environmental recovery independent from explicit even
   await expect(
     controlCentre.getByTestId("homepage-monitoring-location-WORK_ZONE_A").getByLabel("ACTION history, current state HEALTHY")
   ).toBeVisible();
-  await controlCentre.getByRole("button", { name: "Incidents and alerts" }).click();
+  await controlCentre.getByRole("button", { name: "Events and alerts" }).click();
   await expect(controlCentre.getByText("In progress", { exact: true }).first()).toBeVisible();
-  await controlCentre.getByRole("button", { name: "Monitoring overview" }).click();
+  await controlCentre
+    .getByRole("navigation", { name: "Control Centre sections" })
+    .getByRole("button", { name: "Monitoring", exact: true })
+    .click();
   await expect(controlCentre.getByRole("button", { name: "OPEN RECORD" })).toHaveCount(0);
 });
 
@@ -241,8 +247,8 @@ test("demo header and compact instructions remain above the full-width Control C
   const demo = page.locator("#monitoring");
   const guide = demo.getByLabel("Demonstration guide");
   const logo = demo.getByAltText("VerifAir by ERNE Tech");
-  const project = demo.getByText("Demonstration Healthcare Construction Project", { exact: true });
-  const controlCentre = demo.getByText("Particulate Monitoring & Task Management", { exact: true });
+  const project = demo.getByText("Demonstration Project", { exact: true }).first();
+  const controlCentre = demo.getByText("Air Quality Control Center", { exact: true });
 
   await expect(demo.getByRole("heading", { name: "See the VerifAir particulate monitoring and task management workspace in action." })).toBeVisible();
   await expect(demo.getByText(/AEST|AEDT/)).toBeVisible();
@@ -292,7 +298,7 @@ test("demo uses four-reading zone cards, status rails and operational colour gui
   await expect(demo.getByRole("heading", { name: "Particulate / operational state" })).toBeVisible();
   await expect(demo.getByRole("heading", { name: "System / data health" })).toBeVisible();
   const applicationNavigation = demo.getByRole("navigation", { name: "Control Centre sections" });
-  await expect(applicationNavigation.getByRole("button", { name: "Monitoring overview" })).toBeVisible();
+  await expect(applicationNavigation.getByRole("button", { name: "Monitoring" })).toBeVisible();
   await expect(applicationNavigation.getByRole("button", { name: "Trends" })).toBeVisible();
   const reportsButton = applicationNavigation.getByRole("button", {
     name: "Reports"
@@ -309,23 +315,21 @@ test("demo uses four-reading zone cards, status rails and operational colour gui
     })
   ).toBeVisible();
 
-  await expect(demo.getByText("Find, review and generate connected operational reports.")).toBeVisible();
-
-  await expect(demo.getByText("8 reports", { exact: true })).toBeVisible();
-  await demo.getByLabel("Report type").selectOption("Evidence register");
-  await expect(demo.getByText("1 reports", { exact: true })).toBeVisible();
-  await expect(demo.getByRole("article", { name: "Selected report preview" })).toContainText("Evidence register");
+  await demo.getByLabel("Where it is").selectOption("All monitoring locations");
+  await expect(demo.getByRole("article", { name: "Selected report preview" })).toContainText("Daily monitoring summary");
   await demo.getByLabel("Search reports").fill("no matching report");
-  await expect(demo.getByText("No reports match those filters.")).toBeVisible();
+  await expect(demo.getByRole("article", { name: "Selected report preview" })).toContainText("Daily monitoring summary");
   await demo.getByLabel("Search reports").fill("");
 
   await expect(
-    demo.getByRole("link", {
-      name: "Open reporting centre"
+    demo.getByRole("button", {
+      name: "Export"
     })
-  ).toHaveAttribute("href", "/reporting");
-  await expect(applicationNavigation.getByRole("button", { name: "Incidents and alerts" })).toBeVisible();
-  await applicationNavigation.getByRole("button", { name: "System health" }).click();
+  ).toBeDisabled();
+  await expect(demo.getByLabel(/Date range/)).toBeDisabled();
+  await expect(demo.getByText("Demo preview only — no file is generated.")).toBeVisible();
+  await expect(applicationNavigation.getByRole("button", { name: "Events and alerts" })).toBeVisible();
+  await applicationNavigation.getByRole("button", { name: "Health" }).click();
   await expect(demo.getByRole("heading", { name: "Health", exact: true })).toBeVisible();
   await expect(demo.getByRole("heading", { name: "Site overview" })).toBeVisible();
   await expect(demo.getByText("4/4 sensors online · 4/4 monitoring locations reporting · Gateway online")).toBeVisible();
@@ -349,7 +353,7 @@ test("demo uses four-reading zone cards, status rails and operational colour gui
   await expect(demo.getByRole("heading", { name: "Trends", exact: true })).toBeVisible();
   await expect(demo.getByRole("dialog")).toHaveCount(0);
   await expect(demo.getByLabel("Monitoring location")).toHaveValue("WORK_ZONE_A");
-  await applicationNavigation.getByRole("button", { name: "Monitoring overview" }).dispatchEvent("click");
+  await applicationNavigation.getByRole("button", { name: "Monitoring" }).dispatchEvent("click");
   await expect(demo.getByRole("heading", { name: "Monitoring", exact: true })).toBeVisible();
   await expect(demo.getByText("Below configured attention level", { exact: true })).toBeVisible();
   await expect(demo.getByText("Configured attention level reached", { exact: true })).toBeVisible();
@@ -368,7 +372,7 @@ test("demo uses four-reading zone cards, status rails and operational colour gui
   await page.setViewportSize({ width: 390, height: 844 });
   await demo.getByLabel("Monitoring overview").locator("[data-testid^='homepage-monitoring-location-']").nth(2).scrollIntoViewIfNeeded();
   const headerBox = await page.getByRole("banner").boundingBox();
-  const healthButtonBox = await applicationNavigation.getByRole("button", { name: "System health" }).boundingBox();
+  const healthButtonBox = await applicationNavigation.getByRole("button", { name: "Health" }).boundingBox();
   expect(healthButtonBox?.y).toBeGreaterThanOrEqual((headerBox?.y ?? 0) + (headerBox?.height ?? 0));
   expect((healthButtonBox?.y ?? Number.POSITIVE_INFINITY) + (healthButtonBox?.height ?? 0)).toBeLessThanOrEqual(844);
 

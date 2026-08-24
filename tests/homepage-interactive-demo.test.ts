@@ -15,9 +15,9 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).toContain("new DemonstrationSession()");
     expect(source).toContain('const INCIDENT_ID = "VA-INC-2026-0042"');
     expect(source).toContain("selectLatestObservation");
-    expect(source).toContain("Demonstration Healthcare Construction Project");
+    expect(source).toContain("Demonstration Project");
     expect(source).toContain("See the VerifAir particulate monitoring and task management workspace in action.");
-    expect(source).toContain("Particulate Monitoring &amp; Task Management");
+    expect(source).toContain("Air Quality Control Center");
     expect(source).toContain('src="/assets/verifair_erne_tech_logo.webp"');
     expect(source).toContain('id="monitoring" className="border-b border-slate-200 bg-white');
     expect(source).toContain('timeZone: "Australia/Sydney"');
@@ -27,7 +27,7 @@ describe("homepage interactive VerifAir demonstration", () => {
   it("uses one Control Centre with internal reports and events pages", () => {
     expect(source).toContain("Control Centre");
     expect(source).toContain("OPEN RAISED EVENT");
-    expect(source).toContain('aria-label="Incidents and alerts"');
+    expect(source).toContain('aria-label="Events and alerts"');
     expect(source).toContain('setActiveView("events")');
     expect(source).toContain("<ControlCentreReports snapshot={snapshot} />");
     expect(source).toContain("<ControlCentreEvents");
@@ -57,7 +57,7 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).not.toContain("MONITORING · Demonstration Healthcare Construction Project");
     expect(source).toContain("{ribbon &&");
     expect(source).toContain("SystemHealthView");
-    expect(source).toContain('aria-label="System health"');
+    expect(source).toContain('aria-label="Health"');
     expect(source).toContain('title="Health"');
     expect(source).toContain("Site overview");
     expect(source).toContain("Gateway serial");
@@ -98,11 +98,16 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(eventsSource).toContain("Operational work log");
     expect(reportsSource).toContain("Saved ticket work log");
     expect(reportsSource).toContain("Search reports");
-    expect(reportsSource).toContain("All report types");
+    expect(reportsSource).toContain("Where it is");
+    expect(reportsSource).toContain("Date range");
+    expect(reportsSource).toContain("Date range · demo preview");
+    expect(reportsSource).toContain("Demo preview only — no file is generated.");
+    expect(reportsSource).not.toContain("matchesDateRange");
+    expect(reportsSource).toContain("All locations");
     expect(reportsSource).toContain("Operational event report");
     expect(reportsSource).toContain("System health and data availability");
     expect(reportsSource).toContain("Evidence register");
-    expect(reportsSource).toContain('src="/assets/verifair_erne_tech_logo.webp"');
+    expect(reportsSource).toContain('src="/assets/verifair_erne_tech__light_logo.webp"');
     expect(source).toContain("snapshot.incidentState.closed");
     expect(source).toContain("recordOpen && eventResolved");
     expect(source).toContain("VIEW EVENT RECORD");
@@ -118,7 +123,7 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).toContain("lg:grid-cols-[11rem_minmax(0,1fr)_auto]");
     expect(source).not.toContain("lg:sticky lg:top-4");
     expect(source).toContain('aria-label="Control Centre sections"');
-    expect(source).toContain('aria-label="Incidents and alerts"');
+    expect(source).toContain('aria-label="Events and alerts"');
     expect(source).toContain('aria-label="Reports"');
     expect(source).toContain('aria-label="Trends"');
     expect(source).toContain('setActiveView("trends")');

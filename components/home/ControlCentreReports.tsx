@@ -1,26 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { DocumentArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 
 import type { DemonstrationSessionSnapshot } from "@/lib/demonstration/session";
 
 const OPERATIONAL_EVENT_REPORT_ID = "RPT-2026-0042";
 
 const reports = [
-  { id: OPERATIONAL_EVENT_REPORT_ID, type: "Operational event report", project: "Healthcare Construction Project", location: "Zone A · Monitoring Location 1", period: "22 Aug 2026 · 12:02–12:12", status: "Ready", summary: "Connected incident record with observations, response activity, comments and retained evidence." },
-  { id: "RPT-2026-0041", type: "Daily monitoring summary", project: "Healthcare Construction Project", location: "All monitoring locations", period: "22 Aug 2026", status: "Ready", summary: "Daily particulate summary covering four monitoring locations and configured operational states." },
-  { id: "RPT-2026-0040", type: "Trend and event review", project: "Healthcare Construction Project", location: "Zone A", period: "15–22 Aug 2026", status: "Ready", summary: "Trend review linking particulate observations with recorded operational events." },
-  { id: "RPT-2026-0039", type: "Weekly project summary", project: "Healthcare Construction Project", location: "All monitoring locations", period: "15–21 Aug 2026", status: "Ready", summary: "Weekly project view of observations, alerts, actions and data availability." },
-  { id: "RPT-2026-0038", type: "Project period report", project: "Healthcare Construction Project", location: "Project-wide", period: "1–21 Aug 2026", status: "Ready", summary: "Project-period record organised by monitoring location and operational event." },
-  { id: "RPT-2026-0037", type: "Monitoring location history", project: "Healthcare Construction Project", location: "Zone A · Monitoring Location 2", period: "1–21 Aug 2026", status: "Ready", summary: "Observation and system-health history for one named monitoring location." },
-  { id: "RPT-2026-0036", type: "System health and data availability", project: "Healthcare Construction Project", location: "Project-wide", period: "15–21 Aug 2026", status: "Ready", summary: "Gateway, sensor, observation freshness and data-availability history." },
+  { id: OPERATIONAL_EVENT_REPORT_ID, type: "Operational event report", project: "Healthcare Construction Project", location: "Zone A · Monitoring Location 1", period: "22 Aug 2026 · 12:02–12:12", status: "Published", summary: "Connected incident record with observations, response activity, comments and retained evidence." },
+  { id: "RPT-2026-0041", type: "Daily monitoring summary", project: "Healthcare Construction Project", location: "All monitoring locations", period: "22 Aug 2026", status: "Draft", summary: "Daily particulate summary covering four monitoring locations and configured operational states." },
+  { id: "RPT-2026-0040", type: "Trend and event review", project: "Healthcare Construction Project", location: "Zone A", period: "15–22 Aug 2026", status: "Draft", summary: "Trend review linking particulate observations with recorded operational events." },
+  { id: "RPT-2026-0039", type: "Weekly project summary", project: "Healthcare Construction Project", location: "All monitoring locations", period: "15–21 Aug 2026", status: "Draft", summary: "Weekly project view of observations, alerts, actions and data availability." },
+  { id: "RPT-2026-0038", type: "Project period report", project: "Healthcare Construction Project", location: "Project-wide", period: "1–21 Aug 2026", status: "Draft", summary: "Project-period record organised by monitoring location and operational event." },
+  { id: "RPT-2026-0037", type: "Monitoring location history", project: "Healthcare Construction Project", location: "Zone A · Monitoring Location 2", period: "1–21 Aug 2026", status: "Draft", summary: "Observation and system-health history for one named monitoring location." },
+  { id: "RPT-2026-0036", type: "System health and data availability", project: "Healthcare Construction Project", location: "Project-wide", period: "15–21 Aug 2026", status: "Draft", summary: "Gateway, sensor, observation freshness and data-availability history." },
   { id: "RPT-2026-0035", type: "Evidence register", project: "Healthcare Construction Project", location: "Zone A", period: "1–21 Aug 2026", status: "Draft", summary: "Index of retained photos, videos, comments and response records linked to operational events." },
 ] as const;
 
-const reportTypes = ["All report types", ...new Set(reports.map((report) => report.type))];
+const reportLocations = ["All locations", ...new Set(reports.map((report) => report.location.includes("·") ? report.location.split(" · ")[0] : report.location))];
+
+function getReportLocationBucket(location: string) {
+  return location.includes("·") ? location.split(" · ")[0] : location;
+}
 
 function formatOffset(timestampMs?: number) {
   if (timestampMs === undefined) return "Pending";
@@ -41,23 +44,32 @@ function buildOperationalSummary(snapshot: DemonstrationSessionSnapshot) {
 
 export function ControlCentreReports({ snapshot }: { snapshot?: DemonstrationSessionSnapshot }) {
   const [query, setQuery] = useState("");
-  const [type, setType] = useState("All report types");
-  const [status, setStatus] = useState("All statuses");
+  const [location, setLocation] = useState("All locations");
   const [selectedId, setSelectedId] = useState<string>(reports[0].id);
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
   const filtered = reports.filter((report) => {
-    const matchesType = type === "All report types" || report.type === type;
-    const matchesStatus = status === "All statuses" || report.status === status;
+    const matchesLocation = location === "All locations" || getReportLocationBucket(report.location) === location;
     const haystack = `${report.id} ${report.type} ${report.project} ${report.location} ${report.period}`.toLowerCase();
-    return matchesType && matchesStatus && haystack.includes(deferredQuery);
+    return matchesLocation && haystack.includes(deferredQuery);
   });
-  const selected = filtered.find((report) => report.id === selectedId) ?? filtered[0] ?? reports[0];
+
+  useEffect(() => {
+    if (filtered.length === 0) return;
+    if (!filtered.some((report) => report.id === selectedId)) {
+      setSelectedId(filtered[0].id);
+    }
+  }, [filtered, selectedId]);
+
+  const selected = filtered.find((report) => report.id === selectedId)
+    ?? filtered[0]
+    ?? reports.find((report) => report.id === selectedId)
+    ?? reports[0];
   const operationalReportSelected = selected.id === OPERATIONAL_EVENT_REPORT_ID && snapshot;
   const incident = snapshot?.incidentState;
   const openedEvent = incident?.events.find((event) => event.type === "INCIDENT_OPENED");
   const closedEvent = incident?.events.find((event) => event.type === "INCIDENT_CLOSED");
   const previewSummary = operationalReportSelected ? buildOperationalSummary(snapshot) : selected.summary;
-  const reportStatus = operationalReportSelected ? (incident?.closed ? "Ready" : "In progress") : selected.status;
+  const reportStatus = operationalReportSelected ? (incident?.closed ? "Published" : "Draft") : selected.status;
   const stats = operationalReportSelected
     ? [
         [String(incident?.responses.length ?? 0), "Work log entries"],
@@ -66,61 +78,46 @@ export function ControlCentreReports({ snapshot }: { snapshot?: DemonstrationSes
         [incident?.closed ? "Closed" : "Active", "Event status"],
       ]
     : [["4", "Monitoring locations"], ["288", "Observations"], ["1", "Operational event"], ["100%", "Data available"]];
-  const includedSections = operationalReportSelected
-    ? ["Observation summary and event metadata", "Assignment, ownership and priority", "Saved ticket work log", "Evidence, comments and closure history"]
-    : ["Observation summary and trends", "Operational events and workflow", "Comments, actions and evidence", "System health and data availability"];
-
   return (
     <section className="bg-slate-100" aria-labelledby="reports-view-heading">
       <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-5">
-        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-sky-700">Control Centre page</p>
-        <h3 id="reports-view-heading" className="mt-1 text-xl font-black text-slate-950">Reports</h3>
-        <p className="mt-1 text-xs text-slate-500">Find, review and generate connected operational reports.</p>
-      </header>
-
-      <div className="grid min-h-[42rem] lg:grid-cols-[minmax(18rem,0.72fr)_minmax(0,1.28fr)]">
-        <div className="border-b border-slate-300 bg-white p-4 lg:border-b-0 lg:border-r sm:p-5">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            <label className="sm:col-span-2 lg:col-span-1 xl:col-span-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">Search reports</span>
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-sky-700">Control Centre page</p>
+            <h3 id="reports-view-heading" className="mt-1 text-xl font-black text-slate-950">Reports</h3>
+          </div>
+          <div className="grid w-full gap-3 sm:grid-cols-3 xl:max-w-[42rem]">
+            <label className="grid gap-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">
+              <span>Search reports</span>
               <span className="mt-1 flex min-h-11 items-center gap-2 border border-slate-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-600">
                 <MagnifyingGlassIcon className="size-4 text-slate-400" aria-hidden="true" />
                 <input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 border-0 text-sm outline-none" placeholder="ID, project, location or keyword" />
               </span>
             </label>
-            <label className="grid gap-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">Report type
-              <select value={type} onChange={(event) => setType(event.target.value)} className="min-h-11 border border-slate-300 bg-white px-3 text-sm font-bold normal-case tracking-normal text-slate-900">
-                {reportTypes.map((option) => <option key={option}>{option}</option>)}
+            <label className="grid gap-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">Where it is
+              <select value={location} onChange={(event) => setLocation(event.target.value)} className="min-h-11 border border-slate-300 bg-white px-3 text-sm font-bold normal-case tracking-normal text-slate-900">
+                {reportLocations.map((option) => <option key={option}>{option}</option>)}
               </select>
             </label>
-            <label className="grid gap-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">Status
-              <select value={status} onChange={(event) => setStatus(event.target.value)} className="min-h-11 border border-slate-300 bg-white px-3 text-sm font-bold normal-case tracking-normal text-slate-900">
-                {["All statuses", "Ready", "Draft"].map((option) => <option key={option}>{option}</option>)}
+            <label className="grid gap-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Date range · demo preview
+              <select value="Last 30 days" disabled title="The date-range control is illustrative in this fictional demonstration." className="min-h-11 cursor-not-allowed border border-slate-200 bg-slate-100 px-3 text-sm font-bold normal-case tracking-normal text-slate-500">
+                <option>Last 30 days</option>
               </select>
             </label>
-          </div>
-          <p className="mt-4 text-xs font-bold text-slate-500">{filtered.length} reports</p>
-          <div className="mt-2 divide-y divide-slate-200 border-y border-slate-200">
-            {filtered.map((report) => (
-              <button key={report.id} type="button" onClick={() => setSelectedId(report.id)} aria-pressed={selected.id === report.id} className="w-full px-3 py-4 text-left hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-600 aria-pressed:bg-blue-50">
-                <span className="flex items-start justify-between gap-3"><strong className="text-sm text-slate-950">{report.type}</strong><span className={`border px-2 py-0.5 text-[9px] font-black uppercase ${report.status === "Ready" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>{report.status}</span></span>
-                <span className="mt-1 block font-mono text-[10px] font-bold text-blue-700">{report.id}</span>
-                <span className="mt-1 block text-xs text-slate-500">{report.location} · {report.period}</span>
-              </button>
-            ))}
-            {filtered.length === 0 && <p className="py-8 text-center text-sm text-slate-500">No reports match those filters.</p>}
           </div>
         </div>
+      </header>
 
-        <article className="m-3 self-start border border-slate-300 bg-white shadow-sm sm:m-5" aria-label="Selected report preview">
-          <div className="border-b-4 border-blue-700 p-5 sm:p-7">
+      <div className="px-4 py-5 sm:px-6 lg:px-8">
+        <article className="mx-auto w-full max-w-[62rem] border border-slate-300 bg-white shadow-sm" aria-label="Selected report preview">
+          <div className="border-b-4 border-blue-700 bg-slate-900 p-5 text-white sm:p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <Image src="/assets/verifair_erne_tech_logo.webp" alt="VerifAir by ERNE Tech" width={204} height={68} className="h-auto w-28" />
-              <div className="text-right"><p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Generated report</p><p className="mt-1 font-mono text-xs font-bold text-slate-900">{selected.id}</p></div>
+              <Image src="/assets/verifair_erne_tech__light_logo.webp" alt="VerifAir by ERNE Tech" width={204} height={68} className="h-auto w-28" />
+              <div className="text-right text-slate-200"><p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-300">Generated report</p><p className="mt-1 font-mono text-xs font-bold text-white">{selected.id}</p></div>
             </div>
-            <p className="mt-7 text-xs font-black uppercase tracking-[0.16em] text-blue-700">Particulate monitoring</p>
-            <h4 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">{selected.type}</h4>
-            <p className="mt-2 text-sm font-bold text-slate-600">{selected.project}</p>
+            <p className="mt-7 text-xs font-black uppercase tracking-[0.16em] text-sky-300">Particulate monitoring</p>
+            <h4 className="mt-2 text-2xl font-black text-white sm:text-3xl">{selected.type}</h4>
+            <p className="mt-2 text-sm font-bold text-slate-300">{selected.project}</p>
           </div>
           <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-2">
             <dl className="grid content-start gap-3 text-sm">
@@ -192,9 +189,10 @@ export function ControlCentreReports({ snapshot }: { snapshot?: DemonstrationSes
             </div>
           ) : null}
           <div className="border-t border-slate-200 p-5 sm:p-7">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Included sections</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">{includedSections.map((item) => <p key={item} className="border border-slate-200 bg-slate-50 p-3 text-xs font-bold text-slate-700">{item}</p>)}</div>
-            <div className="mt-5 flex flex-wrap gap-2"><button type="button" className="inline-flex min-h-10 items-center gap-2 bg-blue-700 px-4 text-xs font-black text-white"><DocumentArrowDownIcon className="size-4" aria-hidden="true" />Generate PDF</button><Link href="/reporting" className="inline-flex min-h-10 items-center border border-slate-300 px-4 text-xs font-black text-slate-700">Open reporting centre</Link></div>
+            <div className="flex flex-wrap items-center gap-3">
+              <button type="button" disabled title="Report export is illustrative in this fictional demonstration." className="inline-flex min-h-10 cursor-not-allowed items-center gap-2 bg-slate-300 px-4 text-xs font-black text-slate-600"><DocumentArrowDownIcon className="size-4" aria-hidden="true" />Export</button>
+              <p className="text-xs text-slate-500">Demo preview only — no file is generated.</p>
+            </div>
           </div>
           <p className="border-t border-slate-200 px-5 py-3 text-[10px] leading-4 text-slate-500 sm:px-7">Fictional demonstration report. Operational context only; not a regulatory or occupational exposure determination.</p>
         </article>

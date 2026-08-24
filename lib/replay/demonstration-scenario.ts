@@ -150,7 +150,7 @@ const definition: ScenarioDefinition = {
   observations,
   incidents: [
     {
-      id: "INCIDENT_WORK_ZONE_REVIEW",
+      id: "INC-0042",
       monitorId: "WORK_ZONE_A",
       openedOffsetMs: 120_000,
       openedTimestamp: timestampAt(120_000),
@@ -164,7 +164,7 @@ const definition: ScenarioDefinition = {
   actions: [
     {
       id: "ACTION_WORK_REVIEWED",
-      incidentId: "INCIDENT_WORK_ZONE_REVIEW",
+      incidentId: "INC-0042",
       offsetMs: 240_000,
       timestamp: timestampAt(240_000),
       title: "Work reviewed and local controls checked",
@@ -173,7 +173,7 @@ const definition: ScenarioDefinition = {
   evidence: [
     {
       id: "EVIDENCE_FOLLOW_UP",
-      incidentId: "INCIDENT_WORK_ZONE_REVIEW",
+      incidentId: "INC-0042",
       offsetMs: 360_000,
       timestamp: timestampAt(360_000),
       title: "Follow-up readings and response note retained",
@@ -182,7 +182,7 @@ const definition: ScenarioDefinition = {
   resolutions: [
     {
       id: "RESOLUTION_REVIEW_COMPLETE",
-      incidentId: "INCIDENT_WORK_ZONE_REVIEW",
+      incidentId: "INC-0042",
       offsetMs: 480_000,
       timestamp: timestampAt(480_000),
       summary: "Demonstration incident closed after review",
@@ -210,7 +210,7 @@ const definition: ScenarioDefinition = {
         "The notification is part of this simulated workflow and does not represent a live message delivery.",
       orderSemantics: "ORDER_SENSITIVE",
       relatedEntityRefs: [
-        { entityType: "incident", id: "INCIDENT_WORK_ZONE_REVIEW" },
+        { entityType: "incident", id: "INC-0042" },
       ],
     },
     {

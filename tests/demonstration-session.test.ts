@@ -77,6 +77,10 @@ describe("DemonstrationSession Integration", () => {
     session._testOnlySeek(120_000);
     expect(session.getSnapshot().incidentState.opened).toBe(true);
     expect(session.getSnapshot().incidentState.incidentId).toBe("INC-0042");
+    expect(session.getSnapshot().incidentState.monitorId).toBe("WORK_ZONE_A");
+    expect(session.getSnapshot().replayState.incidents[0].incident.id).toBe(
+      session.getSnapshot().incidentState.incidentId,
+    );
     expect(session.getSnapshot().incidentState.closed).toBe(false);
 
     session._testOnlySeek(480_000);

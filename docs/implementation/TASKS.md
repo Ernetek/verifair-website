@@ -9,12 +9,18 @@ before implementation.
 
 ## Governance baseline — TASK 003B
 
+**Status: COMPLETE.** The baseline documents remain controlled, with current
+implementation evidence reconciled in `docs/architecture/current-state.md`.
+
 Establish canonical governance, product specification, verified current-state
 evidence, target architecture, ownership contracts and deterministic demo-data
 semantics. This task changes documentation only and stops before commit for
 human review.
 
 ## M1A — canonical domain and deterministic replay engine
+
+**Status: IMPLEMENTED.** Domain, validation, deterministic evaluation and
+mechanics tests are present. The public numeric dataset was approved separately.
 
 ### Acceptance boundary
 
@@ -47,12 +53,24 @@ handling or the final VerifAir demonstration measurement dataset.
 
 ## Remaining M1 — replay UI integration
 
+**Status: IMPLEMENTED FOR THE PUBLIC DEMONSTRATION.** The approved scenario,
+playback controller, selectors and shared session feed the public replay
+surfaces. The complete repository quality gate remains the acceptance evidence
+for each change.
+
 After M1A passes, a separately approved task may connect existing or revised
 presentation components to the canonical engine, add accessible playback
 controls and verify chart/timeline/current-state synchronization. It must not
 create another replay model.
 
 ## Subsequent milestones
+
+The interactive response and report-preview slices currently visible on the
+public site are fictional browser-session demonstrations. They do not complete
+M3 or M4: there is no authenticated command service, customer persistence,
+production evidence store or operational report generator. M2–M11 therefore
+remain separately gated unless a later controlled record explicitly changes
+their status.
 
 1. **M2 — Environmental Intelligence:** canonical observations, baseline,
    monitor comparison, weather context, confidence and deterministic insights.

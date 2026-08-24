@@ -33,10 +33,21 @@ test("monitoring page uses the Control Centre location drill-in", async ({ page 
 test("reporting page filters the report register and updates its preview", async ({ page }) => {
   await page.goto("/reporting#record-centre", { waitUntil: "networkidle" });
 
-  await page.getByLabel("Report type").selectOption("Evidence register");
-  await expect(page.getByText("1 reports", { exact: true })).toBeVisible();
-  await expect(page.getByRole("article", { name: "Selected report preview" })).toContainText("Evidence register");
-  // The ControlCentreReports component is now embedded on the reporting page and includes an "Open reporting centre" link.
+  await page.getByLabel("Where it is").selectOption("All monitoring locations");
+  await expect(page.getByRole("article", { name: "Selected report preview" })).toContainText("Daily monitoring summary");
+  await expect(page.getByRole("button", { name: "Export" })).toBeDisabled();
+  await expect(page.getByText("Demo preview only — no file is generated.")).toBeVisible();
+});
+
+test("health endpoint reports the running application build identity without caching", async ({ request }) => {
+  const response = await request.get("/api/health");
+  const body = await response.json();
+
+  expect(response.ok()).toBe(true);
+  expect(response.headers()["cache-control"]).toContain("no-store");
+  expect(body.status).toBe("ok");
+  expect(body.service).toBe("verifair-public-website");
+  expect(body.buildSha).toEqual(expect.any(String));
 });
 
 test("workflow page starts work in the Events workspace", async ({ page }) => {

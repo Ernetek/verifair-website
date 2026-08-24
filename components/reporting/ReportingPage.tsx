@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ArrowRightIcon, FunnelIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import { ControlCentreReports } from "@/components/home/ControlCentreReports";
+import { HeroOperationalFlow } from "@/components/shared/HeroOperationalFlow";
 import { OPERATIONAL_TIMELINE } from "@/lib/demonstration/operational-timeline";
 import { DEMONSTRATION_METRICS, publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
@@ -172,6 +173,25 @@ function TrendPanel() {
     (observation) =>
       observation.monitorId === eventMonitor.id && observation.metricId === metric.id && observation.reading.status === "available"
   );
+  const readings = history.flatMap((observation) =>
+    observation.reading.status === "available" ? [observation.reading.value] : [],
+  );
+  const chartLeft = 35;
+  const chartRight = 615;
+  const chartTop = 24;
+  const chartBottom = 178;
+  const minimum = Math.min(...readings, 0);
+  const maximum = Math.max(...readings, 1);
+  const scaleX = (index: number) =>
+    readings.length <= 1
+      ? chartRight
+      : chartLeft + (index / (readings.length - 1)) * (chartRight - chartLeft);
+  const scaleY = (value: number) =>
+    chartBottom - ((value - minimum) / (maximum - minimum || 1)) * (chartBottom - chartTop);
+  const trendPath = readings
+    .map((value, index) => `${index === 0 ? "M" : "L"}${scaleX(index).toFixed(1)} ${scaleY(value).toFixed(1)}`)
+    .join(" ");
+  const latestValue = readings.at(-1) ?? 0;
   return (
     <section className="border border-slate-300 bg-white p-5 shadow-sm sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -205,8 +225,8 @@ function TrendPanel() {
         {[40, 85, 130, 175].map((y) => (
           <line key={y} x1="35" y1={y} x2="615" y2={y} stroke="#cbd5e1" strokeWidth="1" />
         ))}
-        <path d="M35 178 C110 170 145 158 210 164 S320 120 390 132 S500 88 615 105" fill="none" stroke="#0369a1" strokeWidth="5" />
-        <circle cx="615" cy="105" r="6" fill="#0369a1" />
+        <path d={trendPath} fill="none" stroke="#0369a1" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx={scaleX(Math.max(readings.length - 1, 0))} cy={scaleY(latestValue)} r="6" fill="#0369a1" />
         <text x="42" y="207" fill="#64748b" fontSize="11">
           Earlier
         </text>
@@ -392,15 +412,20 @@ export function ReportingPage() {
               </Link>
             </div>
           </div>
-          <Image
-            src="/assets/reports-evidence-review.png"
-            alt="VerifAir RECORD operational review"
-            width={1536}
-            height={1024}
-            className="h-full max-h-[34rem] w-full object-cover"
-            priority
-            unoptimized
-          />
+          <div className="relative">
+            <Image
+              src="/assets/reports-evidence-review.png"
+              alt="VerifAir RECORD operational review"
+              width={1536}
+              height={1024}
+              className="h-full max-h-[34rem] w-full object-cover"
+              priority
+              unoptimized
+            />
+            <div className="absolute inset-x-2 bottom-2 sm:inset-x-4 sm:bottom-4">
+              <HeroOperationalFlow active="report" />
+            </div>
+          </div>
         </div>
       </section>
       <section id="record-centre" className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">

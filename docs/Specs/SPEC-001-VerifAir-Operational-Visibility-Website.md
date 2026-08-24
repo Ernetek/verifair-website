@@ -43,20 +43,24 @@ determine legal compliance.
 
 ## Verified current state
 
-As of the production baseline at commit
-`a5cd3cc6632d852bc3ff301ff148b2225961e632`, the repository implements:
+As reconciled against the repository on 25 August 2026, the repository implements:
 
 - a Next.js 15.5 / React 19.1 / TypeScript 5.8 public website;
 - Tailwind CSS 4 and Framer Motion presentation components;
 - Node 22, pinned by `.nvmrc`, `package.json` and GitHub Actions;
 - Vitest unit/quality tests and Playwright E2E tests;
 - OpenNext for Cloudflare and Wrangler;
-- static and deterministic demonstration presentation experiences;
+- a validated, frozen public scenario, deterministic replay engine, playback
+  controller, selectors and shared demonstration session;
+- a browser-session incident-response projection whose scenario identity comes
+  from the canonical replay incident;
 - reporting proof, public resources and sales content;
 - an active HubSpot embedded contact experience with hosted-form and direct
   email fallbacks;
 - GitHub Actions `.github/workflows/ci.yml` as the sole production deployment
   authority;
+- a no-store production health endpoint and post-deploy expected-SHA
+  verification in the production workflow;
 - Cloudflare Workers Builds as build, version-upload and preview
   infrastructure only.
 
@@ -66,10 +70,11 @@ Workers Builds must use `npx wrangler versions upload` for production and
 non-production branches and must not promote production while `ci.yml` owns
 production deployment.
 
-The repository does **not** currently implement the canonical incident/replay
-domain, deterministic replay engine, regulatory profile registry, production
-telemetry ingestion, provider-neutral lead service or AI provider architecture
-described below. Those are target capabilities.
+The repository does **not** currently implement an authenticated production
+Incident Centre, regulatory profile registry, production telemetry ingestion,
+provider-neutral lead service or AI provider architecture described below.
+Those remain target capabilities. Interactive response and report-generation
+surfaces are fictional public demonstrations and are not production operations.
 
 See `docs/architecture/current-state.md` for repository evidence and
 `docs/architecture/target-state.md` for the proposed target.

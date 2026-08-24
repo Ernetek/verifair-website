@@ -2,9 +2,9 @@
 
 ## Status
 
-Everything in this document is future/target architecture unless an item is
-also recorded in `current-state.md`. This document does not assert that target
-modules, providers or product capabilities are implemented.
+Items recorded in `current-state.md` are implemented. All other material in
+this document remains future/target architecture and must not be presented as
+current product capability.
 
 ## Target boundary
 
@@ -16,9 +16,9 @@ program.
 The target architecture extends the existing Next.js application rather than
 creating a second app.
 
-## Canonical operational core
+## Canonical operational core — implemented for the public demonstration
 
-The target has one canonical operational domain containing scenario,
+The public demonstration has one canonical validated scenario domain containing scenario,
 observation, incident, timeline, action, resolution, device/data-health and
 evidence references. One deterministic replay engine derives replay state for
 all consumers.
@@ -31,9 +31,11 @@ Approved ScenarioDefinition
   → replay, environmental, incident and reporting consumers
 ```
 
-UI components do not calculate independent incident truth or invent changing
-measurements. A playback clock may advance `offsetMs`, but wall-clock rendering
-does not own canonical state.
+UI components do not calculate independent scenario truth or invent changing
+measurements. The playback clock advances `offsetMs`, while the response
+projection accepts browser-session workflow events against the replay-owned
+incident identity. Neither wall-clock rendering nor the response projection
+rewrites canonical scenario observations or timeline facts.
 
 ## Target data/provider separation
 

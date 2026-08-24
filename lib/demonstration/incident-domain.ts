@@ -1,8 +1,9 @@
 /**
- * VerifAir Canonical Incident Domain Model
+ * VerifAir incident-response projection
  * 
- * Defines deterministic event types, incident state, reducer logic,
- * invalid transition safety rules, and selectors for the operational workflow.
+ * Projects user-entered response events against the incident identity owned by
+ * the validated replay scenario. Scenario incidents, observations, actions,
+ * resolutions, evidence and timeline facts remain owned by lib/replay.
  * 
  * Rules:
  * - 6 canonical visible workflow phases: Alert -> Acknowledge -> Assign -> Investigate -> Verify -> Close (-> Closed)
@@ -10,7 +11,7 @@
  * - Verification must yield "sufficient_to_close" before Closure is permitted.
  * - Verification with "further_action_required" reverts phase to Investigate.
  * - Dispatches on closed incidents or invalid phase transitions yield typed errors.
- * - Canonical evidence models store metadata references only; browser dataUrls remain in UI layer.
+ * - Workflow evidence references store metadata only; browser dataUrls remain in the UI layer.
  */
 
 export type WorkflowPhase =
@@ -22,7 +23,7 @@ export type WorkflowPhase =
   | "Close"
   | "Closed";
 
-export interface CanonicalEvidence {
+export interface WorkflowEvidenceReference {
   readonly id: string;
   readonly name: string;
   readonly category: string;
@@ -197,7 +198,7 @@ export interface IncidentState {
   readonly closureDetails?: string;
   readonly closedBy?: string;
   readonly phase: WorkflowPhase;
-  readonly evidence: readonly CanonicalEvidence[];
+  readonly evidence: readonly WorkflowEvidenceReference[];
   readonly events: readonly IncidentEvent[];
   readonly permittedActions: readonly string[];
 }
@@ -208,7 +209,7 @@ export type DomainResult<T> =
 
 export function createInitialIncidentState(
   incidentId: string = "INC-0042",
-  monitorId: string = "MON-004",
+  monitorId: string = "WORK_ZONE_A",
   triggerCondition: string = "Action condition detected",
 ): IncidentState {
   return {
@@ -438,7 +439,7 @@ export function reduceIncidentEvent(
     }
 
     case "EVIDENCE_ATTACHED": {
-      const newEvidence: CanonicalEvidence = {
+      const newEvidence: WorkflowEvidenceReference = {
         id: event.evidenceId,
         name: event.name,
         category: event.category,

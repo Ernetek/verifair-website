@@ -2,9 +2,10 @@
 
 ## Status
 
-These are target contracts for upcoming implementation. The corresponding
-domain and replay modules do not yet exist in the current repository. M1A must
-implement and test them before presentation code treats them as available.
+The scenario, validation, replay and playback contracts below are implemented
+for the public deterministic demonstration. Future provider and production
+platform contracts remain target architecture unless `current-state.md`
+records them as implemented.
 
 ## Ownership principles
 
@@ -90,6 +91,25 @@ Replay, environmental, incident-centre and reporting UI consumers:
 - provide accessible text alternatives and reduced-motion behaviour;
 - do not interpolate, invent or independently classify measurements;
 - do not infer causation or regulatory compliance.
+
+## Interactive response projection
+
+`DemonstrationSession` is the aggregate read model consumed by interactive
+demonstration surfaces. It combines engine-derived `ReplayState` with a
+browser-session response projection. The response projection:
+
+- derives incident ID, monitor ID, opening offset and trigger text from the
+  validated replay incident;
+- owns only user-entered acknowledgement, assignment, investigation,
+  evidence-reference, verification and closure events;
+- cannot mutate replay observations, scenario actions, scenario evidence,
+  resolutions or timeline facts;
+- is not live telemetry, persistence or evidence that the future authenticated
+  Incident Centre has been delivered.
+
+Static Workflow and Reporting timelines must project canonical scenario events.
+Report previews may combine replay state and response-projection entries only
+through the shared `DemonstrationSession` snapshot.
 
 ## Future provider boundaries
 

@@ -5,6 +5,8 @@ const baseURL = externalBaseURL ?? "http://127.0.0.1:3100";
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  timeout: 60_000,
+  workers: process.env.CI ? 2 : 4,
   webServer: externalBaseURL
     ? undefined
     : {

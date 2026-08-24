@@ -1,6 +1,12 @@
 # M1B-001 — Replay UI integration audit and implementation boundary
 
-Status: audit complete; implementation not started
+Status: audit complete; implementation subsequently delivered and reconciled on 25 August 2026
+
+Supersession note: this document preserves the pre-implementation audit and its
+decision record. For implemented architecture and current ownership, use
+`docs/architecture/current-state.md`. Statements below describing source as
+"currently" presentation-owned are historical findings from the audited
+baseline, not assertions about the present tree.
 
 Authority: GitHub Issue #9, human-approved 10 August 2026
 

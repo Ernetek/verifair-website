@@ -28,7 +28,12 @@ npm run cf:build
 `.github/workflows/ci.yml` is the sole production deployment authority. On a
 push to `main`, GitHub Actions runs typecheck, lint, unit tests, the production
 build, E2E tests and the Cloudflare build before the production deploy job can
-run. A failure in any quality step prevents production deployment.
+run. A failure in any quality step prevents production deployment. The deploy
+build embeds the commit SHA, then the workflow queries the live uncached
+`/api/health` endpoint and fails unless production reports the expected SHA.
+
+A successful build or deploy command alone is not production-readiness
+evidence. Acceptance requires the independent live health/SHA step to pass.
 
 Cloudflare Workers Builds remains connected for builds, version uploads and
 branch previews only. Its production and non-production deploy commands must

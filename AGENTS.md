@@ -4,9 +4,11 @@
 
 This repository is the public VerifAir sales website. It currently contains
 public marketing pages, deterministic demonstration experiences, reporting
-proof, educational resources and a HubSpot-hosted contact experience. It does
-not yet contain the complete canonical incident/replay domain or deterministic
-replay engine described by SPEC-001.
+proof, educational resources, a HubSpot-hosted contact experience and the
+canonical validated scenario/replay core described by SPEC-001. The interactive
+incident-response reducer is a response projection within the shared
+demonstration session; it is not a second source of scenario facts or evidence
+that the future authenticated operational platform is complete.
 
 This file contains durable repository-wide rules. Product requirements live in
 `docs/Specs/SPEC-001-VerifAir-Operational-Visibility-Website.md`. Verified
@@ -45,8 +47,10 @@ warnings or weaken tests merely to pass a gate.
   architecture until their implementation and tests are merged.
 - Reuse existing repository conventions and components.
 - Do not create a second app architecture without written justification.
-- When the incident/replay domain is implemented, it must have one canonical
-  domain model and one replay engine shared by all consumers.
+- The implemented incident/replay core has one validated scenario model and
+  one replay engine shared by all consumers. Interactive demonstration response
+  events may extend the session projection but must derive incident identity
+  and scenario facts from that core.
 - Presentation components must not invent changing telemetry or incident facts.
 - Demo measurements must originate from an approved deterministic scenario or
   provider dataset.

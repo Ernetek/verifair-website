@@ -1,14 +1,27 @@
-export const OPERATIONAL_TIMELINE = [
-  ["SYSTEM", "00:02", "Configured action level reached", "The configured operational trigger was reached at Work Zone A."],
-  ["SYSTEM", "00:02", "Alert created", "The operational event entered the Incident Centre."],
-  ["SYSTEM", "00:02", "Notifications sent", "Notifications sent to configured recipients."],
-  ["USER", "00:03", "Acknowledged by Site Manager", "The event was received for operational response."],
-  ["USER", "00:04", "Assigned to Site Supervisor", "Operational ownership was recorded."],
-  ["USER", "00:05", "Investigation started", "The site response review began."],
-  ["USER", "00:07", "Action recorded", "Temporary dust control reviewed and work area inspected."],
-  ["SYSTEM", "00:08+", "Monitoring continued", "Subsequent observations remained connected to the event."],
-  ["USER", "00:10", "Operational review", "Event history, observations and response were reviewed."],
-  ["USER", "00:12", "Event resolved", "The VerifAir operational event was closed after review."]
-] as const;
+import { publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
+
+function formatOffset(offsetMs: number): string {
+  const totalMinutes = Math.floor(offsetMs / 60_000);
+  const minutes = totalMinutes % 60;
+  const seconds = Math.floor((offsetMs % 60_000) / 1_000);
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+}
+
+function actorFor(type: string): "SYSTEM" | "USER" {
+  return type === "SCENARIO_STARTED" || type === "INCIDENT_OPENED" ? "SYSTEM" : "USER";
+}
+
+/**
+ * Presentation projection of the validated scenario timeline. It deliberately
+ * contains no independent event facts; changes must originate in the scenario.
+ */
+export const OPERATIONAL_TIMELINE = publicDemonstrationScenario.timelineEvents.map(
+  (event) => [
+    actorFor(event.type),
+    formatOffset(event.offsetMs),
+    event.title,
+    event.description ?? "Recorded in the fictional demonstration timeline.",
+  ] as const,
+);
 
 export type OperationalTimelineEntry = (typeof OPERATIONAL_TIMELINE)[number];
