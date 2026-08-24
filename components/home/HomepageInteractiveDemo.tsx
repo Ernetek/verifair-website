@@ -615,7 +615,7 @@ export function HomepageInteractiveDemo() {
               </div>
             </nav>
             <div className="min-w-0">
-          <div aria-live="polite">{activeView === "monitoring" ? monitoringView : activeView === "trends" ? <TrendsView snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} metricId={metricId} setMetricId={setMetricId} /> : activeView === "reports" ? <ControlCentreReports /> : activeView === "events" ? <ControlCentreEvents session={session} snapshot={snapshot} onWorkStarted={() => seekStep(2)} onResponseRecorded={() => seekStep(3)} /> : <SystemHealthView />}</div>
+          <div aria-live="polite">{activeView === "monitoring" ? monitoringView : activeView === "trends" ? <TrendsView snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} metricId={metricId} setMetricId={setMetricId} /> : activeView === "reports" ? <ControlCentreReports snapshot={snapshot} /> : activeView === "events" ? <ControlCentreEvents session={session} snapshot={snapshot} onWorkStarted={() => seekStep(2)} onResponseRecorded={() => seekStep(3)} /> : <SystemHealthView />}</div>
           {activeView === "monitoring" && <>
           <OperationalLegend />
           {ribbon && <div className={`border-y px-4 py-2.5 text-[10px] font-black uppercase tracking-[0.08em] sm:px-5 ${eventResolved ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-red-200 bg-red-50 text-red-900"}`}>{ribbon}</div>}

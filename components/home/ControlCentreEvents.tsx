@@ -4,9 +4,6 @@ import { ExclamationTriangleIcon, PaperClipIcon } from "@heroicons/react/24/outl
 import Image from "next/image";
 import { useState, useSyncExternalStore } from "react";
 
-import { PARTICULATE_UNIT } from "@/lib/metrics";
-import { getDemonstrationMetricTrendSeries } from "@/lib/replay/demonstration-scenario";
-import { selectLatestObservation } from "@/lib/replay/selectors";
 import { DemonstrationSession, type DemonstrationSessionSnapshot } from "@/lib/demonstration/session";
 
 const INCIDENT_ID = "VA-INC-2026-0042";
@@ -16,6 +13,7 @@ const assignmentRoster = {
   site_response: ["Project manager", "Facilities coordinator"],
 } as const;
 type AssignmentGroup = keyof typeof assignmentRoster;
+const OTHER_OPTION = "Other — see notes";
 
 const OBSERVED_CONDITIONS_OPTIONS = [
   "Elevated dust visible in work zone",
@@ -23,7 +21,7 @@ const OBSERVED_CONDITIONS_OPTIONS = [
   "Containment barrier compromised",
   "Increased foot traffic through zone",
   "HVAC system operating in recirculation mode",
-  "Other â€” see notes",
+  OTHER_OPTION,
 ] as const;
 
 const ACTION_TAKEN_OPTIONS = [
@@ -32,15 +30,15 @@ const ACTION_TAKEN_OPTIONS = [
   "Adjusted containment and ventilation",
   "Notified affected trades and supervisors",
   "Reviewed and updated work method statement",
-  "Other â€” see notes",
+  OTHER_OPTION,
 ] as const;
 
 const CLOSE_REASON_OPTIONS = [
-  "Readings returned to normal â€” no further action required",
+  "Readings returned to normal — no further action required",
   "Operational controls reviewed and confirmed adequate",
   "Work method updated and team briefed",
-  "False positive â€” equipment issue identified",
-  "Other â€” see notes",
+  "False positive — equipment issue identified",
+  OTHER_OPTION,
 ] as const;
 
 const DEMO_EVIDENCE_ASSET = {
@@ -48,11 +46,6 @@ const DEMO_EVIDENCE_ASSET = {
   url: "/assets/workflow-site-investigation.webp",
   type: "image/webp",
 } as const;
-
-function currentValue(snapshot: DemonstrationSessionSnapshot) {
-  const observation = selectLatestObservation(snapshot.replayState, "WORK_ZONE_A", "RESPIRABLE_DUST");
-  return observation?.reading.status === "available" ? Math.round(observation.reading.value) : 0;
-}
 
 function workflowLabel(snapshot: DemonstrationSessionSnapshot) {
   const incident = snapshot.incidentState;
@@ -87,17 +80,11 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
   const [evidenceAttached, setEvidenceAttached] = useState(false);
   const [closeReason, setCloseReason] = useState("");
   const [closeOther, setCloseOther] = useState("");
+  const [workLogStatus, setWorkLogStatus] = useState<{ tone: "success" | "error"; message: string } | null>(null);
   const isCurrentEvent = selectedEvent === INCIDENT_ID;
   const canWork = incident.investigationStarted && !incident.closed;
   const isInvestigating = incident.investigationStarted && !incident.closed;
   const canClose = incident.phase === "Close";
-  const trendValues = getDemonstrationMetricTrendSeries("WORK_ZONE_A", "RESPIRABLE_DUST", snapshot.replayState.offsetMs);
-  const maxTrend = Math.max(...trendValues, 1);
-  const trendPoints = trendValues.map((value, index) => `${20 + index * (580 / Math.max(trendValues.length - 1, 1))},${170 - (value / maxTrend) * 130}`).join(" ");
-  const trendLabels = trendValues.map((_, index) => {
-    const hoursAgo = (trendValues.length - 1 - index) * 2;
-    return hoursAgo === 0 ? "Now" : `-${hoursAgo}h`;
-  });
 
   const startWork = () => {
     advanceToWork(session, assignedGroup, assignee, priority);
@@ -105,12 +92,36 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
   };
 
   const saveWorkLog = () => {
-    if (!canWork) return;
-    if (!responseType.trim() || !observedConditions.trim() || !actionTaken.trim()) return;
-    const observedText = observedConditions === "Other — see notes" ? observedOther.trim() : observedConditions.trim();
-    const actionText = actionTaken === "Other — see notes" ? actionOther.trim() : actionTaken.trim();
-    if (!observedText || !actionText) return;
-    session.dispatchIncidentEvent({ type: "RESPONSE_RECORDED", responseType, details: `${observedText} ${actionText}`.trim(), performedBy: assignee });
+    if (!canWork) {
+      setWorkLogStatus({ tone: "error", message: "Start the investigation before saving a work log." });
+      return;
+    }
+    if (!responseType.trim() || !observedConditions.trim() || !actionTaken.trim()) {
+      setWorkLogStatus({ tone: "error", message: "Select the response type, observed conditions, and action taken before saving." });
+      return;
+    }
+    const observedText = observedConditions === OTHER_OPTION ? observedOther.trim() : observedConditions.trim();
+    const actionText = actionTaken === OTHER_OPTION ? actionOther.trim() : actionTaken.trim();
+    if (!observedText || !actionText) {
+      setWorkLogStatus({ tone: "error", message: "Complete the notes for any 'Other' selections before saving." });
+      return;
+    }
+    const responseResult = session.dispatchIncidentEvent({
+      type: "RESPONSE_RECORDED",
+      responseType,
+      details: `Observed: ${observedText}. Action: ${actionText}.`,
+      performedBy: assignee,
+    });
+    if (!responseResult.ok) {
+      setWorkLogStatus({ tone: "error", message: responseResult.error });
+      return;
+    }
+    setWorkLogStatus({ tone: "success", message: "Work log saved to the incident record." });
+    setResponseType("");
+    setObservedConditions("");
+    setObservedOther("");
+    setActionTaken("");
+    setActionOther("");
     onResponseRecorded();
   };
 
@@ -134,7 +145,7 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
   const closeEvent = () => {
     const current = session.getSnapshot().incidentState;
     if (current.phase !== "Close") return;
-    const reasonText = closeReason === "Other — see notes" ? closeOther.trim() : closeReason;
+    const reasonText = closeReason === OTHER_OPTION ? closeOther.trim() : closeReason;
     session.dispatchIncidentEvent({ type: "INCIDENT_CLOSED", category: "Operational review complete", details: reasonText, closedBy: assignee });
   };
 
@@ -219,8 +230,8 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
                 <div className="grid gap-1"><p className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-500">Workflow status</p><p className={`flex min-h-11 items-center px-3 text-sm font-bold ${incident.closed ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800"}`}>{workflowStatus}</p></div>
               </div>
 
-              {/* Work area + trend */}
-              <div className="grid gap-5 p-4 sm:p-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
+              {/* Work area */}
+              <div className="p-4 sm:p-5">
                 <div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="grid gap-1 text-xs font-black text-slate-700">Response type
@@ -238,7 +249,7 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
                         <option value="">Select observed condition</option>
                         {OBSERVED_CONDITIONS_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                       </select>
-                      {observedConditions === "Other — see notes" && <textarea value={observedOther} onChange={(event) => setObservedOther(event.target.value)} disabled={!canWork} rows={2} className="mt-1 border border-slate-300 p-2 text-sm font-normal disabled:bg-slate-100" placeholder="Describe what was observed" />}
+                      {observedConditions === OTHER_OPTION && <textarea value={observedOther} onChange={(event) => setObservedOther(event.target.value)} disabled={!canWork} rows={2} className="mt-1 border border-slate-300 p-2 text-sm font-normal disabled:bg-slate-100" placeholder="Describe what was observed" />}
                     </label>
                     <label className="grid gap-1 text-xs font-black text-slate-700 sm:col-span-2">
                       Action taken
@@ -246,10 +257,15 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
                         <option value="">Select action taken</option>
                         {ACTION_TAKEN_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                       </select>
-                      {actionTaken === "Other — see notes" && <textarea value={actionOther} onChange={(event) => setActionOther(event.target.value)} disabled={!canWork} rows={2} className="mt-1 border border-slate-300 p-2 text-sm font-normal disabled:bg-slate-100" placeholder="Describe the action taken" />}
+                      {actionTaken === OTHER_OPTION && <textarea value={actionOther} onChange={(event) => setActionOther(event.target.value)} disabled={!canWork} rows={2} className="mt-1 border border-slate-300 p-2 text-sm font-normal disabled:bg-slate-100" placeholder="Describe the action taken" />}
                     </label>
                   </div>
-                  <button type="button" onClick={saveWorkLog} disabled={!canWork || !responseType.trim() || !observedConditions.trim() || !actionTaken.trim() || (observedConditions === "Other — see notes" && !observedOther.trim()) || (actionTaken === "Other — see notes" && !actionOther.trim())} className="mt-3 min-h-10 border border-blue-700 px-4 text-xs font-black text-blue-800 disabled:border-slate-300 disabled:text-slate-400">Save work log</button>
+                  <button type="button" onClick={saveWorkLog} disabled={!canWork || !responseType.trim() || !observedConditions.trim() || !actionTaken.trim() || (observedConditions === OTHER_OPTION && !observedOther.trim()) || (actionTaken === OTHER_OPTION && !actionOther.trim())} className="mt-3 min-h-10 border border-blue-700 px-4 text-xs font-black text-blue-800 disabled:border-slate-300 disabled:text-slate-400">Save work log</button>
+                  {workLogStatus ? (
+                    <p role="status" className={`mt-3 text-xs font-bold ${workLogStatus.tone === "success" ? "text-emerald-700" : "text-red-700"}`}>
+                      {workLogStatus.message}
+                    </p>
+                  ) : null}
 
                   {/* Evidence â€” auto-attaches demo asset, no file browser */}
                   <div className="mt-5 border-t border-slate-200 pt-5">
@@ -282,16 +298,39 @@ export function ControlCentreEvents({ session, snapshot, onWorkStarted, onRespon
                         <select value={closeReason} onChange={(event) => setCloseReason(event.target.value)} className="min-h-11 border border-slate-300 bg-white px-3 text-sm font-normal">
                           {CLOSE_REASON_OPTIONS.map((opt) => <option key={opt}>{opt}</option>)}
                         </select>
-                        {closeReason === "Other â€” see notes" && <textarea value={closeOther} onChange={(event) => setCloseOther(event.target.value)} rows={2} className="mt-1 border border-slate-300 p-2 text-sm font-normal" placeholder="Describe the reason for closing" />}
+                        {closeReason === OTHER_OPTION && <textarea value={closeOther} onChange={(event) => setCloseOther(event.target.value)} rows={2} className="mt-1 border border-slate-300 p-2 text-sm font-normal" placeholder="Describe the reason for closing" />}
                       </label>
                       <button type="button" onClick={closeEvent} className="min-h-11 bg-emerald-700 px-5 text-xs font-black text-white transition hover:bg-emerald-800">RESOLVE &amp; CLOSE EVENT</button>
                     </div>
                   )}
                 </div>
-
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.12em] text-slate-500">Connected trend</p>
-                  <div className="mt-2 border border-slate-200 bg-slate-50 p-3"><div className="flex items-end justify-between gap-3"><p className="text-sm font-black text-slate-950">Respirable Dust</p><p className="font-mono text-xl font-black text-slate-950">{currentValue(snapshot)} <span className="text-[10px] text-slate-500">{PARTICULATE_UNIT}</span></p></div><svg viewBox="0 0 620 220" className="mt-3 h-44 w-full" role="img" aria-label="Respirable Dust event trend">{[40, 80, 120, 160].map((y) => <line key={y} x1="20" x2="600" y1={y} y2={y} stroke="#cbd5e1" />)}<polyline points={trendPoints} fill="none" stroke="#0369a1" strokeWidth="5" strokeLinejoin="round" /><circle cx={20 + (trendValues.length - 1) * (580 / Math.max(trendValues.length - 1, 1))} cy={170 - ((trendValues.at(-1) ?? 0) / maxTrend) * 130} r="7" fill="#0369a1" className="motion-safe:animate-pulse" />{trendLabels.map((label, index) => <text key={label} x={20 + index * (580 / Math.max(trendLabels.length - 1, 1)) - 11} y="210" fontSize="10" fill="#64748b">{label}</text>)}</svg></div>
+                <div className="mt-6 border-t border-slate-200 pt-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.12em] text-slate-500">Operational work log</p>
+                      <p className="mt-1 text-sm font-bold text-slate-700">Saved ticket activity retained in sequence for reporting.</p>
+                    </div>
+                    <span className="border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-black uppercase tracking-[0.08em] text-slate-600">
+                      {incident.responses.length} saved entr{incident.responses.length === 1 ? "y" : "ies"}
+                    </span>
+                  </div>
+                  {incident.responses.length > 0 ? (
+                    <ol className="mt-4 space-y-3">
+                      {[...incident.responses].slice().reverse().map((response) => (
+                        <li key={`${response.timestampMs}-${response.responseType}`} className="border border-slate-200 bg-slate-50 p-4">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="text-xs font-black uppercase tracking-[0.08em] text-blue-700">{response.responseType}</p>
+                            <p className="text-[11px] font-bold text-slate-500">Saved by {response.performedBy}</p>
+                          </div>
+                          <p className="mt-2 text-sm leading-6 text-slate-700">{response.details}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <div className="mt-4 border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
+                      Saved work entries will appear here after you log the response steps for this ticket.
+                    </div>
+                  )}
                 </div>
               </div>
 

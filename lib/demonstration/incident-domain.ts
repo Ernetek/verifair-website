@@ -330,15 +330,20 @@ export function reduceIncidentEvent(
       if (!state.acknowledged) {
         return { ok: false, error: "Cannot assign incident before acknowledgement." };
       }
+      const nextPhase = state.phase === "Acknowledge" ? "Assign" : state.phase;
+      const nextProgressStatus =
+        nextPhase === "Assign"
+          ? `Assigned to ${event.assignee}`
+          : state.progressStatus;
       const nextState: IncidentState = {
         ...state,
         assignedGroup: event.assigneeGroup ?? state.assignedGroup,
         assignedTo: event.assignee,
         priority: event.priority ?? state.priority,
-        progressStatus: `Assigned to ${event.assignee}`,
-        phase: "Assign",
+        progressStatus: nextProgressStatus,
+        phase: nextPhase,
         events: updatedEvents,
-        permittedActions: derivePermittedActions(false, "Assign"),
+        permittedActions: derivePermittedActions(false, nextPhase, state.verificationRecord),
       };
       return { ok: true, value: nextState };
     }

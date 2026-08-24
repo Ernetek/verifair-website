@@ -166,6 +166,37 @@ describe("Incident Domain", () => {
     expect(state.escalationReason).toBe("Wind speed increasing");
   });
 
+  it("keeps the active workflow phase when reassigned during investigation", () => {
+    const events: IncidentEvent[] = [
+      { type: "INCIDENT_OPENED", incidentId: "INC-0042", monitorId: "MON-004", triggerCondition: "Action", timestampMs: 100, sequence: 1 },
+      { type: "ACKNOWLEDGED", incidentId: "INC-0042", acknowledgedBy: "Jordan", timestampMs: 200, sequence: 2 },
+      { type: "ASSIGNED", incidentId: "INC-0042", assigneeGroup: "air_response", assignee: "Jordan", timestampMs: 300, sequence: 3 },
+      { type: "INVESTIGATION_STARTED", incidentId: "INC-0042", startedBy: "Jordan", timestampMs: 400, sequence: 4 },
+    ];
+
+    const state = reduceIncident(events);
+    expect(state.phase).toBe("Investigate");
+
+    const reassignment: IncidentEvent = {
+      type: "ASSIGNED",
+      incidentId: "INC-0042",
+      assigneeGroup: "site_response",
+      assignee: "Facilities coordinator",
+      priority: "Urgent",
+      timestampMs: 450,
+      sequence: 5,
+    };
+
+    const result = reduceIncidentEvent(state, reassignment);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.phase).toBe("Investigate");
+      expect(result.value.assignedGroup).toBe("site_response");
+      expect(result.value.assignedTo).toBe("Facilities coordinator");
+      expect(result.value.priority).toBe("Urgent");
+    }
+  });
+
   it("rejects events after closure", () => {
     const events: IncidentEvent[] = [
       { type: "INCIDENT_OPENED", incidentId: "INC-0042", monitorId: "MON-004", triggerCondition: "Action", timestampMs: 100, sequence: 1 },

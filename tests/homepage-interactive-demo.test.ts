@@ -29,7 +29,7 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(source).toContain("OPEN RAISED EVENT");
     expect(source).toContain('aria-label="Incidents and alerts"');
     expect(source).toContain('setActiveView("events")');
-    expect(source).toContain("<ControlCentreReports />");
+    expect(source).toContain("<ControlCentreReports snapshot={snapshot} />");
     expect(source).toContain("<ControlCentreEvents");
     expect(source).not.toContain("Raised Events");
     expect(source).not.toContain('role="tablist" aria-label="Demonstration view"');
@@ -95,7 +95,8 @@ describe("homepage interactive VerifAir demonstration", () => {
     expect(eventsSource).toContain("Action taken");
     expect(eventsSource).toContain("Attach site photo");
     expect(eventsSource).toContain("Escalate");
-    expect(eventsSource).toContain("Respirable Dust event trend");
+    expect(eventsSource).toContain("Operational work log");
+    expect(reportsSource).toContain("Saved ticket work log");
     expect(reportsSource).toContain("Search reports");
     expect(reportsSource).toContain("All report types");
     expect(reportsSource).toContain("Operational event report");

@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { ArrowRightIcon, CheckCircleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 
+import { ControlCentreEvents } from "@/components/home/ControlCentreEvents";
+import { DemonstrationSession } from "@/lib/demonstration/session";
 import { DEMONSTRATION_METRICS, publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
 import { OPERATIONAL_TIMELINE } from "@/lib/demonstration/operational-timeline";
@@ -252,6 +254,19 @@ function RecordPreview() {
   );
 }
 
+function WorkflowIncidentDemo() {
+  const [session] = useState(() => new DemonstrationSession());
+  const snapshot = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
+
+  return (
+    <section id="incident-centre" className="border-b border-slate-200 bg-slate-50 py-6 sm:py-8">
+      <div className="container">
+        <ControlCentreEvents session={session} snapshot={snapshot} onWorkStarted={() => {}} />
+      </div>
+    </section>
+  );
+}
+
 export function WorkflowPage() {
   return (
     <main className="bg-white text-slate-950">
@@ -370,6 +385,7 @@ export function WorkflowPage() {
         </div>
       </section>
       <p className="container py-4 text-xs text-slate-500">Demonstration only. Sites, events, people and readings shown are fictional and are used to demonstrate VerifAir functionality.</p>
+      <WorkflowIncidentDemo />
     </main>
   );
 }

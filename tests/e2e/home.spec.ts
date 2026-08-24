@@ -201,11 +201,6 @@ test("Control Centre keeps environmental recovery independent from explicit even
   await expect(controlCentre.getByLabel("Group")).toBeEnabled();
   await expect(controlCentre.getByLabel("Assignee")).toBeEnabled();
   await expect(controlCentre.getByLabel("Priority")).toBeEnabled();
-  await expect(
-    controlCentre.getByRole("img", {
-      name: "Respirable Dust event trend"
-    })
-  ).toBeVisible();
   await controlCentre.getByLabel("Response type").selectOption("Site inspection");
   await controlCentre.getByLabel("Observed conditions").selectOption("Elevated dust visible in work zone");
   await controlCentre.getByLabel("Action taken").selectOption("Stopped work and assessed area");
@@ -213,6 +208,14 @@ test("Control Centre keeps environmental recovery independent from explicit even
   await expect(controlCentre.getByLabel("Assignee")).toHaveValue("Project manager");
   await controlCentre.getByLabel("Assignee").selectOption("Facilities coordinator");
   await controlCentre.getByRole("button", { name: "Save work log" }).click();
+  await expect(controlCentre.getByRole("status")).toHaveText("Work log saved to the incident record.");
+  await expect(controlCentre.getByText("Operational work log", { exact: true })).toBeVisible();
+  await expect(controlCentre.getByText("Observed: Elevated dust visible in work zone. Action: Stopped work and assessed area.", { exact: true })).toBeVisible();
+  await controlCentre.getByRole("button", { name: "Reports" }).click();
+  await expect(controlCentre.getByText("Saved ticket work log", { exact: true }).first()).toBeVisible();
+  await expect(controlCentre.getByText("Observed: Elevated dust visible in work zone. Action: Stopped work and assessed area.", { exact: true })).toBeVisible();
+  await expect(controlCentre.getByText("Saved by Facilities coordinator", { exact: true })).toBeVisible();
+  await controlCentre.getByRole("button", { name: "Incidents and alerts" }).click();
   await controlCentre.getByRole("button", { name: "Monitoring overview" }).click();
   await controlCentre.getByRole("button", { name: "COMPLETE MONITORING PERIOD" }).click();
   await expect(

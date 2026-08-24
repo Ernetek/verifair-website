@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowRightIcon, BuildingOffice2Icon, DevicePhoneMobileIcon, SignalIcon } from "@heroicons/react/24/outline";
 
+import { HomepageInteractiveDemo } from "@/components/home/HomepageInteractiveDemo";
 import { classifyDemonstrationMetric, DEMONSTRATION_METRIC_THRESHOLDS } from "@/lib/demonstration/metric-status";
 import { resolveMonitoringPresentation } from "@/lib/demonstration/monitoring-view";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
@@ -513,6 +514,9 @@ export function MonitoringPage() {
             </Link>
           </div>
         </div>
+      </section>
+      <section id="control-centre" className="border-b border-slate-200 bg-white">
+        <HomepageInteractiveDemo />
       </section>
     </main>
   );

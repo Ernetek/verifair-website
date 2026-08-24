@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowRightIcon, FunnelIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
+import { ControlCentreReports } from "@/components/home/ControlCentreReports";
 import { OPERATIONAL_TIMELINE } from "@/lib/demonstration/operational-timeline";
 import { DEMONSTRATION_METRICS, publicDemonstrationScenario } from "@/lib/replay/demonstration-scenario";
 import { PARTICULATE_UNIT } from "@/lib/metrics";
@@ -407,6 +408,9 @@ export function ReportingPage() {
           <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">RECORD · Operational history</p>
           <div className="mt-5">
             <RecordDetail />
+          </div>
+          <div className="mt-8">
+            <ControlCentreReports />
           </div>
         </div>
       </section>

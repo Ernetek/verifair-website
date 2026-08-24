@@ -5,8 +5,12 @@ import Link from "next/link";
 import { DocumentArrowDownIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useDeferredValue, useState } from "react";
 
+import type { DemonstrationSessionSnapshot } from "@/lib/demonstration/session";
+
+const OPERATIONAL_EVENT_REPORT_ID = "RPT-2026-0042";
+
 const reports = [
-  { id: "RPT-2026-0042", type: "Operational event report", project: "Healthcare Construction Project", location: "Zone A · Monitoring Location 1", period: "22 Aug 2026 · 12:02–12:12", status: "Ready", summary: "Connected incident record with observations, response activity, comments and retained evidence." },
+  { id: OPERATIONAL_EVENT_REPORT_ID, type: "Operational event report", project: "Healthcare Construction Project", location: "Zone A · Monitoring Location 1", period: "22 Aug 2026 · 12:02–12:12", status: "Ready", summary: "Connected incident record with observations, response activity, comments and retained evidence." },
   { id: "RPT-2026-0041", type: "Daily monitoring summary", project: "Healthcare Construction Project", location: "All monitoring locations", period: "22 Aug 2026", status: "Ready", summary: "Daily particulate summary covering four monitoring locations and configured operational states." },
   { id: "RPT-2026-0040", type: "Trend and event review", project: "Healthcare Construction Project", location: "Zone A", period: "15–22 Aug 2026", status: "Ready", summary: "Trend review linking particulate observations with recorded operational events." },
   { id: "RPT-2026-0039", type: "Weekly project summary", project: "Healthcare Construction Project", location: "All monitoring locations", period: "15–21 Aug 2026", status: "Ready", summary: "Weekly project view of observations, alerts, actions and data availability." },
@@ -18,7 +22,24 @@ const reports = [
 
 const reportTypes = ["All report types", ...new Set(reports.map((report) => report.type))];
 
-export function ControlCentreReports() {
+function formatOffset(timestampMs?: number) {
+  if (timestampMs === undefined) return "Pending";
+  const totalMinutes = Math.floor(timestampMs / 60_000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+}
+
+function buildOperationalSummary(snapshot: DemonstrationSessionSnapshot) {
+  const incident = snapshot.incidentState;
+  if (incident.responses.length === 0) {
+    return "Connected incident record ready to retain the saved work log, evidence, and closure history for this operational event.";
+  }
+
+  return `Connected incident record retaining ${incident.responses.length} saved work ${incident.responses.length === 1 ? "entry" : "entries"}, ${incident.evidence.length} evidence ${incident.evidence.length === 1 ? "item" : "items"}, and the closure history for this operational event.`;
+}
+
+export function ControlCentreReports({ snapshot }: { snapshot?: DemonstrationSessionSnapshot }) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("All report types");
   const [status, setStatus] = useState("All statuses");
@@ -31,6 +52,23 @@ export function ControlCentreReports() {
     return matchesType && matchesStatus && haystack.includes(deferredQuery);
   });
   const selected = filtered.find((report) => report.id === selectedId) ?? filtered[0] ?? reports[0];
+  const operationalReportSelected = selected.id === OPERATIONAL_EVENT_REPORT_ID && snapshot;
+  const incident = snapshot?.incidentState;
+  const openedEvent = incident?.events.find((event) => event.type === "INCIDENT_OPENED");
+  const closedEvent = incident?.events.find((event) => event.type === "INCIDENT_CLOSED");
+  const previewSummary = operationalReportSelected ? buildOperationalSummary(snapshot) : selected.summary;
+  const reportStatus = operationalReportSelected ? (incident?.closed ? "Ready" : "In progress") : selected.status;
+  const stats = operationalReportSelected
+    ? [
+        [String(incident?.responses.length ?? 0), "Work log entries"],
+        [String(incident?.evidence.length ?? 0), "Evidence items"],
+        [incident?.assignedTo ?? "Unassigned", "Current owner"],
+        [incident?.closed ? "Closed" : "Active", "Event status"],
+      ]
+    : [["4", "Monitoring locations"], ["288", "Observations"], ["1", "Operational event"], ["100%", "Data available"]];
+  const includedSections = operationalReportSelected
+    ? ["Observation summary and event metadata", "Assignment, ownership and priority", "Saved ticket work log", "Evidence, comments and closure history"]
+    : ["Observation summary and trends", "Operational events and workflow", "Comments, actions and evidence", "System health and data availability"];
 
   return (
     <section className="bg-slate-100" aria-labelledby="reports-view-heading">
@@ -57,7 +95,7 @@ export function ControlCentreReports() {
             </label>
             <label className="grid gap-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">Status
               <select value={status} onChange={(event) => setStatus(event.target.value)} className="min-h-11 border border-slate-300 bg-white px-3 text-sm font-bold normal-case tracking-normal text-slate-900">
-                {['All statuses', 'Ready', 'Draft'].map((option) => <option key={option}>{option}</option>)}
+                {["All statuses", "Ready", "Draft"].map((option) => <option key={option}>{option}</option>)}
               </select>
             </label>
           </div>
@@ -65,7 +103,7 @@ export function ControlCentreReports() {
           <div className="mt-2 divide-y divide-slate-200 border-y border-slate-200">
             {filtered.map((report) => (
               <button key={report.id} type="button" onClick={() => setSelectedId(report.id)} aria-pressed={selected.id === report.id} className="w-full px-3 py-4 text-left hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-600 aria-pressed:bg-blue-50">
-                <span className="flex items-start justify-between gap-3"><strong className="text-sm text-slate-950">{report.type}</strong><span className={`border px-2 py-0.5 text-[9px] font-black uppercase ${report.status === 'Ready' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>{report.status}</span></span>
+                <span className="flex items-start justify-between gap-3"><strong className="text-sm text-slate-950">{report.type}</strong><span className={`border px-2 py-0.5 text-[9px] font-black uppercase ${report.status === "Ready" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>{report.status}</span></span>
                 <span className="mt-1 block font-mono text-[10px] font-bold text-blue-700">{report.id}</span>
                 <span className="mt-1 block text-xs text-slate-500">{report.location} · {report.period}</span>
               </button>
@@ -86,19 +124,76 @@ export function ControlCentreReports() {
           </div>
           <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-2">
             <dl className="grid content-start gap-3 text-sm">
-              {[["Reporting period", selected.period], ["Scope", selected.location], ["Record status", selected.status], ["Prepared for", "Project operational review"]].map(([label, value]) => <div key={label} className="border-b border-slate-200 pb-3"><dt className="text-xs font-bold text-slate-500">{label}</dt><dd className="mt-1 font-black text-slate-950">{value}</dd></div>)}
+              {[
+                ["Reporting period", operationalReportSelected ? `${formatOffset(openedEvent?.timestampMs)}–${formatOffset(closedEvent?.timestampMs)}` : selected.period],
+                ["Scope", selected.location],
+                ["Record status", reportStatus],
+                ["Prepared for", "Project operational review"],
+              ].map(([label, value]) => <div key={label} className="border-b border-slate-200 pb-3"><dt className="text-xs font-bold text-slate-500">{label}</dt><dd className="mt-1 font-black text-slate-950">{value}</dd></div>)}
             </dl>
             <div>
               <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Executive summary</p>
-              <p className="mt-3 text-sm leading-6 text-slate-600">{selected.summary}</p>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{previewSummary}</p>
               <div className="mt-5 grid grid-cols-2 gap-2">
-                {[["4", "Monitoring locations"], ["288", "Observations"], ["1", "Operational event"], ["100%", "Data available"]].map(([value, label]) => <div key={label} className="border border-slate-200 bg-slate-50 p-3"><strong className="block text-xl text-slate-950">{value}</strong><span className="text-[10px] font-bold text-slate-500">{label}</span></div>)}
+                {stats.map(([value, label]) => <div key={label} className="border border-slate-200 bg-slate-50 p-3"><strong className="block break-words text-xl text-slate-950">{value}</strong><span className="text-[10px] font-bold text-slate-500">{label}</span></div>)}
               </div>
             </div>
           </div>
+          {operationalReportSelected ? (
+            <div className="border-t border-slate-200 p-5 sm:p-7">
+              <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Operational event details</p>
+                  <dl className="mt-3 grid gap-3 text-sm">
+                    {[
+                      ["Incident ID", incident?.incidentId ?? "Pending"],
+                      ["Workflow status", incident?.closed ? "Resolved" : incident?.progressStatus ?? "Open"],
+                      ["Assignment group", incident?.assignedGroup ?? "Unassigned"],
+                      ["Assignee", incident?.assignedTo ?? "Unassigned"],
+                      ["Priority", incident?.priority ?? "High"],
+                      ["Closure", incident?.closureDetails ?? "Pending closure"],
+                    ].map(([label, value]) => (
+                      <div key={label} className="border-b border-slate-200 pb-3">
+                        <dt className="text-xs font-bold text-slate-500">{label}</dt>
+                        <dd className="mt-1 font-black text-slate-950">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Saved ticket work log</p>
+                      <p className="mt-1 text-sm font-bold text-slate-700">The completed work from the ticket is retained in the report preview.</p>
+                    </div>
+                    <span className="border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-black uppercase tracking-[0.08em] text-slate-600">
+                      {incident?.responses.length ?? 0} retained entr{(incident?.responses.length ?? 0) === 1 ? "y" : "ies"}
+                    </span>
+                  </div>
+                  {incident && incident.responses.length > 0 ? (
+                    <ol className="mt-4 space-y-3">
+                      {[...incident.responses].slice().reverse().map((response) => (
+                        <li key={`${response.timestampMs}-${response.responseType}`} className="border border-slate-200 bg-slate-50 p-4">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="text-xs font-black uppercase tracking-[0.08em] text-blue-700">{response.responseType}</p>
+                            <p className="text-[11px] font-bold text-slate-500">Saved by {response.performedBy}</p>
+                          </div>
+                          <p className="mt-2 text-sm leading-6 text-slate-700">{response.details}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <div className="mt-4 border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
+                      No saved work has been recorded for this event yet.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : null}
           <div className="border-t border-slate-200 p-5 sm:p-7">
             <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">Included sections</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">{["Observation summary and trends", "Operational events and workflow", "Comments, actions and evidence", "System health and data availability"].map((item) => <p key={item} className="border border-slate-200 bg-slate-50 p-3 text-xs font-bold text-slate-700">{item}</p>)}</div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">{includedSections.map((item) => <p key={item} className="border border-slate-200 bg-slate-50 p-3 text-xs font-bold text-slate-700">{item}</p>)}</div>
             <div className="mt-5 flex flex-wrap gap-2"><button type="button" className="inline-flex min-h-10 items-center gap-2 bg-blue-700 px-4 text-xs font-black text-white"><DocumentArrowDownIcon className="size-4" aria-hidden="true" />Generate PDF</button><Link href="/reporting" className="inline-flex min-h-10 items-center border border-slate-300 px-4 text-xs font-black text-slate-700">Open reporting centre</Link></div>
           </div>
           <p className="border-t border-slate-200 px-5 py-3 text-[10px] leading-4 text-slate-500 sm:px-7">Fictional demonstration report. Operational context only; not a regulatory or occupational exposure determination.</p>
