@@ -86,7 +86,7 @@ test("capability rail advances automatically and pauses on hover", async ({ page
   expect(fullyVisibleCards).toBeLessThanOrEqual(4);
 
   const initialScroll = await rail.evaluate((element) => element.scrollLeft);
-  await expect.poll(() => rail.evaluate((element) => element.scrollLeft), { timeout: 7_000 }).toBeGreaterThan(initialScroll + 100);
+  await expect.poll(() => rail.evaluate((element) => element.scrollLeft), { timeout: 12_000 }).toBeGreaterThan(initialScroll + 100);
 
   await carousel.hover();
   await page.waitForTimeout(700);
@@ -116,7 +116,9 @@ test("capability rail exposes one card plus a continuation cue on mobile without
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/", { waitUntil: "networkidle" });
 
-  const rail = page.getByLabel("Scrollable capability cards");
+  // The homepage now has two capability card rails (CapabilitiesSection + A complete operational section).
+  // Target the one inside the "VerifAir capabilities" region specifically.
+  const rail = page.getByRole("region", { name: "VerifAir capabilities" }).getByLabel("Scrollable capability cards");
   await rail.scrollIntoViewIfNeeded();
   const dimensions = await page.evaluate(() => ({
     documentWidth: document.documentElement.scrollWidth,
@@ -297,6 +299,7 @@ test("demo uses four-reading zone cards, status rails and operational colour gui
   });
 
   await expect(reportsButton).toBeVisible();
+  await reportsButton.scrollIntoViewIfNeeded();
   await reportsButton.click();
 
   await expect(

@@ -255,11 +255,16 @@ function RecordPreview() {
 }
 
 function WorkflowIncidentDemo() {
-  const [session] = useState(() => new DemonstrationSession());
+  const [session] = useState(() => {
+    const s = new DemonstrationSession();
+    // Seek past the alert trigger so the incident is in the opened/active state.
+    s.seek(120_000);
+    return s;
+  });
   const snapshot = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
 
   return (
-    <section id="incident-centre" className="border-b border-slate-200 bg-slate-50 py-6 sm:py-8">
+    <section id="workflow-events-demo" data-testid="workflow-events-demo" className="border-b border-slate-200 bg-slate-50 py-6 sm:py-8">
       <div className="container">
         <ControlCentreEvents session={session} snapshot={snapshot} onWorkStarted={() => {}} />
       </div>
