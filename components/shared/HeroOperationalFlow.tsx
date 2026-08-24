@@ -36,7 +36,7 @@ export function HeroOperationalFlow({ active }: { active: StageId }) {
   return (
     <div
       className="border border-slate-200/90 bg-white/85 p-2 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.6)] backdrop-blur-sm sm:p-3"
-      aria-label="Assess, Act and Record flow"
+      aria-label="Assess, Act and Report flow"
     >
       <div className="grid grid-cols-3 items-stretch gap-1.5 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:gap-2.5">
         {stages.map((stage, index) => {

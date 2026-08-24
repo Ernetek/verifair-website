@@ -4,6 +4,7 @@ import {
   DEMO_DISCLOSURE,
   DEMO_DISCLOSURE_WITH_CONTEXT,
   DUSTLIGHT_DEVICE_STATUSES,
+  MONITORING_TECHNOLOGY_PATH,
   PRODUCT_FRAMEWORK,
   TECHNOLOGY_RESPONSIBILITIES,
   VERIFAIR_OPERATIONAL_STATES,
@@ -15,7 +16,7 @@ describe("shared VerifAir product model", () => {
     expect(PRODUCT_FRAMEWORK.map(({ id }) => id)).toEqual([
       "ASSESS",
       "ACT",
-      "RECORD",
+      "REPORT",
     ]);
   });
 
@@ -38,6 +39,12 @@ describe("shared VerifAir product model", () => {
     expect(TECHNOLOGY_RESPONSIBILITIES.map(({ technology }) => technology)).toEqual([
       "Dustlight",
       "VerifAir Edge",
+      "VerifAir Platform",
+    ]);
+    expect(MONITORING_TECHNOLOGY_PATH.map(({ technology }) => technology)).toEqual([
+      "Dustlight",
+      "VerifAir Edge",
+      "Communications",
       "VerifAir Platform",
     ]);
   });

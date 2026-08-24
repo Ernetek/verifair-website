@@ -35,7 +35,7 @@ export const productNav = [
   },
   {
     label: "Reporting",
-    stage: "RECORD",
+    stage: "REPORT",
     description: "Maintain the connected operational record and reporting.",
     href: "/reporting"
   }

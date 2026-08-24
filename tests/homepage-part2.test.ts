@@ -21,7 +21,7 @@ describe("Part 2 homepage product presentation", () => {
     expect(homepage).toContain("<VerifAirProcessSection />");
     expect(howItWorks).toContain("<VerifAirProcessContent />");
     expect(process).toContain("THE VERIFAIR PROCESS");
-    expect(process).toContain("ASSESS. ACT. RECORD.");
+    expect(process).toContain("ASSESS. ACT. REPORT.");
     expect(process).toContain("aspect-[3/2]");
     expect(process).toContain("object-contain");
   });
@@ -42,7 +42,7 @@ describe("Part 2 homepage product presentation", () => {
     expect(source).toContain("4/4 monitoring locations reporting");
   });
 
-  it("uses one session across ASSESS, ACT and RECORD", () => {
+  it("uses one session across ASSESS, ACT and REPORT", () => {
     const source = read("components/demonstration/UnifiedDemonstration.tsx");
     expect(source).toContain("<LiveMonitoringSection");
     expect(source).toContain("<IncidentWorkspaceSection session={session} />");
@@ -50,7 +50,7 @@ describe("Part 2 homepage product presentation", () => {
     expect(source).toContain("same deterministic operational event");
   });
 
-  it("uses the full ACT progression and connected RECORD history", () => {
+  it("uses the full ACT progression and connected REPORT history", () => {
     const source = read("components/demonstration/UnifiedDemonstration.tsx");
     for (const stage of [
       "CONFIGURED OPERATIONAL CONDITION",

@@ -92,7 +92,7 @@ export function ContentSections({ page }: { page: MarketingPage }) {
             </div>
             <div className="mt-5 flex items-center gap-3 border-t border-white/15 pt-4 text-xs font-bold uppercase tracking-[0.15em] text-slate-300">
               <span className="size-2 rounded-full bg-emerald-400" aria-hidden="true" />
-              Assess conditions · Act on change · Record the response
+              Assess conditions · Act on change · Report the response
             </div>
           </div>
         </div>

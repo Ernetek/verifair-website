@@ -19,11 +19,15 @@ export const DEMONSTRATION_DEVICE_HEALTH = {
     connection: "Independent cellular",
     firmware: "Demo 1.8.4",
   },
+  communications: {
+    primaryProvider: { name: "Primary cellular", status: "CONNECTED" },
+    secondaryProvider: { name: "Secondary cellular", status: "READY" },
+  },
   sensors: [
-    { monitorId: "WORK_ZONE_A", serialNumber: "VFA-PM-DEMO-101", batteryPercent: 94, nextCalibration: "15 Sep 2026" },
-    { monitorId: "OCCUPIED_INTERFACE", serialNumber: "VFA-PM-DEMO-102", batteryPercent: 88, nextCalibration: "18 Sep 2026" },
-    { monitorId: "SHARED_CORRIDOR", serialNumber: "VFA-PM-DEMO-103", batteryPercent: 91, nextCalibration: "21 Sep 2026" },
-    { monitorId: "EXTERNAL_BOUNDARY", serialNumber: "VFA-PM-DEMO-104", batteryPercent: 86, nextCalibration: "24 Sep 2026" },
+    { monitorId: "WORK_ZONE_A", serialNumber: "VFA-PM-DEMO-101", batteryPercent: 94, nextCalibration: "15 Sep 2026", status: "ONLINE", deviceStatus: "YELLOW" },
+    { monitorId: "OCCUPIED_INTERFACE", serialNumber: "VFA-PM-DEMO-102", batteryPercent: 88, nextCalibration: "18 Sep 2026", status: "ONLINE", deviceStatus: "GREEN" },
+    { monitorId: "SHARED_CORRIDOR", serialNumber: "VFA-PM-DEMO-103", batteryPercent: 91, nextCalibration: "21 Sep 2026", status: "ONLINE", deviceStatus: "GREEN" },
+    { monitorId: "EXTERNAL_BOUNDARY", serialNumber: "VFA-PM-DEMO-104", batteryPercent: 86, nextCalibration: "24 Sep 2026", status: "ONLINE", deviceStatus: "GREEN" },
   ],
 } as const;
 

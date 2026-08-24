@@ -1406,7 +1406,7 @@ function EvidenceAndReportingSection({
       <div className="max-w-6xl mx-auto">
         <div className="mb-4">
           <p className="text-xs font-black uppercase tracking-wider text-sky-700">
-            Step 3 · RECORD
+            Step 3 · REPORT
           </p>
           <h2 className="mt-2 text-2xl sm:text-3xl font-black text-slate-950">
             Connected operational history and generated report
@@ -1671,7 +1671,7 @@ export function UnifiedDemonstration({
                 One connected operational view from particulate readings through response and record.
               </p>
               <p className="mt-3 text-lg font-black tracking-[0.12em] text-sky-200">
-                ASSESS → ACT → RECORD
+                ASSESS → ACT → REPORT
               </p>
               <p className="mt-3 text-sm text-slate-400">
                 Demonstration only. Sites, events, people and readings shown are fictional and are used to demonstrate VerifAir functionality.

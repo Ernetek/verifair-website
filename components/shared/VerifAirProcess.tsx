@@ -21,7 +21,7 @@ const processCards = [
     action: "See response workflow",
   },
   {
-    title: "RECORD",
+    title: "REPORT",
     heading: "Create the operational record.",
     body: "VerifAir brings together monitoring data, alerts, acknowledgements, actions, comments and incident history to generate evidence and reporting.",
     image: "/assets/reports-evidence-review.webp",
@@ -36,7 +36,7 @@ export function VerifAirProcessContent() {
     <>
       <p className="text-sm font-bold uppercase tracking-wide text-blue-600">THE VERIFAIR PROCESS</p>
       <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">
-        ASSESS. ACT. RECORD.
+        ASSESS. ACT. REPORT.
       </h2>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
         VerifAir connects real-time monitoring with operational response and a durable record of what happened.

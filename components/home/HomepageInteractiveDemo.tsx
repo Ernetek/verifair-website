@@ -514,7 +514,7 @@ function RecordView({ snapshot }: { snapshot: ReturnType<DemonstrationSession["g
   return (
     <div className="grid gap-4 lg:grid-cols-[0.7fr_1.3fr]">
       <div className="border border-slate-200 bg-slate-50 p-4">
-        <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">RECORD · CONNECTED OPERATIONAL RECORD</p>
+        <p className="text-xs font-black uppercase tracking-[0.14em] text-blue-700">REPORT · CONNECTED OPERATIONAL RECORD</p>
         <h2 className="mt-2 text-2xl font-black">{INCIDENT_ID}</h2>
         <span className={`mt-3 inline-flex border px-3 py-1 text-xs font-black uppercase ${resolved ? "border-emerald-300 bg-emerald-50 text-emerald-900" : "border-amber-300 bg-amber-50 text-amber-900"}`}>{resolved ? "RESOLVED" : "IN PROGRESS"}</span>
         <p className="mt-4 text-sm font-bold">ZONE A · MONITORING LOCATION 1 · Particulate Event</p>

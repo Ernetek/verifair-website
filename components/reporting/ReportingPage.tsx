@@ -415,7 +415,7 @@ export function ReportingPage() {
           <div className="relative">
             <Image
               src="/assets/reports-evidence-review.png"
-              alt="VerifAir RECORD operational review"
+              alt="VerifAir REPORT operational review"
               width={1536}
               height={1024}
               className="h-full max-h-[34rem] w-full object-cover"
@@ -430,7 +430,7 @@ export function ReportingPage() {
       </section>
       <section id="record-centre" className="border-b border-slate-200 bg-slate-50 py-14 sm:py-20">
         <div className="container">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">RECORD · Operational history</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">REPORT · Operational history</p>
           <div className="mt-5">
             <RecordDetail />
           </div>

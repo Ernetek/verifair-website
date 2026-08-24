@@ -234,7 +234,7 @@ function RecordPreview() {
     <section className="border border-slate-300 bg-slate-50 p-5 sm:p-7">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">RECORD preview</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">REPORT preview</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">One connected operational history.</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
             The workflow keeps observations, response activity and closure information connected for review. Full reporting depth belongs on
@@ -338,7 +338,7 @@ export function WorkflowPage() {
             </span>
             <ArrowRightIcon className="size-5 text-blue-700" aria-hidden="true" />
             <span className="border border-slate-300 bg-white px-5 py-3 text-sm font-black">
-              RECORD
+              REPORT
               <br />
               <span className="text-xs text-slate-500">History leads to reporting</span>
             </span>

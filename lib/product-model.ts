@@ -12,8 +12,8 @@ export const PRODUCT_FRAMEWORK = [
       "Turn configured operational conditions into alerts and coordinated response.",
   },
   {
-    id: "RECORD",
-    title: "RECORD",
+    id: "REPORT",
+    title: "REPORT",
     description:
       "Maintain the connected operational history and generate reporting.",
   },
@@ -55,6 +55,25 @@ export const TECHNOLOGY_RESPONSIBILITIES = [
     technology: "VerifAir Platform",
     responsibilities:
       "Centralised monitoring, project-configured operational states, alerts, workflow, records and reporting.",
+  },
+] as const;
+
+export const MONITORING_TECHNOLOGY_PATH = [
+  {
+    technology: "Dustlight",
+    responsibilities: "Particulate observations and a distinct on-device status.",
+  },
+  {
+    technology: "VerifAir Edge",
+    responsibilities: "Local collection, buffering and secure transport.",
+  },
+  {
+    technology: "Communications",
+    responsibilities: "Primary connectivity with a ready secondary path.",
+  },
+  {
+    technology: "VerifAir Platform",
+    responsibilities: "A shared monitoring view, trends and system health.",
   },
 ] as const;
 

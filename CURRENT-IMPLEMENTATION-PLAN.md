@@ -9,11 +9,11 @@ VerifAir is an operational particulate monitoring and response platform for cons
 
 Core operating model:
 
-**ASSESS → ACT → RECORD**
+**ASSESS → ACT → REPORT**
 
 - **ASSESS / Monitoring** — see changing particulate conditions across sites, zones and monitoring locations.
 - **ACT / Workflow** — alert, acknowledge, assign, investigate, record actions, continue monitoring, review and resolve.
-- **RECORD / Reporting** — retain the connected operational history and generate reports/evidence records.
+- **REPORT / Reporting** — retain the connected operational history and generate reports/evidence records.
 
 VerifAir is not simply a particulate dashboard.
 
@@ -178,9 +178,9 @@ Use:
 
 ---
 
-## 7. REPORTING / RECORD
+## 7. REPORTING / REPORT
 
-The RECORD capability is the connected operational history — not merely PDF generation.
+The REPORT capability is the connected operational history — not merely PDF generation.
 
 Record may connect:
 
@@ -428,7 +428,7 @@ Primary navigation:
 **PRODUCT**
 - Monitoring — ASSESS
 - Workflow — ACT
-- Reporting — RECORD
+- Reporting — REPORT
 
 **SOLUTIONS**
 - deployment/use-case offerings
@@ -476,7 +476,7 @@ Show ACT.
 Focus on operational events, alerts, acknowledgement, assignment, investigation, recorded actions and resolution.
 
 ### Reporting
-Show RECORD.
+Show REPORT.
 
 Focus on connected history, event register, traceability, retention and generated reporting.
 
@@ -501,7 +501,7 @@ For Product pages:
 
 - Monitoring → ASSESS process image
 - Workflow → ACT process image
-- Reporting → RECORD process image
+- Reporting → REPORT process image
 
 Move detailed product UI below the hero into the relevant product section.
 
@@ -559,7 +559,7 @@ Priority order:
 7. Harden security/update architecture.
 8. Validate Monitoring scalability/capacity.
 9. Mature ACT workflow.
-10. Mature RECORD/reporting.
+10. Mature REPORT/reporting.
 11. Define support/service model.
 12. Define occupational-hygiene partnership model.
 13. Pilot in controlled real-world deployment.

@@ -23,7 +23,7 @@ function ProductPanel({ pathname, close }: { pathname: string; close: () => void
     <div id="product-navigation-panel" className="absolute left-1/2 top-full z-50 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2 border border-slate-200 bg-white p-5 shadow-2xl">
       <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
         <p className="text-[10px] font-black uppercase tracking-[0.18em] text-blue-700">The VerifAir product</p>
-        <p className="text-xs font-bold text-slate-500">ASSESS <span aria-hidden="true">→</span> ACT <span aria-hidden="true">→</span> RECORD</p>
+        <p className="text-xs font-bold text-slate-500">ASSESS <span aria-hidden="true">→</span> ACT <span aria-hidden="true">→</span> REPORT</p>
       </div>
       <div className="grid gap-3 md:grid-cols-3">
         {productNav.map((item) => (

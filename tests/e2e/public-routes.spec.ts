@@ -4,7 +4,7 @@ const publicRoutes = [
   ["/", /See changing particulate conditions across multiple monitoring locations\./i],
   ["/monitoring", /Visibility across every\s*monitoring location\./i],
   ["/workflow", /From changing conditions to coordinated action\./i],
-  ["/reporting", /Turn operational activity into a connected record\./i],
+  ["/reporting", /Turn operational activity into a connected record\./i]
 ] as const;
 
 for (const [route, heading] of publicRoutes) {
@@ -17,17 +17,23 @@ for (const [route, heading] of publicRoutes) {
 test("monitoring page uses the Control Centre location drill-in", async ({ page }) => {
   await page.goto("/monitoring#control-centre", { waitUntil: "networkidle" });
 
-  const card = page.getByTestId("homepage-monitoring-location-WORK_ZONE_A");
-  // Just verify the card itself is visible before clicking; the specific status label varies by demo start state.
+  const card = page.getByTestId("monitoring-location-WORK_ZONE_A");
   await expect(card).toBeVisible();
   await card.click();
 
-  const dialog = page.getByRole("dialog", { name: "Zone A · Monitoring Location 1" });
-  await expect(dialog).toBeVisible();
-  // The action button in the dialog is either "START WORK" (fresh incident) or "OPEN EVENTS WORKSPACE".
-  const actionBtn = dialog.getByRole("button", { name: /START WORK|OPEN EVENTS WORKSPACE/i });
-  await actionBtn.scrollIntoViewIfNeeded();
-  await expect(actionBtn).toBeVisible();
+  const detail = page.getByRole("article", { name: "Monitoring Location 1" });
+  await expect(detail).toBeVisible();
+  await expect(detail.getByText("Current observations")).toBeVisible();
+  await expect(detail.getByText("Historical trend")).toBeVisible();
+  await expect(detail.getByText("Dustlight device status")).toBeVisible();
+  await expect(detail.getByText("Observation freshness")).toBeVisible();
+  await detail.getByRole("button", { name: "PM2.5" }).click();
+  await expect(detail.getByRole("img", { name: /PM2\.5 historical trend/i })).toBeVisible();
+
+  await expect(page.getByRole("button", { name: "START WORK" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "OPEN EVENTS WORKSPACE" })).toHaveCount(0);
+  await expect(page.getByText("Selected report preview")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "VIEW GENERATED REPORT" })).toHaveCount(0);
 });
 
 test("reporting page filters the report register and updates its preview", async ({ page }) => {
@@ -69,7 +75,20 @@ for (const route of ["/monitoring", "/reporting", "/workflow"]) {
 
     const widths = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,
-      clientWidth: document.documentElement.clientWidth,
+      clientWidth: document.documentElement.clientWidth
+    }));
+    expect(widths.scrollWidth).toBeLessThanOrEqual(widths.clientWidth);
+  });
+}
+
+for (const width of [375, 390, 430, 768, 1024, 1440]) {
+  test(`monitoring page has no horizontal overflow at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: width < 768 ? 844 : 1000 });
+    await page.goto("/monitoring", { waitUntil: "networkidle" });
+
+    const widths = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth
     }));
     expect(widths.scrollWidth).toBeLessThanOrEqual(widths.clientWidth);
   });

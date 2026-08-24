@@ -62,7 +62,7 @@ export function AboutPage() {
           <div className="mt-8 flex flex-col lg:flex-row lg:items-center">
             {systemPath.map(({ label, Icon }, index) => <div key={label} className="flex items-center lg:flex-1"><div className="flex min-w-0 flex-1 items-center gap-3 border border-slate-200 bg-white p-4"><Icon className="h-7 w-7 shrink-0 text-blue-700" aria-hidden="true" /><span className="text-sm font-black text-slate-900">{label}</span></div>{index < systemPath.length - 1 ? <span className="px-3 py-2 text-xl font-bold text-blue-500 lg:py-0">→</span> : null}</div>)}
           </div>
-          <p className="mt-8 text-lg font-black tracking-[0.12em] text-blue-700">ASSESS → ACT → RECORD</p>
+          <p className="mt-8 text-lg font-black tracking-[0.12em] text-blue-700">ASSESS → ACT → REPORT</p>
         </div>
       </section>
 

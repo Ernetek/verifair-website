@@ -21,7 +21,7 @@ platform.
 
 - `app/page.tsx` composes the public homepage.
 - Dedicated Monitoring, Workflow and Reporting routes present ASSESS, ACT and
-  RECORD product surfaces.
+  REPORT product surfaces.
 - `/demonstration` provides the unified fictional operational walkthrough.
 - `app/[slug]/page.tsx` supplies content-driven industry, legal, product and
   contact pages.
@@ -59,6 +59,12 @@ readings.
 Static Workflow and Reporting timeline presentations project
 `publicDemonstrationScenario.timelineEvents`. Charts use scenario observations;
 presentation code does not own an independent changing telemetry series.
+
+The Monitoring route has a narrower projection boundary. The typed
+`projectMonitoringAt` selector derives its Control Centre, Monitor Detail,
+trend, Wallboard, freshness and health facts from the same validated public
+scenario and device-health configuration. It does not render incident
+workflow, response actions, evidence or report-generation controls.
 
 ## Product-model boundaries
 

@@ -33,7 +33,7 @@ export function CoordinatedSolutionSection() {
 
         <div className="mt-10">
           <p className="sr-only" id="verifair-workflow-label">
-            VerifAir product framework: Assess, Act and Record
+            VerifAir product framework: Assess, Act and Report
           </p>
           <ol
             className="workflow-motion"
