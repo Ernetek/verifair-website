@@ -9,6 +9,7 @@ import {
   CloudIcon,
   SignalIcon,
 } from "@heroicons/react/24/outline";
+import { VerifAirProcessContent } from "@/components/shared/VerifAirProcess";
 
 const demonstrations = [
   {
@@ -74,36 +75,6 @@ const architectureLayers = [
   },
 ] as const;
 
-const processCards = [
-  {
-    title: "ASSESS",
-    heading: "Understand conditions across sites and zones.",
-    body: "Centralised real-time visibility helps teams assess particulate conditions, trends and configured operational triggers.",
-    image: "/assets/dust-monitoring-display-hub.webp",
-    imageAlt: "VerifAir monitoring hub showing particulate conditions across multiple zones",
-    href: "/demonstration#monitoring",
-    action: "Explore monitoring",
-  },
-  {
-    title: "ACT",
-    heading: "Turn changing conditions into coordinated action.",
-    body: "Alert the right people, acknowledge events, assign responsibility, investigate, record actions, escalate where required and manage incidents through to resolution.",
-    image: "/assets/workflow-site-investigation.webp",
-    imageAlt: "Project team member investigating a particulate monitoring event",
-    href: "/demonstration#incident",
-    action: "See response workflow",
-  },
-  {
-    title: "RECORD",
-    heading: "Create the operational record.",
-    body: "VerifAir brings together monitoring data, alerts, acknowledgements, actions, comments and incident history to generate evidence and reporting.",
-    image: "/assets/reports-evidence-review.webp",
-    imageAlt: "Project team reviewing a VerifAir evidence and reporting view",
-    href: "/demonstration#reportpreview",
-    action: "Explore records",
-  },
-] as const;
-
 function ArchitectureStorySection() {
   return (
     <section className="border-b border-slate-200 bg-white py-10 sm:py-12">
@@ -141,29 +112,7 @@ function ArchitectureStorySection() {
         </div>
 
         <div className="mt-10 border-t border-slate-200 pt-8">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">THE VERIFAIR PROCESS</p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">ASSESS. ACT. RECORD.</h2>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-            VerifAir connects real-time monitoring with operational response and a durable record of what happened.
-          </p>
-
-          <div className="mt-7 grid gap-5 lg:grid-cols-3">
-            {processCards.map((card) => (
-              <article key={card.title} className="grid overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
-                <div className="relative aspect-[16/6] overflow-hidden bg-slate-200">
-                  <Image src={card.image} alt={card.imageAlt} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
-                </div>
-                <div className="grid gap-2 p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">{card.title}</p>
-                  <h3 className="text-xl font-black leading-tight text-slate-950">{card.heading}</h3>
-                  <p className="text-sm leading-6 text-slate-600">{card.body}</p>
-                  <Link href={card.href} className="mt-1 inline-flex min-h-10 items-center font-bold text-blue-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
-                    {card.action} →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+          <VerifAirProcessContent />
         </div>
       </div>
     </section>

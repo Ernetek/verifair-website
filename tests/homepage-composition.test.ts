@@ -11,6 +11,10 @@ describe("homepage composition", () => {
 
   it("uses the canonical demonstration on the homepage", () => {
     expect(source).toContain("<HomepageInteractiveDemo />");
+    expect(source).toContain("<VerifAirProcessSection />");
+    expect(source).toContain("<ResponsibilityBoundaries />");
+    expect(source).not.toContain("<OperationalArchitectureSection />");
+    expect(source).not.toContain("<CapabilitiesSection />");
     expect(source).not.toContain("<ArchitectureStorySection />");
     expect(source).not.toContain("<DemonstrationOverview />");
     expect(source).not.toContain("<PlatformOverviewSection />");

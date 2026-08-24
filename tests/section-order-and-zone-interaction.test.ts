@@ -10,8 +10,9 @@ describe("homepage section order and platform interaction", () => {
     const expected = [
       "<HeroSection />",
       "<ProblemSection />",
-      "<OperationalArchitectureSection />",
+      "<VerifAirProcessSection />",
       "<HomepageInteractiveDemo />",
+      "<ResponsibilityBoundaries />",
       "<PilotDeploymentSection />",
       "<IndustriesSection />",
       "<FAQSection />",
@@ -41,14 +42,14 @@ describe("homepage section order and platform interaction", () => {
     expect(source).toContain("/demonstration/evidence-reporting");
   });
 
-  it("keeps a concise homepage architecture path and the detailed How It Works treatment", () => {
+  it("shares the process and responsibility treatments with How It Works", () => {
     const home = read("app/page.tsx");
     const howItWorks = read("app/how-it-works/page.tsx");
 
-    expect(home).toContain("<OperationalArchitectureSection />");
+    expect(home).toContain("<VerifAirProcessSection />");
+    expect(home).toContain("<ResponsibilityBoundaries />");
     expect(howItWorks).toContain("<ArchitectureStorySection />");
     expect(howItWorks).toContain("From monitoring plan to retained evidence.");
-    expect(howItWorks).toContain("What VerifAir automates.");
-    expect(howItWorks).toContain("What accountable people decide.");
+    expect(howItWorks).toContain("<ResponsibilityBoundaries />");
   });
 });

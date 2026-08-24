@@ -13,24 +13,17 @@ describe("Part 2 homepage product presentation", () => {
     expect(source).toContain("VerifAir connects distributed Dustlight particulate monitors across project zones and sites");
   });
 
-  it("shows the monitoring-location hierarchy from project to portfolio", () => {
-    const source = read("components/home/OperationalArchitecture.tsx");
-    const expected = [
-      "PROJECT",
-      "ZONE",
-      "MONITORING LOCATION",
-      "SHARED VIEW",
-      "PORTFOLIO",
-    ];
-    let previous = -1;
-    for (const label of expected) {
-      const index = source.indexOf(label);
-      expect(index).toBeGreaterThan(previous);
-      previous = index;
-    }
-    expect(source).not.toContain("one project, multiple monitoring locations");
-    expect(source).not.toContain("Scaling capability: multiple projects / portfolio");
-    expect(source).not.toContain("A single project with several monitoring locations");
+  it("uses one shared VerifAir process treatment on the homepage and How It Works", () => {
+    const homepage = read("app/page.tsx");
+    const howItWorks = read("components/demonstration/DemonstrationOverview.tsx");
+    const process = read("components/shared/VerifAirProcess.tsx");
+
+    expect(homepage).toContain("<VerifAirProcessSection />");
+    expect(howItWorks).toContain("<VerifAirProcessContent />");
+    expect(process).toContain("THE VERIFAIR PROCESS");
+    expect(process).toContain("ASSESS. ACT. RECORD.");
+    expect(process).toContain("aspect-[3/2]");
+    expect(process).toContain("object-contain");
   });
 
   it("makes Respirable Dust primary and keeps the other measurements secondary", () => {
@@ -105,28 +98,23 @@ describe("Part 2 homepage product presentation", () => {
     const source = read("components/home/PilotDeployment.tsx");
 
     expect(source).toContain('aria-roledescription="carousel"');
-    expect(source).not.toContain("capabilityRailSets");
+    expect(source).toContain('data-carousel-set="duplicate"');
     expect(source).toContain("overflow-x-auto");
     expect(source).toContain("w-[78vw]");
     expect(source).toContain("lg:w-[18rem]");
-    expect(source).toContain('aria-label="Previous capability"');
-    expect(source).toContain('aria-label="Next capability"');
-    expect(source).toContain('event.key === "ArrowLeft"');
-    expect(source).toContain('event.key === "ArrowRight"');
+    expect(source).not.toContain('aria-label="Previous capability"');
+    expect(source).not.toContain('aria-label="Next capability"');
     expect(source).not.toContain("aria-live");
   });
 
-  it("moves capabilities automatically while preserving interaction pauses", () => {
+  it("moves capabilities continuously without hover or focus pauses", () => {
     const source = read("components/home/PilotDeployment.tsx");
 
     expect(source).toContain("useReducedMotion");
-    expect(source).toContain("onPointerDown");
-    expect(source).toContain("window.setInterval");
-    expect(source).toContain("pauseRef.current.hover = true");
-    expect(source).toContain("pauseRef.current.focus = true");
-    expect(source).toContain("document.hidden");
-    expect(source).not.toContain("ResizeObserver");
-    expect(source).not.toContain("desktopMotion");
+    expect(source).toContain("window.requestAnimationFrame");
+    expect(source).toContain("rail.scrollLeft +=");
+    expect(source).not.toContain("onMouseEnter");
+    expect(source).not.toContain("pauseRef");
   });
 
   it("presents industries in a healthcare-first accessible accordion", () => {

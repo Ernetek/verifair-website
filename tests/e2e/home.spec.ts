@@ -66,7 +66,7 @@ for (const viewport of [
   });
 }
 
-test("capability rail advances automatically and pauses on hover", async ({ page }) => {
+test("capability rail advances continuously through hover without navigation buttons", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { waitUntil: "networkidle" });
@@ -88,14 +88,13 @@ test("capability rail advances automatically and pauses on hover", async ({ page
   const initialScroll = await rail.evaluate((element) => element.scrollLeft);
   await expect.poll(() => rail.evaluate((element) => element.scrollLeft), { timeout: 12_000 }).toBeGreaterThan(initialScroll + 100);
 
+  await expect(carousel.getByRole("button")).toHaveCount(0);
   await carousel.hover();
-  await page.waitForTimeout(700);
-  const pausedScroll = await rail.evaluate((element) => element.scrollLeft);
-  await page.waitForTimeout(5_000);
-  expect(Math.abs((await rail.evaluate((element) => element.scrollLeft)) - pausedScroll)).toBeLessThanOrEqual(1);
+  const hoveredScroll = await rail.evaluate((element) => element.scrollLeft);
+  await expect.poll(() => rail.evaluate((element) => element.scrollLeft), { timeout: 5_000 }).toBeGreaterThan(hoveredScroll + 30);
 });
 
-test("capability rail disables automatic motion but retains manual navigation with reduced motion", async ({ page }) => {
+test("capability rail respects reduced motion without adding navigation controls", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { waitUntil: "networkidle" });
@@ -108,7 +107,8 @@ test("capability rail disables automatic motion but retains manual navigation wi
   await page.waitForTimeout(500);
   expect(Math.abs((await rail.evaluate((element) => element.scrollLeft)) - initialScroll)).toBeLessThanOrEqual(1);
 
-  await carousel.getByRole("button", { name: "Next capability" }).click();
+  await expect(carousel.getByRole("button")).toHaveCount(0);
+  await rail.evaluate((element) => element.scrollTo({ left: 200, behavior: "auto" }));
   await expect.poll(() => rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(initialScroll + 100);
 });
 
@@ -116,8 +116,6 @@ test("capability rail exposes one card plus a continuation cue on mobile without
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/", { waitUntil: "networkidle" });
 
-  // The homepage now has two capability card rails (CapabilitiesSection + A complete operational section).
-  // Target the one inside the "VerifAir capabilities" region specifically.
   const rail = page.getByRole("region", { name: "VerifAir capabilities" }).getByLabel("Scrollable capability cards");
   await rail.scrollIntoViewIfNeeded();
   const dimensions = await page.evaluate(() => ({

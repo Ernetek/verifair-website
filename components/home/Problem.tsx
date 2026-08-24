@@ -56,18 +56,15 @@ export function ProblemSection() {
                 className="size-full object-cover"
               />
             </div>
-            <figcaption className="mt-3 text-sm leading-6 text-slate-500">
-              Active work can change particulate conditions between inspections.
-              Monitoring locations and response arrangements are determined for
-              the project context.
-            </figcaption>
           </figure>
         </Reveal>
 
         <Reveal className="lg:col-start-2 lg:row-start-2">
-          <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Project teams need a shared operational view of changing particulate conditions across every monitoring location, so
-            everyone can recognise what is happening and coordinate what happens next.
+          <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
+            Project teams need a shared operational view of changing particulate conditions across every monitoring location. Bringing
+            readings, trends, operational state and response activity together gives site, environmental and project leaders the same
+            context at the same time—so changes are easier to recognise, responsibility is clearer and the next response can be
+            coordinated across the project.
           </p>
         </Reveal>
 

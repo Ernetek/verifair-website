@@ -580,12 +580,12 @@ export function HomepageInteractiveDemo() {
   const monitoringView = <AssessView session={session} snapshot={snapshot} selectedId={selectedId} setSelectedId={setSelectedId} onOpenEvents={() => setActiveView("events")} onWorkStarted={() => seekStep(2)} />;
 
   return (
-    <section id="monitoring" className="border-b border-slate-200 bg-white px-3 py-8 sm:px-6 sm:py-12">
-      <div className="mx-auto max-w-[96rem]">
-        <header className="mb-5 max-w-3xl px-2">
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-sky-700">VerifAir · browser demonstration</p>
-          <h2 className="mt-2 text-3xl font-black leading-tight text-slate-950 sm:text-4xl">See the VerifAir particulate monitoring and task management workspace in action.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">Step through a scripted healthcare-refurbishment scenario. Watch operational exceptions reorganise the board while system health remains independently visible.</p>
+    <section id="monitoring" className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+      <div className="container">
+        <header className="mb-8 max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-600">VerifAir · browser demonstration</p>
+          <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 sm:text-5xl">See the VerifAir particulate monitoring and task management workspace in action.</h2>
+          <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">Step through a scripted healthcare-refurbishment scenario. Watch operational exceptions reorganise the board while system health remains independently visible.</p>
         </header>
 
         <aside className="mb-4 border border-slate-300 bg-white px-4 py-3 text-slate-900" aria-label="Demonstration guide">

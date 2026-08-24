@@ -2,8 +2,6 @@
 
 import {
   ArrowPathIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
   CloudIcon,
   ComputerDesktopIcon,
   CpuChipIcon,
@@ -11,7 +9,7 @@ import {
   SignalIcon,
 } from "@heroicons/react/24/outline";
 import { useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const capabilities = [
   {
@@ -49,45 +47,30 @@ const capabilities = [
 export function PilotDeploymentSection() {
   const reducedMotion = useReducedMotion();
   const railRef = useRef<HTMLDivElement>(null);
-  const pauseRef = useRef({ hover: false, focus: false, interaction: false });
-  const interactionTimerRef = useRef<number | undefined>(undefined);
-  const dragRef = useRef({ active: false, startX: 0, startScrollLeft: 0 });
-  const [dragging, setDragging] = useState(false);
-
-  const pauseForInteraction = () => {
-    pauseRef.current.interaction = true;
-    window.clearTimeout(interactionTimerRef.current);
-    interactionTimerRef.current = window.setTimeout(() => {
-      pauseRef.current.interaction = false;
-    }, 4_000);
-  };
-
-  const moveRail = (direction: -1 | 1) => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const card = rail.querySelector<HTMLElement>("[data-capability-card]");
-    const gap = 16;
-    rail.scrollBy({
-      left: direction * ((card?.offsetWidth ?? 288) + gap),
-      behavior: reducedMotion ? "auto" : "smooth",
-    });
-    pauseForInteraction();
-  };
 
   useEffect(() => {
     if (reducedMotion) return;
-    const intervalId = window.setInterval(() => {
-      const rail = railRef.current;
-      const card = rail?.querySelector<HTMLElement>("[data-capability-card]");
-      if (!rail || !card || Object.values(pauseRef.current).some(Boolean) || document.hidden) return;
-      const gap = 16;
-      const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8;
-      rail.scrollTo({ left: atEnd ? 0 : rail.scrollLeft + card.offsetWidth + gap, behavior: "smooth" });
-    }, 4_500);
-    return () => window.clearInterval(intervalId);
-  }, [reducedMotion]);
+    let animationFrame = 0;
+    let previousTimestamp = 0;
 
-  useEffect(() => () => window.clearTimeout(interactionTimerRef.current), []);
+    const advance = (timestamp: number) => {
+      const rail = railRef.current;
+      const loopStart = rail?.querySelector<HTMLElement>('[data-carousel-set="duplicate"]');
+      if (rail && loopStart) {
+        if (previousTimestamp > 0) {
+          rail.scrollLeft += (timestamp - previousTimestamp) * 0.035;
+          if (rail.scrollLeft >= loopStart.offsetLeft) {
+            rail.scrollLeft -= loopStart.offsetLeft;
+          }
+        }
+        previousTimestamp = timestamp;
+      }
+      animationFrame = window.requestAnimationFrame(advance);
+    };
+
+    animationFrame = window.requestAnimationFrame(advance);
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [reducedMotion]);
 
   return (
     <section
@@ -115,79 +98,38 @@ export function PilotDeploymentSection() {
           role="region"
           aria-roledescription="carousel"
           aria-label="VerifAir capabilities"
-          onMouseEnter={() => { pauseRef.current.hover = true; }}
-          onMouseLeave={() => { pauseRef.current.hover = false; }}
-          onFocusCapture={() => { pauseRef.current.focus = true; }}
-          onBlurCapture={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) pauseRef.current.focus = false;
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "ArrowLeft") {
-              event.preventDefault();
-              moveRail(-1);
-            }
-            if (event.key === "ArrowRight") {
-              event.preventDefault();
-              moveRail(1);
-            }
-          }}
         >
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <p className="text-xs font-semibold text-slate-500">Swipe or scroll to explore all six capabilities.</p>
-            <div className="flex shrink-0 items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => moveRail(-1)}
-                className="grid size-9 place-items-center rounded-md border border-slate-300 bg-white text-slate-600 transition hover:border-blue-500 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                aria-label="Previous capability"
-              >
-                <ChevronLeftIcon className="size-4" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                onClick={() => moveRail(1)}
-                className="grid size-9 place-items-center rounded-md border border-slate-300 bg-white text-slate-600 transition hover:border-blue-500 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                aria-label="Next capability"
-              >
-                <ChevronRightIcon className="size-4" aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <p className="mb-4 text-xs font-semibold text-slate-500">
+            The capability rail moves continuously. Swipe or scroll when reduced motion is enabled.
+          </p>
 
           <div
             ref={railRef}
-            tabIndex={0}
-            className={`flex cursor-grab overflow-x-auto overscroll-x-contain pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${dragging ? "cursor-grabbing select-none" : ""}`}
-            onWheel={pauseForInteraction}
-            onPointerDown={(event) => {
-              pauseRef.current.interaction = true;
-              if (event.pointerType !== "mouse" || !railRef.current) return;
-              dragRef.current = { active: true, startX: event.clientX, startScrollLeft: railRef.current.scrollLeft };
-              event.currentTarget.setPointerCapture(event.pointerId);
-              setDragging(true);
-            }}
-            onPointerMove={(event) => {
-              if (!dragRef.current.active || !railRef.current) return;
-              railRef.current.scrollLeft = dragRef.current.startScrollLeft - (event.clientX - dragRef.current.startX);
-            }}
-            onPointerUp={(event) => {
-              if (dragRef.current.active) event.currentTarget.releasePointerCapture(event.pointerId);
-              dragRef.current.active = false;
-              setDragging(false);
-              pauseForInteraction();
-            }}
-            onPointerCancel={() => {
-              dragRef.current.active = false;
-              setDragging(false);
-              pauseForInteraction();
-            }}
+            className="flex overflow-x-auto overscroll-x-contain pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Scrollable capability cards"
           >
-            <div className="flex shrink-0 gap-4 pr-4">
+            <div className="flex shrink-0 gap-4 pr-4" data-carousel-set="primary">
               {capabilities.map(({ title, body, Icon }, index) => (
                 <article
                   key={title}
                   data-capability-card
+                  className="flex min-h-56 w-[78vw] max-w-[20rem] shrink-0 flex-col border border-slate-200 bg-slate-50 p-5 shadow-[0_14px_32px_-28px_rgba(15,23,42,0.5)] sm:w-[19rem] md:w-[19rem] lg:w-[18rem] xl:w-[17rem] 2xl:w-[18rem]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="grid size-11 place-items-center rounded-md border border-blue-200 bg-white text-blue-700">
+                      <Icon className="size-6" aria-hidden="true" />
+                    </div>
+                    <span className="font-mono text-[10px] font-bold text-slate-400">{String(index + 1).padStart(2, "0")}</span>
+                  </div>
+                  <h3 className="mt-5 text-sm font-black leading-5 text-slate-950">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{body}</p>
+                </article>
+              ))}
+            </div>
+            <div className="flex shrink-0 gap-4 pr-4" data-carousel-set="duplicate" aria-hidden="true">
+              {capabilities.map(({ title, body, Icon }, index) => (
+                <article
+                  key={`duplicate-${title}`}
                   className="flex min-h-56 w-[78vw] max-w-[20rem] shrink-0 flex-col border border-slate-200 bg-slate-50 p-5 shadow-[0_14px_32px_-28px_rgba(15,23,42,0.5)] sm:w-[19rem] md:w-[19rem] lg:w-[18rem] xl:w-[17rem] 2xl:w-[18rem]"
                 >
                   <div className="flex items-start justify-between gap-4">

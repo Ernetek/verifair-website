@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { ArchitectureStorySection } from "@/components/demonstration/DemonstrationOverview";
 import { PageDisclaimer } from "@/components/legal/PageDisclaimer";
+import { ResponsibilityBoundaries } from "@/components/shared/ResponsibilityBoundaries";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -102,38 +103,7 @@ export default function HowItWorksPage() {
           </div>
         </section>
 
-        <section className="border-b border-slate-200 bg-white py-14 sm:py-18">
-          <div className="container grid gap-8 lg:grid-cols-2">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">
-                System responsibility
-              </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-                What VerifAir automates.
-              </h2>
-              <ul className="mt-6 grid gap-3 text-sm leading-6 text-slate-700">
-                <li className="border-l-4 border-blue-500 pl-4">Transfers and presents configured monitoring data.</li>
-                <li className="border-l-4 border-blue-500 pl-4">Evaluates approved project operational triggers.</li>
-                <li className="border-l-4 border-blue-500 pl-4">Surfaces alerts and maintains system event chronology.</li>
-                <li className="border-l-4 border-blue-500 pl-4">Connects monitoring observations with response records.</li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">
-                Human responsibility
-              </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-                What accountable people decide.
-              </h2>
-              <ul className="mt-6 grid gap-3 text-sm leading-6 text-slate-700">
-                <li className="border-l-4 border-emerald-500 pl-4">Approve locations, triggers, responsibilities and escalation paths.</li>
-                <li className="border-l-4 border-emerald-500 pl-4">Assess site context and determine the appropriate response.</li>
-                <li className="border-l-4 border-emerald-500 pl-4">Record actions, evidence, verification and closure decisions.</li>
-                <li className="border-l-4 border-emerald-500 pl-4">Apply professional, regulatory and workplace requirements.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
+        <ResponsibilityBoundaries />
       </main>
       <PageDisclaimer />
     </>
