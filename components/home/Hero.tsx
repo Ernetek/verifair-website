@@ -1,30 +1,28 @@
 import {
   ArrowRightIcon,
-  ClockIcon,
+  ChartBarIcon,
   DocumentCheckIcon,
   ShieldCheckIcon,
-  UsersIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Reveal } from "./Reveal";
 
-const heroBenefits = [
+const heroPillars = [
   {
-    title: "Keep patients, staff & visitors safe",
-    Icon: UsersIcon,
+    title: "Assess",
+    description: "See changing particulate conditions across monitoring locations.",
+    Icon: ChartBarIcon,
   },
   {
-    title: "Reduce risk & operational disruption",
+    title: "Prevent",
+    description: "Turn warnings and action levels into visible response before conditions escalate.",
     Icon: ShieldCheckIcon,
   },
   {
-    title: "Make informed decisions faster",
-    Icon: ClockIcon,
-  },
-  {
-    title: "Maintain a complete evidence record",
+    title: "Report",
+    description: "Keep an audit-ready record of response, verification and closure.",
     Icon: DocumentCheckIcon,
   },
 ] as const;
@@ -37,15 +35,30 @@ function HeroCopy() {
       </p>
 
       <h1 className="mt-3 text-[1.75rem] font-black leading-[1.08] tracking-tight text-white sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
-        See changing particulate conditions across multiple monitoring locations.
+        See changing particulate conditions. Act before they become bigger problems.
       </h1>
 
       <p className="mt-4 max-w-3xl text-[0.975rem] leading-6 text-slate-100 sm:mt-5 sm:text-lg sm:leading-7">
-        VerifAir connects distributed Dustlight particulate monitors across project zones and sites to provide a shared operational view with{" "}
-        <span className="font-semibold text-blue-300">monitoring</span>,{" "}
-        <span className="font-semibold text-blue-300">workflow / response</span>, and{" "}
-        <span className="font-semibold text-blue-300">reporting</span> in one connected platform.
+        VerifAir connects distributed Dustlight particulate monitors across project zones and sites so teams can{" "}
+        <span className="font-semibold text-blue-300">assess</span> conditions,{" "}
+        <span className="font-semibold text-blue-300">prevent</span> escalation through structured response, and{" "}
+        <span className="font-semibold text-blue-300">report</span> a complete evidence trail.
       </p>
+
+      <div className="mt-6 grid w-full grid-cols-1 gap-3 text-left sm:mt-10 sm:grid-cols-3 sm:gap-5">
+        {heroPillars.map(({ title, description, Icon }) => (
+          <div
+            key={title}
+            className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-4 sm:block sm:text-center"
+          >
+            <Icon className="size-7 shrink-0 text-blue-300 sm:mx-auto sm:size-8" aria-hidden="true" />
+            <div className="sm:mt-3">
+              <p className="text-base font-bold text-white sm:text-lg">{title}</p>
+              <p className="mt-1 text-sm leading-5 text-slate-200">{description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="mt-6 flex w-full flex-col gap-2 sm:mt-8 sm:w-auto sm:flex-row sm:gap-3">
         <Link
@@ -63,15 +76,6 @@ function HeroCopy() {
           HOW IT WORKS
         </Link>
       </div>
-
-      <div className="mt-7 grid grid-cols-1 gap-4 text-left sm:mt-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-6 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-0">
-        {heroBenefits.map(({ title, Icon }) => (
-          <div key={title} className="flex items-center gap-3">
-            <Icon className="size-6 shrink-0 text-blue-300 sm:size-7" aria-hidden="true" />
-            <p className="text-sm leading-5 text-slate-100">{title}</p>
-          </div>
-        ))}
-      </div>
     </Reveal>
   );
 }
@@ -79,7 +83,7 @@ function HeroCopy() {
 export function HeroSection() {
   return (
     <section className="border-b border-slate-800 bg-slate-950 text-white">
-      {/* Mobile: give the photograph its own uninterrupted frame so the scene is immediately understandable. */}
+      {/* Mobile: give the existing VerifAir photograph its own uninterrupted frame so the scene is immediately understandable. */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900 sm:hidden">
         <Image
           src="/assets/landing-hero.webp"
