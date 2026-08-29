@@ -7,10 +7,11 @@ const read = (relativePath: string) =>
   fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
 describe("Part 2 homepage product presentation", () => {
-  it("keeps the hero concise and uses the approved framework", () => {
+  it("keeps the hero concise without the removed benefit pillars", () => {
     const source = read("components/home/Hero.tsx");
-    expect(source).toContain("changing particulate conditions");
-    expect(source).toContain("VerifAir connects distributed Dustlight particulate monitors across project zones and sites");
+    expect(source).toContain("Detect changing conditions early. Manage what happens next.");
+    expect(source).toContain("VerifAir connects distributed particulate monitoring with trend intelligence");
+    expect(source).not.toContain("heroPillars");
   });
 
   it("uses one shared VerifAir process treatment on the homepage and How It Works", () => {
