@@ -9,8 +9,8 @@ const industries = [
   {
     title: "Healthcare",
     href: "/healthcare",
-    image: "/assets/healthcare_construction.webp",
-    imageAlt: "Construction workers operating inside a hospital beside an occupied clinical corridor",
+    image: "/assets/landing-hero.webp",
+    imageAlt: "Healthcare refurbishment construction separated from an occupied hospital corridor by temporary containment",
     copy: "Support refurbishment and construction beside live clinical environments. Compare particulate conditions across work areas, interfaces and occupied spaces so project and facility teams can coordinate a shared response.",
   },
   {
@@ -90,6 +90,21 @@ export function IndustriesSection() {
                       <Link href={industry.href} className="mt-4 inline-flex min-h-10 items-center font-bold text-blue-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
                         Explore {industry.title} →
                       </Link>
+
+                      <div className="relative mt-5 aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100 lg:hidden">
+                        <Image
+                          src={industry.image}
+                          alt={industry.imageAlt}
+                          fill
+                          sizes="100vw"
+                          quality={92}
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-slate-950/85 px-4 py-3 text-white">
+                          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-sky-300">Selected industry</p>
+                          <p className="mt-1 text-base font-black">{industry.title}</p>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </article>
@@ -97,8 +112,8 @@ export function IndustriesSection() {
             })}
           </div>
 
-          <div className="relative min-h-72 bg-slate-100 sm:min-h-96 lg:min-h-[34rem]">
-            <Image key={selected.image} src={selected.image} alt={selected.imageAlt} fill sizes="(min-width: 1024px) 58vw, 100vw" quality={92} className="object-cover" />
+          <div className="relative hidden min-h-[34rem] bg-slate-100 lg:block">
+            <Image key={selected.image} src={selected.image} alt={selected.imageAlt} fill sizes="58vw" quality={92} className="object-cover" />
             <div className="absolute inset-x-0 bottom-0 bg-slate-950/85 px-5 py-4 text-white sm:px-6">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-sky-300">Selected industry</p>
               <p className="mt-1 text-lg font-black">{selected.title}</p>
