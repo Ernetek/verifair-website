@@ -65,8 +65,11 @@ export function IndustriesSection() {
           Monitoring locations and workflows are configured around each project, its occupied environments and the teams responsible for what happens next.
         </p>
 
-        <div className="mt-10 grid overflow-hidden border-y border-slate-200 lg:grid-cols-[minmax(18rem,0.78fr)_minmax(0,1.22fr)]">
-          <div className="divide-y divide-slate-200" aria-label="Industries VerifAir serves">
+        <div
+          className="mt-10 grid overflow-hidden border-y border-slate-200 lg:grid-cols-[minmax(18rem,0.78fr)_minmax(0,1.22fr)]"
+          aria-label="Industries VerifAir serves"
+        >
+          <div className="divide-y divide-slate-200">
             {industries.map((industry, index) => {
               const expanded = activeIndustry === index;
               const panelId = `industry-panel-${index}`;
