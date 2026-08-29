@@ -117,15 +117,18 @@ describe("Part 2 homepage product presentation", () => {
     expect(source).not.toContain("pauseRef");
   });
 
-  it("presents industries in a healthcare-first accessible accordion", () => {
+  it("presents industries in a healthcare-first accessible accordion with the swapped hero image", () => {
     const source = read("components/home/Industries.tsx");
 
     expect(source).toContain('title: "Healthcare"');
-    expect(source).toContain('/assets/healthcare_construction.webp');
+    expect(source).toContain('image: "/assets/landing-hero.webp"');
+    expect(source).not.toContain('/assets/healthcare_construction.webp');
     expect(source).toContain("useState(0)");
     expect(source).toContain("aria-expanded={expanded}");
     expect(source).toContain("aria-controls={panelId}");
     expect(source).toContain('role="region"');
+    expect(source).toContain('className="relative mt-5 aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100 lg:hidden"');
+    expect(source).toContain('src={industry.image}');
     expect(source).toContain("lg:grid-cols-[minmax(18rem,0.78fr)_minmax(0,1.22fr)]");
     expect(source).not.toContain('aria-roledescription="carousel"');
     expect(source).not.toContain("industryRailSets");
