@@ -20,7 +20,10 @@ describe("homepage layout refresh", () => {
   it("uses the full-opacity technology environment as the homepage hero background", () => {
     const hero = read("components/home/Hero.tsx");
     expect(hero).not.toContain("<PolicyReadinessBanner />");
-    expect(hero).toContain("See changing particulate conditions across multiple monitoring locations.");
+    expect(hero).toContain("See changing particulate conditions. Act before they become bigger problems.");
+    expect(hero).toContain('title: "Assess"');
+    expect(hero).toContain('title: "Prevent"');
+    expect(hero).toContain('title: "Report"');
     expect(hero).toContain("SEE VERIFAIR IN ACTION");
     expect(hero).toContain("HOW IT WORKS");
     expect(hero).toContain('src="/assets/landing-hero.webp"');
