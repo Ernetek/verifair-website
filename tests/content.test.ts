@@ -13,15 +13,16 @@ describe("public page content", () => {
     expect(text).not.toContain("makes a project compliant");
   });
 
-  it("prioritises the core VerifAir proposition and operational journey", () => {
+  it("prioritises the approved early-warning and managed-response hero proposition", () => {
     const hero = readFile("components/home/Hero.tsx");
-    expect(hero).toContain("See changing particulate conditions. Act before they become bigger problems.");
-    expect(hero).toContain('title: "Assess"');
-    expect(hero).toContain('title: "Prevent"');
-    expect(hero).toContain('title: "Report"');
+    expect(hero).toContain("FROM EARLY WARNING TO MANAGED RESPONSE");
+    expect(hero).toContain("Detect changing conditions early. Manage what happens next.");
+    expect(hero).toContain("VerifAir connects distributed particulate monitoring with trend intelligence, operational alerts, accountable response workflows and a complete event record across project zones and sites.");
     expect(hero).toContain("SEE VERIFAIR IN ACTION");
-    expect(hero).toContain("HOW IT WORKS");
-    expect(hero).toContain("VerifAir connects distributed Dustlight particulate monitors across project zones and sites");
+    expect(hero).toContain("DISCUSS A HEALTHCARE PROJECT");
+    expect(hero).not.toContain('title: "Assess"');
+    expect(hero).not.toContain('title: "Prevent"');
+    expect(hero).not.toContain('title: "Report"');
   });
 
   it("labels demonstration triggers as configured operational triggers and keeps causation out of the wording", () => {
