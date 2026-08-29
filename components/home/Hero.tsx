@@ -1,8 +1,9 @@
 import {
   ArrowRightIcon,
+  BellAlertIcon,
   ChartBarIcon,
   DocumentCheckIcon,
-  ShieldCheckIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,18 +12,19 @@ import { Reveal } from "./Reveal";
 
 const heroPillars = [
   {
-    title: "Assess",
-    description: "See changing particulate conditions across monitoring locations.",
+    title: "Identify emerging particulate trends",
     Icon: ChartBarIcon,
   },
   {
-    title: "Prevent",
-    description: "Turn warnings and action levels into visible response before conditions escalate.",
-    Icon: ShieldCheckIcon,
+    title: "Alert teams before conditions escalate",
+    Icon: BellAlertIcon,
   },
   {
-    title: "Report",
-    description: "Keep an audit-ready record of response, verification and closure.",
+    title: "Coordinate operational response",
+    Icon: UserGroupIcon,
+  },
+  {
+    title: "Retain a complete event record",
     Icon: DocumentCheckIcon,
   },
 ] as const;
@@ -30,24 +32,24 @@ const heroPillars = [
 function MobileHeroCopy() {
   return (
     <Reveal className="mx-auto flex max-w-md flex-col items-center">
-      <p className="text-sm font-bold leading-5 text-blue-300">Protect what is important.</p>
+      <p className="text-sm font-bold leading-5 text-blue-300">FROM EARLY WARNING TO MANAGED RESPONSE</p>
 
       <h1 className="mt-2 text-[2.5rem] font-black leading-[0.98] tracking-tight text-white">
-        See changing particulate conditions. Act before they become bigger problems.
+        Detect changing conditions early. Manage what happens next.
       </h1>
 
       <p className="mt-3 text-[0.875rem] leading-5 text-slate-200">
-        VerifAir helps teams assess conditions, prevent escalation and keep a complete reporting trail.
+        VerifAir connects distributed particulate monitoring with trend intelligence, operational alerts, accountable response workflows and a complete event record across project zones and sites.
       </p>
 
-      <div className="mt-4 grid w-full grid-cols-3 gap-1.5" aria-label="VerifAir operating model">
+      <div className="mt-4 grid w-full grid-cols-2 gap-1.5" aria-label="VerifAir operating model">
         {heroPillars.map(({ title, Icon }) => (
           <div
             key={title}
             className="flex min-w-0 flex-col items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-1 py-2 text-center"
           >
             <Icon className="size-5 shrink-0 text-blue-300" aria-hidden="true" />
-            <p className="mt-1 text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-white">{title}</p>
+            <p className="mt-1 text-[0.6875rem] font-bold leading-4 text-white">{title}</p>
           </div>
         ))}
       </div>
@@ -58,14 +60,14 @@ function MobileHeroCopy() {
           aria-label="See VerifAir in Action"
           className="cta-primary inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-[0.75rem] font-bold shadow-md focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
         >
-          SEE IT IN ACTION
+          SEE VERIFAIR IN ACTION
         </Link>
 
         <Link
-          href="/how-it-works"
-          className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/50 bg-slate-950/30 px-2 text-[0.75rem] font-bold text-white transition hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          href="/contact#project-enquiry"
+          className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/50 bg-slate-950/30 px-2 text-center text-[0.75rem] font-bold text-white transition hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
         >
-          HOW IT WORKS
+          DISCUSS A HEALTHCARE PROJECT
         </Link>
       </div>
     </Reveal>
@@ -76,28 +78,22 @@ function DesktopHeroCopy() {
   return (
     <Reveal className="mx-auto flex max-w-4xl flex-col items-center rounded-3xl bg-slate-950/80 px-8 py-9 shadow-2xl ring-1 ring-white/10 backdrop-blur-[2px] lg:px-12 lg:py-11">
       <p className="text-2xl font-bold text-blue-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
-        Protect what is important.
+        FROM EARLY WARNING TO MANAGED RESPONSE
       </p>
 
       <h1 className="mt-4 text-5xl font-black leading-[1.05] tracking-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.95)] lg:text-6xl">
-        See changing particulate conditions. Act before they become bigger problems.
+        Detect changing conditions early. Manage what happens next.
       </h1>
 
       <p className="mt-5 max-w-3xl text-lg leading-7 text-slate-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
-        VerifAir connects distributed Dustlight particulate monitors across project zones and sites so teams can{" "}
-        <span className="font-semibold text-blue-300">assess</span> conditions,{" "}
-        <span className="font-semibold text-blue-300">prevent</span> escalation through structured response, and{" "}
-        <span className="font-semibold text-blue-300">report</span> a complete evidence trail.
+        VerifAir connects distributed particulate monitoring with trend intelligence, operational alerts, accountable response workflows and a complete event record across project zones and sites.
       </p>
 
-      <div className="mt-10 grid w-full grid-cols-3 gap-5 text-center">
-        {heroPillars.map(({ title, description, Icon }) => (
+      <div className="mt-10 grid w-full grid-cols-4 gap-5 text-center">
+        {heroPillars.map(({ title, Icon }) => (
           <div key={title} className="rounded-xl border border-white/15 bg-slate-950/75 p-4 shadow-lg">
             <Icon className="mx-auto size-8 text-blue-300" aria-hidden="true" />
-            <div className="mt-3">
-              <p className="text-lg font-bold text-white">{title}</p>
-              <p className="mt-1 text-sm leading-5 text-slate-200">{description}</p>
-            </div>
+            <p className="mt-3 text-base font-bold leading-6 text-white">{title}</p>
           </div>
         ))}
       </div>
@@ -112,10 +108,10 @@ function DesktopHeroCopy() {
         </Link>
 
         <Link
-          href="/how-it-works"
+          href="/contact#project-enquiry"
           className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/50 bg-slate-950/80 px-7 text-base font-bold text-white shadow-lg transition hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
         >
-          HOW IT WORKS
+          DISCUSS A HEALTHCARE PROJECT
         </Link>
       </div>
     </Reveal>
