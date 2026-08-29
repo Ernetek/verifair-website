@@ -1,33 +1,8 @@
-import {
-  ArrowRightIcon,
-  BellAlertIcon,
-  ChartBarIcon,
-  DocumentCheckIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Reveal } from "./Reveal";
-
-const heroPillars = [
-  {
-    title: "Identify emerging particulate trends",
-    Icon: ChartBarIcon,
-  },
-  {
-    title: "Alert teams before conditions escalate",
-    Icon: BellAlertIcon,
-  },
-  {
-    title: "Coordinate operational response",
-    Icon: UserGroupIcon,
-  },
-  {
-    title: "Retain a complete event record",
-    Icon: DocumentCheckIcon,
-  },
-] as const;
 
 function MobileHeroCopy() {
   return (
@@ -42,19 +17,7 @@ function MobileHeroCopy() {
         VerifAir connects distributed particulate monitoring with trend intelligence, operational alerts, accountable response workflows and a complete event record across project zones and sites.
       </p>
 
-      <div className="mt-4 grid w-full grid-cols-2 gap-1.5" aria-label="VerifAir operating model">
-        {heroPillars.map(({ title, Icon }) => (
-          <div
-            key={title}
-            className="flex min-w-0 flex-col items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-1 py-2 text-center"
-          >
-            <Icon className="size-5 shrink-0 text-blue-300" aria-hidden="true" />
-            <p className="mt-1 text-[0.6875rem] font-bold leading-4 text-white">{title}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4 grid w-full grid-cols-2 gap-2">
+      <div className="mt-5 grid w-full grid-cols-2 gap-2">
         <Link
           href="/#monitoring"
           aria-label="See VerifAir in Action"
@@ -89,15 +52,6 @@ function DesktopHeroCopy() {
         VerifAir connects distributed particulate monitoring with trend intelligence, operational alerts, accountable response workflows and a complete event record across project zones and sites.
       </p>
 
-      <div className="mt-10 grid w-full grid-cols-4 gap-5 text-center">
-        {heroPillars.map(({ title, Icon }) => (
-          <div key={title} className="rounded-xl border border-white/15 bg-slate-950/75 p-4 shadow-lg">
-            <Icon className="mx-auto size-8 text-blue-300" aria-hidden="true" />
-            <p className="mt-3 text-base font-bold leading-6 text-white">{title}</p>
-          </div>
-        ))}
-      </div>
-
       <div className="mt-8 flex w-auto flex-row gap-3">
         <Link
           href="/#monitoring"
@@ -121,8 +75,8 @@ function DesktopHeroCopy() {
 export function HeroSection() {
   return (
     <section className="border-b border-slate-800 bg-slate-950 text-white">
-      {/* Mobile: a distinct, full-width photographic band with no text overlay. */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-900 sm:hidden">
+      {/* Mobile: use a taller photographic band so the healthcare image has more visual weight. */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900 sm:hidden">
         <Image
           src="/assets/healthcare_construction.webp"
           alt="Construction workers operating inside a hospital beside an occupied clinical corridor."
@@ -134,12 +88,11 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Mobile: visually separate hero copy from the photo and preserve the tested viewport-height constraint. */}
       <div className="border-t-4 border-blue-500 bg-slate-950 px-4 py-5 text-center sm:hidden">
         <MobileHeroCopy />
       </div>
 
-      {/* Tablet / desktop: retain the photographic hero with a consistently dark copy surface for readable contrast. */}
+      {/* Tablet / desktop: increase the hero height while retaining the current image and copy treatment. */}
       <div className="relative isolate hidden overflow-hidden sm:block">
         <Image
           src="/assets/healthcare_construction.webp"
@@ -161,7 +114,7 @@ export function HeroSection() {
           aria-hidden="true"
         />
 
-        <div className="container relative z-10 flex min-h-[38rem] flex-col items-center justify-center py-16 text-center lg:min-h-[46rem] lg:py-20">
+        <div className="container relative z-10 flex min-h-[44rem] flex-col items-center justify-center py-16 text-center lg:min-h-[52rem] lg:py-20">
           <DesktopHeroCopy />
         </div>
       </div>
