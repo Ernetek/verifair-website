@@ -32,15 +32,15 @@ function MobileHeroCopy() {
     <Reveal className="mx-auto flex max-w-md flex-col items-center">
       <p className="text-sm font-bold leading-5 text-blue-300">Protect what is important.</p>
 
-      <h1 className="mt-1 text-[1.35rem] font-black leading-[1.08] tracking-tight text-white">
+      <h1 className="mt-2 text-[2.5rem] font-black leading-[0.98] tracking-tight text-white">
         See changing particulate conditions. Act before they become bigger problems.
       </h1>
 
-      <p className="mt-2 text-[0.8125rem] leading-[1.15rem] text-slate-200">
+      <p className="mt-3 text-[0.875rem] leading-5 text-slate-200">
         VerifAir helps teams assess conditions, prevent escalation and keep a complete reporting trail.
       </p>
 
-      <div className="mt-3 grid w-full grid-cols-3 gap-1.5" aria-label="VerifAir operating model">
+      <div className="mt-4 grid w-full grid-cols-3 gap-1.5" aria-label="VerifAir operating model">
         {heroPillars.map(({ title, Icon }) => (
           <div
             key={title}
@@ -52,7 +52,7 @@ function MobileHeroCopy() {
         ))}
       </div>
 
-      <div className="mt-3 grid w-full grid-cols-2 gap-2">
+      <div className="mt-4 grid w-full grid-cols-2 gap-2">
         <Link
           href="/#monitoring"
           aria-label="See VerifAir in Action"
@@ -125,21 +125,21 @@ function DesktopHeroCopy() {
 export function HeroSection() {
   return (
     <section className="border-b border-slate-800 bg-slate-950 text-white">
-      {/* Mobile: show the full existing VerifAir scene without copy obscuring it, while preserving the viewport-height gate. */}
-      <div className="relative h-[26svh] min-h-[172px] max-h-[220px] w-full overflow-hidden bg-slate-900 sm:hidden">
+      {/* Mobile: a distinct, full-width photographic band with no text overlay. */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-900 sm:hidden">
         <Image
           src="/assets/landing-hero.webp"
           alt="Healthcare refurbishment construction separated from an occupied hospital corridor by temporary containment."
           fill
           priority
           sizes="100vw"
-          className="object-contain object-center"
+          className="object-cover object-center"
           unoptimized
         />
       </div>
 
-      {/* Mobile: compact navy copy panel; the complete hero must remain within 320x800 and 390x844 viewports. */}
-      <div className="bg-slate-950 px-4 py-4 text-center sm:hidden">
+      {/* Mobile: visually separate hero copy from the photo and preserve the tested viewport-height constraint. */}
+      <div className="border-t-4 border-blue-500 bg-slate-950 px-4 py-5 text-center sm:hidden">
         <MobileHeroCopy />
       </div>
 
