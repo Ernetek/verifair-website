@@ -17,7 +17,7 @@ describe("homepage layout refresh", () => {
     expect(source).not.toContain('addEventListener("wheel"');
   });
 
-  it("uses the full-opacity technology environment as the homepage hero background", () => {
+  it("uses the approved healthcare construction image as the homepage hero background", () => {
     const hero = read("components/home/Hero.tsx");
     expect(hero).not.toContain("<PolicyReadinessBanner />");
     expect(hero).toContain("See changing particulate conditions. Act before they become bigger problems.");
@@ -26,7 +26,8 @@ describe("homepage layout refresh", () => {
     expect(hero).toContain('title: "Report"');
     expect(hero).toContain("SEE VERIFAIR IN ACTION");
     expect(hero).toContain("HOW IT WORKS");
-    expect(hero).toContain('src="/assets/landing-hero.webp"');
+    expect(hero).toContain('src="/assets/healthcare_construction.webp"');
+    expect(hero).not.toContain('src="/assets/landing-hero.webp"');
     expect(hero).toContain('from "next/image"');
     expect(hero).not.toContain("MonitoringRoomHeroPreview");
   });
