@@ -74,14 +74,16 @@ function MobileHeroCopy() {
 
 function DesktopHeroCopy() {
   return (
-    <Reveal className="mx-auto flex max-w-4xl flex-col items-center">
-      <p className="text-2xl font-bold text-blue-300">Protect what is important.</p>
+    <Reveal className="mx-auto flex max-w-4xl flex-col items-center rounded-3xl bg-slate-950/80 px-8 py-9 shadow-2xl ring-1 ring-white/10 backdrop-blur-[2px] lg:px-12 lg:py-11">
+      <p className="text-2xl font-bold text-blue-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+        Protect what is important.
+      </p>
 
-      <h1 className="mt-4 text-5xl font-black leading-[1.05] tracking-tight text-white lg:text-6xl">
+      <h1 className="mt-4 text-5xl font-black leading-[1.05] tracking-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.95)] lg:text-6xl">
         See changing particulate conditions. Act before they become bigger problems.
       </h1>
 
-      <p className="mt-5 max-w-3xl text-lg leading-7 text-slate-100">
+      <p className="mt-5 max-w-3xl text-lg leading-7 text-slate-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
         VerifAir connects distributed Dustlight particulate monitors across project zones and sites so teams can{" "}
         <span className="font-semibold text-blue-300">assess</span> conditions,{" "}
         <span className="font-semibold text-blue-300">prevent</span> escalation through structured response, and{" "}
@@ -90,7 +92,7 @@ function DesktopHeroCopy() {
 
       <div className="mt-10 grid w-full grid-cols-3 gap-5 text-center">
         {heroPillars.map(({ title, description, Icon }) => (
-          <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+          <div key={title} className="rounded-xl border border-white/15 bg-slate-950/75 p-4 shadow-lg">
             <Icon className="mx-auto size-8 text-blue-300" aria-hidden="true" />
             <div className="mt-3">
               <p className="text-lg font-bold text-white">{title}</p>
@@ -111,7 +113,7 @@ function DesktopHeroCopy() {
 
         <Link
           href="/how-it-works"
-          className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/50 bg-slate-950/30 px-7 text-base font-bold text-white transition hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
+          className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/50 bg-slate-950/80 px-7 text-base font-bold text-white shadow-lg transition hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
         >
           HOW IT WORKS
         </Link>
@@ -141,7 +143,7 @@ export function HeroSection() {
         <MobileHeroCopy />
       </div>
 
-      {/* Tablet / desktop: retain the cinematic photographic hero treatment. */}
+      {/* Tablet / desktop: retain the photographic hero with a consistently dark copy surface for readable contrast. */}
       <div className="relative isolate hidden overflow-hidden sm:block">
         <Image
           src="/assets/landing-hero.webp"
@@ -153,12 +155,13 @@ export function HeroSection() {
           unoptimized
         />
 
+        <div className="absolute inset-0 -z-10 bg-slate-950/35" aria-hidden="true" />
         <div
-          className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,transparent_0%,rgba(2,6,23,0.82)_30%,rgba(2,6,23,0.82)_70%,transparent_100%)]"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(2,6,23,0.35)_0%,rgba(2,6,23,0.76)_20%,rgba(2,6,23,0.88)_50%,rgba(2,6,23,0.76)_80%,rgba(2,6,23,0.35)_100%)]"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-gradient-to-t from-slate-950/95 via-slate-950/55 to-transparent"
+          className="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent"
           aria-hidden="true"
         />
 
