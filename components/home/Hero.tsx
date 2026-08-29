@@ -128,8 +128,8 @@ export function HeroSection() {
       {/* Mobile: a distinct, full-width photographic band with no text overlay. */}
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-900 sm:hidden">
         <Image
-          src="/assets/landing-hero.webp"
-          alt="Healthcare refurbishment construction separated from an occupied hospital corridor by temporary containment."
+          src="/assets/healthcare_construction.webp"
+          alt="Construction workers operating inside a hospital beside an occupied clinical corridor."
           fill
           priority
           sizes="100vw"
@@ -146,8 +146,8 @@ export function HeroSection() {
       {/* Tablet / desktop: retain the photographic hero with a consistently dark copy surface for readable contrast. */}
       <div className="relative isolate hidden overflow-hidden sm:block">
         <Image
-          src="/assets/landing-hero.webp"
-          alt="Healthcare refurbishment construction separated from an occupied hospital corridor by temporary containment."
+          src="/assets/healthcare_construction.webp"
+          alt="Construction workers operating inside a hospital beside an occupied clinical corridor."
           fill
           priority
           sizes="100vw"
