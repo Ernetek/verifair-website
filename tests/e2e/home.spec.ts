@@ -145,7 +145,9 @@ test("industry accordion opens with Healthcare and switches one panel at a time"
 
   await expect(healthcare).toHaveAttribute("aria-expanded", "true");
   await expect(industries.getByRole("region", { name: "Healthcare industry details" })).toBeVisible();
-  await expect(page.getByAltText("Construction workers operating inside a hospital beside an occupied clinical corridor")).toBeVisible();
+  await expect(
+    industries.locator('img[alt="Healthcare refurbishment construction separated from an occupied hospital corridor by temporary containment"]:visible')
+  ).toBeVisible();
 
   await construction.focus();
   await construction.press("Enter");
@@ -153,10 +155,11 @@ test("industry accordion opens with Healthcare and switches one panel at a time"
   await expect(healthcare).toHaveAttribute("aria-expanded", "false");
   await expect(industries.getByRole("region", { name: "Healthcare industry details" })).toHaveCount(0);
   await expect(industries.getByRole("region", { name: "Construction industry details" })).toBeVisible();
-  await expect(page.getByAltText("Active construction work front on a project site")).toBeVisible();
+  const constructionImage = industries.locator('img[alt="Active construction work front on a project site"]:visible');
+  await expect(constructionImage).toBeVisible();
 
   const textBox = await industries.boundingBox();
-  const imageBox = await page.getByAltText("Active construction work front on a project site").boundingBox();
+  const imageBox = await constructionImage.boundingBox();
   expect(imageBox?.x).toBeGreaterThan((textBox?.x ?? 0) + 300);
 });
 
@@ -168,7 +171,9 @@ test("industry accordion stacks cleanly on mobile without page overflow", async 
   await industries.scrollIntoViewIfNeeded();
   await industries.getByRole("button", { name: /Schools/ }).click();
   await expect(industries.getByRole("region", { name: "Schools industry details" })).toBeVisible();
-  await expect(page.getByAltText("Students walking through an occupied school corridor beside external works")).toBeVisible();
+  await expect(
+    industries.locator('img[alt="Students walking through an occupied school corridor beside external works"]:visible')
+  ).toBeVisible();
 
   const dimensions = await page.evaluate(() => ({
     documentWidth: document.documentElement.scrollWidth,
