@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 const publicRoutes = [
-  ["/", /See changing particulate conditions across multiple monitoring locations\./i],
+  ["/", /Detect changing conditions early\. Manage what happens next\./i],
   ["/monitoring", /Visibility across every\s*monitoring location\./i],
   ["/workflow", /From changing conditions to coordinated action\./i],
   ["/reporting", /Turn operational activity into a connected record\./i]

@@ -17,13 +17,18 @@ describe("homepage layout refresh", () => {
     expect(source).not.toContain('addEventListener("wheel"');
   });
 
-  it("uses the full-opacity technology environment as the homepage hero background", () => {
+  it("uses the approved healthcare construction image as a larger homepage hero image without benefit pillars", () => {
     const hero = read("components/home/Hero.tsx");
     expect(hero).not.toContain("<PolicyReadinessBanner />");
-    expect(hero).toContain("See changing particulate conditions across multiple monitoring locations.");
+    expect(hero).toContain("Detect changing conditions early. Manage what happens next.");
     expect(hero).toContain("SEE VERIFAIR IN ACTION");
-    expect(hero).toContain("HOW IT WORKS");
-    expect(hero).toContain('src="/assets/landing-hero.webp"');
+    expect(hero).toContain("DISCUSS A HEALTHCARE PROJECT");
+    expect(hero).toContain('src="/assets/healthcare_construction.webp"');
+    expect(hero).not.toContain('src="/assets/landing-hero.webp"');
+    expect(hero).toContain('aspect-[4/3]');
+    expect(hero).toContain('min-h-[44rem]');
+    expect(hero).toContain('lg:min-h-[52rem]');
+    expect(hero).not.toContain("heroPillars");
     expect(hero).toContain('from "next/image"');
     expect(hero).not.toContain("MonitoringRoomHeroPreview");
   });
