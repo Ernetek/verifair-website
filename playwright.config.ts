@@ -7,6 +7,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
   workers: process.env.CI ? 2 : 4,
+  retries: process.env.CI ? 1 : 0,
   webServer: externalBaseURL
     ? undefined
     : {
