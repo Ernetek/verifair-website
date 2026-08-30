@@ -9,25 +9,25 @@ const source = fs.readFileSync(
 );
 
 describe("operational challenge", () => {
-  it("uses the active dust image without fabricated hardware", () => {
-    expect(source).toContain("/assets/problem-active-dust.webp");
+  it("uses the approved healthcare image without fabricated hardware imagery", () => {
+    expect(source).toContain("/assets/landing-hero.webp");
     expect(source).not.toContain("/assets/problem-dust-monitoring.png");
   });
 
-  it("uses the updated operational challenge framing", () => {
-    expect(source).toContain("THE OPERATIONAL GAP");
-    expect(source).toContain("Changing particulate conditions aren&apos;t always obvious.");
-    expect(source).toContain("shared operational view of changing particulate conditions across every monitoring location");
-    expect(source).toContain("NOT ALWAYS VISIBLE");
-    expect(source).toContain("MULTIPLE LOCATIONS");
-    expect(source).toContain("SHARED RESPONSE");
-    expect(source).toContain("EyeSlashIcon");
-    expect(source).toContain("MapPinIcon");
-    expect(source).toContain("UserGroupIcon");
-    expect(source).toContain("bg-red-50/70");
-    expect(source).toContain("bg-amber-50/70");
-    expect(source).toContain("bg-emerald-50/70");
-    expect(source).not.toContain('number: "01"');
+  it("uses the approved monitoring-to-managed-response framing", () => {
+    expect(source).toContain("MONITORING IS ONLY THE START");
+    expect(source).toContain("The alert isn&apos;t the end of the job.");
+    expect(source).toContain("Who saw it? Who took ownership?");
+    expect(source).toContain("The monitor raises the alert");
+    expect(source).toContain("The operational gap");
+    expect(source).toContain("VerifAir manages the response");
+    expect(source).toContain("ACKNOWLEDGED");
+    expect(source).toContain("OWNERSHIP ASSIGNED");
+    expect(source).toContain("INVESTIGATION RECORDED");
+    expect(source).toContain("ACTION RECORDED");
+    expect(source).toContain("EVENT CLOSED");
+    expect(source).toContain("COMPLETE EVENT RECORD");
+    expect(source).toContain('href="#monitoring"');
   });
 
   it("moves the detailed measurement limitation out of the visible observations", () => {
@@ -35,4 +35,3 @@ describe("operational challenge", () => {
     expect(source).not.toContain("do not determine personal exposure");
   });
 });
-
