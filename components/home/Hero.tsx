@@ -7,17 +7,17 @@ import { Reveal } from "./Reveal";
 function MobileHeroCopy() {
   return (
     <Reveal className="mx-auto flex max-w-md flex-col items-center">
-      <p className="text-sm font-bold leading-5 text-blue-300">FROM EARLY WARNING TO MANAGED RESPONSE</p>
+      <p className="text-sm font-bold leading-4 text-blue-300">FROM EARLY WARNING TO MANAGED RESPONSE</p>
 
-      <h1 className="mt-2 text-[2.5rem] font-black leading-[0.98] tracking-tight text-white">
+      <h1 className="mt-1 text-[2.5rem] font-black leading-[0.98] tracking-tight text-white">
         Detect changing conditions early. Manage what happens next.
       </h1>
 
-      <p className="mt-3 text-[0.875rem] leading-5 text-slate-200">
+      <p className="mt-2 text-[0.875rem] leading-5 text-slate-200">
         VerifAir connects distributed particulate monitoring with trend intelligence, operational alerts, accountable response workflows and a complete event record across project zones and sites.
       </p>
 
-      <div className="mt-5 grid w-full grid-cols-2 gap-2">
+      <div className="mt-3 grid w-full grid-cols-2 gap-2">
         <Link
           href="/#monitoring"
           aria-label="See VerifAir in Action"
@@ -88,7 +88,7 @@ export function HeroSection() {
         />
       </div>
 
-      <div className="border-t-4 border-blue-500 bg-slate-950 px-4 py-5 text-center sm:hidden">
+      <div className="border-t-4 border-blue-500 bg-slate-950 px-4 py-3 text-center sm:hidden">
         <MobileHeroCopy />
       </div>
 
