@@ -1,57 +1,66 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const responseEvents = [
-  {
-    state: "ACKNOWLEDGED",
-    detail: "Sarah M.",
-    time: "12:16",
-    tone: "green",
-    icon: "✓",
-  },
-  {
-    state: "OWNERSHIP ASSIGNED",
-    detail: "Facilities Team",
-    time: "12:17",
-    tone: "blue",
-    icon: "○",
-  },
-  {
-    state: "INVESTIGATION RECORDED",
-    detail: "Site conditions reviewed",
-    time: "12:21",
-    tone: "blue",
-    icon: "⌕",
-  },
-  {
-    state: "ACTION RECORDED",
-    detail: "Dust-generating work paused",
-    time: "12:25",
-    tone: "blue",
-    icon: "✓",
-  },
-  {
-    state: "REVIEWED · CONDITIONS RECOVERING",
-    detail: "Trend improving",
-    time: "12:34",
-    tone: "green",
-    icon: "↘",
-  },
-  {
-    state: "EVENT CLOSED",
-    detail: "Review complete",
-    time: "12:45",
-    tone: "green",
-    icon: "✓",
-  },
-] as const;
+import {
+  getDemonstrationMetricTrendSeries,
+  publicDemonstrationScenario,
+} from "@/lib/replay/demonstration-scenario";
 
-const locations = [
-  ["M2", "Construction Area"],
-  ["M3", "Containment Boundary"],
-  ["M4", "Occupied Corridor"],
-  ["M5", "Sensitive Area"],
-] as const;
+const ALERT_OFFSET_MS = 120_000;
+const PEAK_OFFSET_MS = 240_000;
+
+function formatScenarioTime(offsetMs: number) {
+  const timestamp = new Date(Date.parse(publicDemonstrationScenario.startTimestamp) + offsetMs);
+  return new Intl.DateTimeFormat("en-AU", {
+    timeZone: publicDemonstrationScenario.metadata.displayTimezone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(timestamp);
+}
+
+function getMetricReading(offsetMs: number, monitorId: string, metricId: string) {
+  const observation = publicDemonstrationScenario.observations.find(
+    (item) => item.offsetMs === offsetMs && item.monitorId === monitorId && item.metricId === metricId,
+  );
+  return observation?.reading.status === "available" ? observation.reading.value : null;
+}
+
+const monitor = publicDemonstrationScenario.monitors.find((item) => item.id === "WORK_ZONE_A");
+const alertReading = getMetricReading(ALERT_OFFSET_MS, "WORK_ZONE_A", "PM2_5");
+const peakReading = getMetricReading(PEAK_OFFSET_MS, "WORK_ZONE_A", "PM2_5");
+const trendSeries = getDemonstrationMetricTrendSeries("WORK_ZONE_A", "PM2_5", PEAK_OFFSET_MS, 7);
+const trendMax = Math.max(...trendSeries, 1);
+const trendPoints = trendSeries
+  .map((value, index) => {
+    const x = (index / Math.max(trendSeries.length - 1, 1)) * 320;
+    const y = 118 - (value / trendMax) * 96;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  })
+  .join(" ");
+
+const responseEvents = publicDemonstrationScenario.timelineEvents
+  .filter((event) => event.offsetMs >= ALERT_OFFSET_MS)
+  .map((event) => ({
+    state:
+      event.type === "INCIDENT_OPENED"
+        ? "ALERT TRIGGERED"
+        : event.type === "ACTION_RECORDED"
+          ? "ACTION RECORDED"
+          : event.type === "EVIDENCE_RETAINED"
+            ? "FOLLOW-UP RETAINED"
+            : "EVENT CLOSED",
+    detail: event.title,
+    time: formatScenarioTime(event.offsetMs),
+    tone: event.type === "INCIDENT_RESOLVED" || event.type === "EVIDENCE_RETAINED" ? "green" : "blue",
+    icon: event.type === "INCIDENT_RESOLVED" ? "✓" : event.type === "EVIDENCE_RETAINED" ? "↘" : "○",
+  }));
+
+const locations = publicDemonstrationScenario.monitors.map((item, index) => [
+  `M${index + 1}`,
+  item.name.replace("Zone A · ", ""),
+  item.id,
+] as const);
 
 export function ProblemSection() {
   return (
@@ -93,73 +102,61 @@ export function ProblemSection() {
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_12px_35px_rgba(15,23,42,0.08)] sm:p-6">
+              <div className="mb-5 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold tracking-[0.08em] text-blue-800">
+                SIMULATED DEMONSTRATION DATA
+              </div>
+
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-3xl font-bold tracking-tight text-[#071a38]">12:14</p>
-                  <p className="mt-1 text-sm text-slate-500">Today</p>
+                  <p className="text-3xl font-bold tracking-tight text-[#071a38]">{formatScenarioTime(ALERT_OFFSET_MS)}</p>
+                  <p className="mt-1 text-sm text-slate-500">Approved public replay scenario</p>
                 </div>
 
                 <span className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold tracking-wide text-red-600">
-                  ATTENTION ●
+                  CONFIGURED ALERT ●
                 </span>
               </div>
 
               <div className="mt-8">
                 <p className="text-lg font-bold text-[#071a38]">PM2.5 rising</p>
-                <p className="mt-1 text-sm text-slate-500">Construction Area · Monitor M2</p>
+                <p className="mt-1 text-sm text-slate-500">{monitor?.name ?? "Zone A · Monitoring Location 1"}</p>
 
                 <div className="mt-5 flex items-end gap-2">
-                  <span className="text-4xl font-bold tracking-tight text-red-600">156</span>
+                  <span className="text-4xl font-bold tracking-tight text-red-600">{alertReading ?? 26}</span>
                   <span className="pb-1 text-base text-slate-600">µg/m³</span>
                 </div>
 
-                <p className="mt-1 text-sm text-slate-500">Above recent baseline</p>
+                <p className="mt-1 text-sm text-slate-500">Later simulated peak: {peakReading ?? 38} µg/m³</p>
               </div>
 
-              <div className="mt-7" aria-label="Illustrative rising PM2.5 trend">
+              <div className="mt-7" aria-label="Simulated PM2.5 trend from the approved public replay scenario">
                 <svg
                   viewBox="0 0 320 130"
                   className="h-auto w-full"
                   role="img"
-                  aria-label="PM2.5 trend rising above recent baseline"
+                  aria-label="Simulated PM2.5 trend rising through the approved public replay scenario"
                 >
-                  <defs>
-                    <linearGradient id="operationalGapTrendFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2563eb" stopOpacity="0.16" />
-                      <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-
-                  <line x1="0" y1="78" x2="320" y2="78" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="6 6" />
-
-                  <path
-                    d="M0 112 L20 107 L38 102 L56 105 L76 98 L96 100 L116 92 L136 91 L156 82 L176 74 L196 66 L216 54 L236 58 L256 43 L276 37 L296 27 L320 18 L320 130 L0 130 Z"
-                    fill="url(#operationalGapTrendFill)"
-                  />
-
-                  <path
-                    d="M0 112 L20 107 L38 102 L56 105 L76 98 L96 100 L116 92 L136 91 L156 82 L176 74 L196 66 L216 54 L236 58 L256 43 L276 37 L296 27 L320 18"
+                  <polyline
+                    points={trendPoints}
                     fill="none"
                     stroke="#2563eb"
                     strokeWidth="3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-
-                  <circle cx="320" cy="18" r="5" fill="#dc2626" />
+                  <circle cx="320" cy={118 - ((peakReading ?? 38) / trendMax) * 96} r="5" fill="#dc2626" />
                 </svg>
 
                 <div className="mt-2 flex justify-between text-xs text-slate-400">
-                  <span>11:30</span>
-                  <span>11:45</span>
-                  <span>12:00</span>
-                  <span>12:15</span>
+                  <span>Earlier</span>
+                  <span>Configured alert</span>
+                  <span>Later peak</span>
                 </div>
               </div>
 
               <div className="mt-5 flex justify-between border-t border-slate-100 pt-4 text-sm text-slate-500">
-                <span>Recent baseline</span>
-                <span className="font-medium text-slate-700">72 µg/m³</span>
+                <span>Scenario provenance</span>
+                <span className="text-right font-medium text-slate-700">Frozen fictional dataset</span>
               </div>
             </div>
           </article>
@@ -208,8 +205,8 @@ export function ProblemSection() {
                 <div className="relative grid grid-cols-4 gap-2">
                   <div className="absolute left-[12.5%] right-[12.5%] top-[11px] h-[2px] bg-slate-300" />
 
-                  {locations.map(([id, label], index) => (
-                    <div key={id} className="relative z-10 flex flex-col items-center text-center">
+                  {locations.map(([id, label, monitorId], index) => (
+                    <div key={monitorId} className="relative z-10 flex flex-col items-center text-center">
                       <span
                         className={[
                           "size-6 rounded-full border-[3px] bg-white",
@@ -236,7 +233,7 @@ export function ProblemSection() {
               <div>
                 <p className="font-bold uppercase tracking-[0.04em] text-emerald-700">VerifAir manages the response</p>
                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                  From acknowledgement to closure, the response stays connected.
+                  The validated demonstration record stays connected from alert through review and closure.
                 </p>
               </div>
             </div>
@@ -282,8 +279,8 @@ export function ProblemSection() {
                   </span>
 
                   <div>
-                    <p className="text-sm font-bold text-emerald-800">COMPLETE EVENT RECORD</p>
-                    <p className="mt-0.5 text-xs leading-5 text-slate-600">System and human actions retained in sequence.</p>
+                    <p className="text-sm font-bold text-emerald-800">VALIDATED EVENT RECORD</p>
+                    <p className="mt-0.5 text-xs leading-5 text-slate-600">Canonical simulated events retained in sequence.</p>
                   </div>
                 </div>
               </div>
@@ -298,7 +295,7 @@ export function ProblemSection() {
             </span>
 
             <p className="text-xl font-bold leading-8 text-[#071a38] sm:text-2xl">
-              VerifAir connects the moment conditions change with the people, actions and evidence that follow.
+              VerifAir connects the moment conditions change with the response record and evidence that follow.
             </p>
           </div>
 
@@ -312,7 +309,7 @@ export function ProblemSection() {
         </div>
 
         <p className="mt-5 text-center text-xs leading-5 text-slate-400">
-          Illustrative VerifAir scenario. Operational levels and responses are project configured.
+          Simulated VerifAir demonstration using the approved frozen fictional replay dataset. Operational levels and responses are project configured.
         </p>
       </div>
     </section>
